@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pdf-tools-mcp"
+version = "0.1.0"
+description = "MCP server for PDF analysis: text extraction, formula recognition, page rendering, and image extraction."
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+    "mcp>=1.0.0",
+    "pymupdf>=1.24.0",
+    "pillow",
+    "pandas",
+]
+
+[project.optional-dependencies]
+nougat = [
+    "torch",
+    "transformers",
+    "huggingface_hub",
+    "nougat-ocr",
+]
+
+[project.scripts]
+pdf-tools-mcp = "pdf_tools_mcp.server:main"
