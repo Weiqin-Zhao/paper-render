@@ -1,29 +1,29 @@
 # Paper-render
 
-PDF 论文 → 精美 HTML 阅读笔记的自动化流水线。基于 Claude Code + MCP Server 实现。
+Automated pipeline: PDF paper → beautiful HTML reading notes. Powered by Claude Code + MCP Server.
 
-## 功能
+## Features
 
-- **PDF 全文解析**：文本提取、公式识别 (Nougat OCR)、图表提取
-- **Markdown 笔记生成**：结构化的中文论文阅读笔记，含公式、图表引用、批判性思考
-- **HTML 展示页面生成**：单文件 HTML，支持暗色/亮色主题切换、中英文双语、KaTeX 公式渲染、响应式侧边导航
+- **PDF Full-text Parsing**: Text extraction, formula recognition (Nougat OCR), figure extraction
+- **Markdown Notes Generation**: Structured Chinese reading notes with formulas, figure references, and critical analysis
+- **HTML Presentation Generation**: Single-file HTML with dark/light theme toggle, bilingual (CN/EN), KaTeX formula rendering, responsive sidebar navigation
 
-## 项目结构
+## Project Structure
 
 ```
 Paper-render/
 ├── .claude/
 │   └── commands/
-│       └── paper-read.md        # Claude Code skill（一键生成论文笔记）
-├── pdf-tools-mcp/               # PDF 解析 MCP Server
+│       └── paper-read.md        # Claude Code skill (one-click paper notes)
+├── pdf-tools-mcp/               # PDF analysis MCP Server
 │   ├── pyproject.toml
 │   └── src/pdf_tools_mcp/
 │       └── server.py
-├── templates/                   # HTML 模板资源
-│   ├── base.css                 # 共用 CSS 样式（暗色/亮色主题、组件样式）
-│   ├── base.js                  # 共用 JS（主题切换、语言切换、TOC 导航、图片替换）
-│   └── skeleton.html            # HTML 骨架模板（展示可用组件和结构）
-├── Paper-Library/               # 已生成的论文笔记
+├── templates/                   # HTML template resources
+│   ├── base.css                 # Shared CSS (dark/light themes, components)
+│   ├── base.js                  # Shared JS (theme toggle, language toggle, TOC, image replacement)
+│   └── skeleton.html            # HTML skeleton template (available components & structure)
+├── Paper-Library/               # Generated paper notes
 │   ├── LPFM/
 │   │   ├── LPFM.pdf
 │   │   ├── LPFM_notes.md
@@ -37,139 +37,139 @@ Paper-render/
 └── README.md
 ```
 
-## 安装
+## Installation
 
-### 1. 安装 pdf-tools MCP Server
+### 1. Install pdf-tools MCP Server
 
 ```bash
 cd pdf-tools-mcp
 
-# 基础安装（文本提取、页面渲染、图片提取）
+# Basic install (text extraction, page rendering, image extraction)
 pip install -e .
 
-# 完整安装（含 Nougat 公式识别，需要 GPU）
+# Full install (with Nougat formula recognition, requires GPU)
 pip install -e ".[nougat]"
 ```
 
-### 2. 注册 MCP Server 到 Claude Code
+### 2. Register MCP Server with Claude Code
 
 ```bash
-# 方式 1: 直接注册
+# Option 1: Direct registration
 claude mcp add pdf-tools -- pdf-tools-mcp
 
-# 方式 2: 使用 uvx（无需安装）
+# Option 2: Using uvx (no install needed)
 claude mcp add pdf-tools -- uvx --from /path/to/pdf-tools-mcp pdf-tools-mcp
 ```
 
-注册后可以在 Claude Code 中验证：
+Verify registration:
 
 ```bash
-# 查看已注册的 MCP servers
+# List registered MCP servers
 claude mcp list
 ```
 
-### 3. 确认 skill 可用
+### 3. Confirm skill availability
 
-skill 文件位于 `.claude/commands/paper-read.md`，Claude Code 会自动识别项目目录下的 commands。
+The skill file is located at `.claude/commands/paper-read.md`. Claude Code automatically detects commands in the project directory.
 
-在 Claude Code 中输入 `/` 即可看到 `paper-read` 命令。
+Type `/` in Claude Code to see the `paper-read` command.
 
-## 使用方法
+## Usage
 
-### 一键生成（推荐）
+### One-click Generation (Recommended)
 
-在 Claude Code 中运行：
+In Claude Code, run:
 
 ```
 /paper-read /path/to/your/paper.pdf
 ```
 
-Claude 会自动完成：
-1. 读取 PDF 全文（分批提取文本、识别公式）
-2. 提取论文中的所有重要图表
-3. 生成结构化的 Markdown 阅读笔记
-4. 生成精美的 HTML 双语展示页面
+Claude will automatically:
+1. Read the full PDF text (batch text extraction, formula recognition)
+2. Extract all important figures from the paper
+3. Generate structured Markdown reading notes
+4. Generate a beautiful bilingual HTML presentation page
 
-所有输出保存在 `Paper-Library/{论文名}/` 目录下。
+All outputs are saved in `Paper-Library/{paper-name}/`.
 
-### 手动使用 MCP 工具
+### Manual MCP Tool Usage
 
-也可以直接在 Claude Code 对话中调用 MCP 工具：
+You can also call MCP tools directly in Claude Code:
 
 ```
-# 查看 PDF 信息
-使用 pdf_info 查看 paper.pdf 的基本信息
+# View PDF info
+Use pdf_info to check basic info of paper.pdf
 
-# 提取文本
-使用 pdf_read_text 读取 paper.pdf 第 1-10 页
+# Extract text
+Use pdf_read_text to read pages 1-10 of paper.pdf
 
-# 公式识别（需要 nougat 依赖和 GPU）
-使用 pdf_read_formulas 读取 paper.pdf 第 3 页的公式
+# Formula recognition (requires nougat + GPU)
+Use pdf_read_formulas to read formulas on page 3 of paper.pdf
 
-# 一步自动提取所有 figure（推荐）
-使用 pdf_extract_figures 从 paper.pdf 提取所有图表到 figures/ 目录
+# One-step auto-extract all figures (recommended)
+Use pdf_extract_figures to extract all figures from paper.pdf to figures/ directory
 
-# 检测 figure 区域（仅元数据，不渲染）
-使用 pdf_detect_figures 检测 paper.pdf 第 3-8 页的 figure 位置
+# Detect figure regions (metadata only, no rendering)
+Use pdf_detect_figures to detect figure positions on pages 3-8 of paper.pdf
 
-# 手动裁剪指定区域
-使用 pdf_render_region 渲染 paper.pdf 第 3 页的 (30,60)-(565,530) 区域
+# Manually crop a specific region
+Use pdf_render_region to render region (30,60)-(565,530) on page 3 of paper.pdf
 
-# 渲染整页为图片
-使用 pdf_render_page 渲染 paper.pdf 第 5 页
+# Render full page as image
+Use pdf_render_page to render page 5 of paper.pdf
 
-# 提取嵌入图片（原始图层）
-使用 pdf_extract_images 从 paper.pdf 提取嵌入图片
+# Extract embedded images (raw image layers)
+Use pdf_extract_images to extract embedded images from paper.pdf
 ```
 
-## MCP Server 工具说明
+## MCP Server Tools
 
-| 工具 | 功能 | 依赖 |
-|------|------|------|
-| `pdf_info` | PDF 元数据（页数、标题、作者、目录） | 基础 |
-| `pdf_read_text` | 快速文本提取，支持表格 | 基础 |
-| `pdf_read_formulas` | 公式/LaTeX 识别 (Nougat OCR) | `[nougat]` + GPU |
-| **`pdf_extract_figures`** | **智能 figure 提取：自动检测+聚类+裁剪（推荐）** | 基础 |
-| `pdf_detect_figures` | 检测 figure 区域，返回元数据（不渲染） | 基础 |
-| `pdf_render_region` | 渲染页面指定矩形区域（手动精调） | 基础 |
-| `pdf_render_page` | 渲染整页为 PNG 图片 | 基础 |
-| `pdf_extract_images` | 提取 PDF 嵌入的原始图片图层 | 基础 |
+| Tool | Description | Dependency |
+|------|-------------|------------|
+| `pdf_info` | PDF metadata (page count, title, author, TOC) | Basic |
+| `pdf_read_text` | Fast text extraction with table support | Basic |
+| `pdf_read_formulas` | Formula/LaTeX recognition (Nougat OCR) | `[nougat]` + GPU |
+| **`pdf_extract_figures`** | **Smart figure extraction: auto-detect + cluster + crop (recommended)** | Basic |
+| `pdf_detect_figures` | Detect figure regions, return metadata (no rendering) | Basic |
+| `pdf_render_region` | Render a specific rectangular region of a page (manual fine-tuning) | Basic |
+| `pdf_render_page` | Render full page as PNG image | Basic |
+| `pdf_extract_images` | Extract raw embedded image layers from PDF | Basic |
 
-### Figure 提取工具链
+### Figure Extraction Workflow
 
-推荐的 figure 提取工作流：
+Recommended workflow for figure extraction:
 
-1. **`pdf_extract_figures`**（首选）— 一步到位，自动检测所有 figure 并裁剪保存
-   - 支持光栅图（嵌入图片）和纯矢量图（流程图、示意图）
-   - 自动聚类同一 figure 的多个子面板
-   - 裁剪区域包含坐标轴、标签等矢量标注
-2. **`pdf_detect_figures`** — 仅检测不渲染，用于预览和调试
-3. **`pdf_render_region`** — 手动指定矩形区域，用于微调不准确的自动裁剪
+1. **`pdf_extract_figures`** (preferred) — One-step auto-detect and crop all figures
+   - Supports both raster images and pure vector graphics (flowcharts, diagrams)
+   - Auto-clusters sub-panels belonging to the same figure
+   - Crop regions include axes, labels, and vector annotations
+2. **`pdf_detect_figures`** — Detect only (no rendering), for preview and debugging
+3. **`pdf_render_region`** — Manually specify a rectangular region, for fine-tuning inaccurate auto-crops
 
-## HTML 展示页面特性
+## HTML Presentation Features
 
-- **暗色/亮色主题**：右上角一键切换，偏好自动保存到 localStorage
-- **中英文双语**：所有内容同时提供中英文，一键切换语言
-- **KaTeX 公式**：支持行内 `$...$` 和行间 `$$...$$` 数学公式
-- **响应式侧边导航**：桌面端固定左侧 TOC，移动端折叠菜单
-- **滚动高亮**：当前阅读位置在 TOC 中自动高亮
-- **丰富组件**：卡片、提示框、流程图、数据表格、条形图、指标高亮、可折叠讨论等
-- **图片懒加载**：占位符自动替换为提取的论文图表
-- **单文件部署**：CSS/JS 全部内联，可直接在浏览器中打开
+- **Dark/Light Theme**: One-click toggle, preference saved to localStorage
+- **Bilingual (CN/EN)**: All content in both Chinese and English, one-click language switch
+- **KaTeX Formulas**: Inline `$...$` and display `$$...$$` math formulas
+- **Responsive Sidebar Navigation**: Fixed left TOC on desktop, collapsible menu on mobile
+- **Scroll Highlighting**: Current reading position auto-highlighted in TOC
+- **Rich Components**: Cards, hint boxes, flowcharts, data tables, bar charts, metric highlights, collapsible discussions, etc.
+- **Lazy Image Loading**: Placeholders auto-replaced with extracted paper figures
+- **Single-file Deployment**: CSS/JS fully inlined, opens directly in browser
 
-## 自定义模板
+## Customizing Templates
 
-模板文件位于 `templates/` 目录：
+Template files are in `templates/`:
 
-- `base.css` — 修改主题颜色、组件样式
-- `base.js` — 修改交互行为
-- `skeleton.html` — 查看可用的 HTML 组件和结构模式
+- `base.css` — Modify theme colors, component styles
+- `base.js` — Modify interaction behavior
+- `skeleton.html` — View available HTML components and structural patterns
 
-## 依赖
+## Dependencies
 
 - Python >= 3.10
 - [PyMuPDF](https://pymupdf.readthedocs.io/) >= 1.24.0
 - [MCP](https://github.com/modelcontextprotocol/python-sdk) >= 1.0.0
 - [Pillow](https://pillow.readthedocs.io/)
-- (可选) [Nougat OCR](https://github.com/facebookresearch/nougat) — 公式识别
-- (可选) CUDA GPU — 加速 Nougat 推理
+- (Optional) [Nougat OCR](https://github.com/facebookresearch/nougat) — Formula recognition
+- (Optional) CUDA GPU — Accelerate Nougat inference
