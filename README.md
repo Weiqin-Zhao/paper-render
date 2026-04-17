@@ -4,9 +4,11 @@ Automated pipeline: PDF paper → beautiful HTML reading notes. Powered by Claud
 
 ## Features
 
+- **LaTeX-first Source Strategy**: Prefer `.tex` source (local or arxiv) for highest figure quality and content accuracy, with graceful fallback to PDF OCR
 - **PDF Full-text Parsing**: Text extraction, formula recognition (Nougat OCR), figure extraction
 - **Markdown Notes Generation**: Structured Chinese reading notes with formulas, figure references, and critical analysis
 - **HTML Presentation Generation**: Single-file HTML with dark/light theme toggle, bilingual (CN/EN), KaTeX formula rendering, responsive sidebar navigation
+- **Completeness Audit**: An independent agent audits the generated HTML for content completeness after the main pipeline
 
 ## Project Structure
 
@@ -23,17 +25,14 @@ Paper-render/
 │   ├── base.css                 # Shared CSS (dark/light themes, components)
 │   ├── base.js                  # Shared JS (theme toggle, language toggle, TOC, image replacement)
 │   └── skeleton.html            # HTML skeleton template (available components & structure)
-├── Paper-Library/               # Generated paper notes
-│   ├── LPFM/
-│   │   ├── LPFM.pdf
-│   │   ├── LPFM_notes.md
-│   │   ├── LPFM_presentation.html
-│   │   └── figures/
-│   └── PixCell/
-│       ├── PixCell.pdf
-│       ├── PixCell_notes.md
-│       ├── PixCell_presentation.html
-│       └── figures/
+├── paper-library/               # Generated notes live next to their source PDFs
+│   └── EHR-Agent/
+│       └── CoEvoSkills/
+│           ├── CoEvoSkills.pdf
+│           ├── CoEvoSkills_notes.md
+│           ├── CoEvoSkills_presentation.html
+│           ├── figures/         # extracted / referenced figures
+│           └── source/          # (optional) arxiv tex source
 └── README.md
 ```
 
@@ -85,12 +84,25 @@ In Claude Code, run:
 ```
 
 Claude will automatically:
-1. Read the full PDF text (batch text extraction, formula recognition)
-2. Extract all important figures from the paper
+1. Acquire the best available data source (local `.tex` → arxiv source → PDF OCR fallback)
+2. Read the paper's full text and extract figures (from tex assets or PDF)
 3. Generate structured Markdown reading notes
 4. Generate a beautiful bilingual HTML presentation page
+5. Run an independent audit agent to verify content completeness
 
-All outputs are saved in `Paper-Library/{paper-name}/`.
+All outputs are saved **alongside the source PDF** (same directory).
+
+## Data Source Strategy
+
+`/paper-read` uses a three-tier source acquisition strategy for best fidelity:
+
+| Level | Source | Trigger |
+|-------|--------|---------|
+| **L1** | Local `.tex` / `source/` / `tex/` directory next to the PDF | `find` scan |
+| **L2** | Arxiv source tarball (via `arXiv:XXXX.XXXXX` detected on PDF page 1) | Regex match + user confirmation |
+| **L3** | PDF OCR fallback (text + figure-region detection) | L1 and L2 both unavailable |
+
+LaTeX source provides vector figures, structural section labels, native formulas, and precise `\autoref` resolution — significantly better than PDF OCR. The workflow asks before downloading arxiv sources.
 
 ### Manual MCP Tool Usage
 
