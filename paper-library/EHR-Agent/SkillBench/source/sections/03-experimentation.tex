@@ -1,0 +1,186 @@
+\section{Experimental Setup}
+\label{sec:experimentation}
+
+We evaluate three commercial agent harnesses on \benchmarkName{} across seven frontier models under three Skills conditions, resulting in 7,308 valid trajectories.
+A trajectory is valid when the agent passes, fails, or times out on a task without infrastructure and runtime errors. Each trajectory is one agent's attempt at solving a single task under a specific Skills condition.
+
+\subsection{Agent Harnesses}
+
+We evaluate three commercial-line agents: Claude Code~\citep{anthropic2025claudecode}, Codex CLI~\citep{openai2025codexcli}, and Gemini CLI~\citep{google2025geminicli}.
+
+\subsection{Models}
+
+We select seven frontier models: GPT-5.2 (OpenAI), Claude Opus 4.5, Claude Opus 4.6, Claude Sonnet 4.5, Claude Haiku 4.5 (Anthropic), Gemini 3 Pro, and Gemini 3 Flash (Google). All models use temperature 0 for deterministic sampling.
+
+We evaluate each model using its compatible agent harness. Claude Code runs with all four Claude models; Gemini CLI runs with Gemini models; Codex CLI runs with GPT-5.2. This yields 7 model-harness configurations. The full configuration matrix is in \autoref{tab:models-full}.
+
+\subsection{Skills Conditions}
+
+We evaluate each task under three conditions:
+\begin{itemize}[nosep,leftmargin=*]
+    \item \textbf{No Skills}: Agent receives only \texttt{instruction.md}, no Skills present in \texttt{environment}.
+    \item \textbf{With Skills}: Complete \texttt{environment/skills/} directory with all examples, code snippets, and resources.
+    \item \textbf{Self-Generated Skills}: No Skills provided, but the agent is prompted to generate relevant procedural knowledge before solving the task. This isolates the impact of LLMs' latent domain knowledge.
+\end{itemize}
+The self-generated condition is evaluated on 5 of 7 configurations (all Claude Code models and Codex); Gemini CLI does not support this condition.
+
+\subsection{Evaluation Protocol}
+\label{sec:protocol}
+
+We provide Skills as system-level context preceding the task instruction in \benchmarkName{}.
+We list the injection format and context management details in \autoref{app:details}.
+For each condition, the agent interacts with the containerized environment until task completion, timeout, or round limit. The verifier then executes deterministic assertions to produce a binary pass/fail outcome.
+
+\subsection{Metrics}
+\label{sec:metrics}
+
+\paragraph{Pass Rate.}
+The primary metric is pass rate, following the scoring methodology of Terminal-Bench~\citep{merrill2026terminalbenchbenchmarkingagentshard}: for each task, we average the binary reward across 5 trials, then average these task-level scores using a fixed denominator of 84 (the number of evaluated tasks).
+%\paragraph{Normalized Gain.}
+\noindent \textbf{Normalized Gain.} Following Hake's formulation from physics education research~\citep{hake1998interactive}, we define normalized gain as:
+\begin{equation}
+g = \frac{\text{pass}_{\text{skill}} - \text{pass}_{\text{vanilla}}}{1 - \text{pass}_{\text{vanilla}}}
+\label{eq:normalized_gain}
+\end{equation}
+
+\paragraph{Interpreting Normalized Gain.}
+Normalized gain has known limitations: a model scoring 90\% vanilla and 95\% with Skills yields $g=0.5$, identical to a model scoring 10\% and 55\%.
+These represent different phenomena (ceiling effects vs.\ genuine scaffolding).
+We report both absolute improvement ($\Delta$) and normalized gain ($g$) to enable nuanced interpretation.
+High $g$ with low $\Delta_\text{abs}$ suggests ceiling effects; high $g$ with high $\Delta$ suggests substantial scaffolding.
+We interpret the claim of ``consistent scaffolding efficiency'' as similar \emph{proportional} benefit, not identical absolute improvement.
+
+%\paragraph{Statistical Significance.}
+%We apply Cochran's Q test for multi-condition comparisons, with post-hoc McNemar's tests for pairwise differences.
+%All reported improvements include $p$-values.
+
+% \section{Experimental Setup}
+% \label{sec:experimentation}
+
+% We evaluate LLM--agent combinations to test our Skills Hypothesis while systematically \emph{decoupling} the contributions of the underlying language model from the agent harness. This design enables us to isolate whether Skills efficacy derives from model capabilities, agent architecture, or their interaction.
+
+% \subsection{Models and Agent Harnesses}
+
+% We evaluate six frontier LLMs paired with five distinct agent harnesses, yielding 14 agent-model configurations as shown in Table~\ref{tab:models}. This design separates model effects from harness effects.
+
+% \begin{table}[h]
+% \centering
+% \footnotesize
+% \caption{Agent harnesses and models evaluated. Total: \num{2857} valid trajectories across 14 configurations. T2-Skills = Terminus-2 with Skills-aware prompting.}
+% \setlength{\tabcolsep}{3pt}
+% \begin{tabular}{llll}
+% \toprule
+% \textbf{Harness} & \textbf{Model} & \textbf{Provider} & \textbf{Runs} \\
+% \midrule
+% \multirow{3}{*}{Claude Code} & Opus 4.5 & Anthropic & 240 \\
+% & Sonnet 4.5 & Anthropic & 236 \\
+% & Haiku 4.5 & Anthropic & 252 \\
+% \midrule
+% \multirow{2}{*}{Gemini CLI} & Gemini 3 Pro & Google & 308 \\
+% & Gemini 3 Flash & Google & 315 \\
+% \midrule
+% Codex & GPT-5.2 & OpenAI & 350 \\
+% \midrule
+% \multirow{2}{*}{Terminus-2} & Gemini 3 Pro & Google & 163 \\
+% & Gemini 3 Flash & Google & 164 \\
+% \midrule
+% \multirow{6}{*}{T2-Skills} & Opus 4.5 & Anthropic & 142 \\
+% & Sonnet 4.5 & Anthropic & 121 \\
+% & Haiku 4.5 & Anthropic & 117 \\
+% & Gemini 3 Pro & Google & 120 \\
+% & Gemini 3 Flash & Google & 121 \\
+% & GPT-5.2 & OpenAI & 208 \\
+% \bottomrule
+% \end{tabular}
+% \label{tab:models}
+% \end{table}
+
+% \paragraph{Commercial Harnesses.} We evaluate three commercial agent harnesses---Claude Code, Gemini CLI, and Codex---which tightly couple specific models with proprietary agent logic. These represent real-world deployment conditions but confound model and harness effects.
+
+% \paragraph{Terminus-2 (Decoupled Harness).} To isolate model contributions, we implement Terminus-2, a model-agnostic agent harness based on the Terminal-Bench Terminus-2 architecture~\citep{merrill2026terminalbenchbenchmarkingagentshard}.\footnote{Implementation available at \url{https://github.com/laude-institute/terminal-bench/tree/main/terminal_bench/agents/terminus_2}} Terminus-2 provides identical agent logic, tool interfaces, and Skills injection mechanisms across all models.
+
+% \paragraph{Terminus-2-Skills (Skills-Aware Variant).} We additionally evaluate Terminus-2-Skills, a variant with explicit Skills-aware prompting that instructs agents to actively utilize provided Skills. This variant exhibits significantly higher exception rates (31.7--65.3\% vs.\ 9.8--14.0\% for standard Terminus-2), revealing that aggressive Skills prompting can destabilize agent execution.
+
+% \paragraph{Model Family Consideration.} Notably, Claude models have been trained with awareness of the Agent Skills specification~\citep{anthropic2025agentskills}, which may confer advantages when processing Skills-formatted instructions. Our analysis (\S\ref{sec:results}) examines whether this training effect explains observed performance differences.
+
+% \subsection{Task Suite}
+
+% SkillsBench comprises \textbf{85 tasks} spanning 9 domains, stratified by difficulty level (\S\ref{sec:skillsbench}). We run each model--harness--condition combination on all 85 tasks to ensure comprehensive coverage across task types and complexity levels.
+
+% \subsection{Evaluation Harness}
+
+% We implement BenchFlow, a containerized evaluation harness extending the Harbor framework~\citep{merrill2026terminalbenchbenchmarkingagentshard,harborframeworkteam2026harborframework}:
+
+% \paragraph{Isolation.} Each task runs in a fresh Docker container with clean filesystem state, isolated network namespace, and deterministic dependency versions. This ensures no cross-task state leakage.
+
+% \paragraph{Skills Injection.} BenchFlow provides a standardized Skills injection interface that works across all agent harnesses. For commercial harnesses (Claude Code, Gemini CLI, Codex CLI), Skills are injected via the native configuration mechanisms. For Terminus-2, Skills are loaded into the system prompt with configurable truncation levels.
+
+% \paragraph{Agent Interface.} Agents interact with the environment through a standardized interface:
+
+% \begin{lstlisting}[language=Python,basicstyle=\footnotesize\ttfamily]
+% class BaseAgent(ABC):
+%     @abstractmethod
+%     def step(self, obs: str) -> str:
+%         """obs: terminal output -> action"""
+%         pass
+% \end{lstlisting}
+
+% \paragraph{Trajectory Logging.} We record every agent action with timestamps, environment responses, and token consumption for post-hoc analysis and failure categorization.
+
+% \subsection{Experimental Conditions}
+
+% Each model is evaluated under five conditions to capture dose-response relationships:
+
+% \begin{enumerate}[nosep,leftmargin=*]
+%     \item \textbf{Level 0 (No Skills)}: Agent receives task instruction only---no procedural guidance (baseline)
+%     \item \textbf{Level 1 (Minimal, $\sim$6\%)}: Function signatures and installation instructions only
+%     \item \textbf{Level 2 (Basic, $\sim$10\%)}: Adds overview paragraphs and one usage example
+%     \item \textbf{Level 3 (Full, 100\%)}: Complete original Skills documentation with all examples and resources
+%     \item \textbf{BYOS (Bring Your Own Skills)}: No Skills provided, but agent is prompted to write Skills before solving
+% \end{enumerate}
+
+% This 5-condition design enables fine-grained measurement of Skills dose-response and tests whether agents can bootstrap their own procedural knowledge.
+
+% \subsection{Inference Configuration}
+
+% {\color{blue} move these setting details to appendix?}
+
+% \begin{itemize}[nosep,leftmargin=*]
+%     \item \textbf{Temperature}: 0 (deterministic sampling)
+%     \item \textbf{Max rounds}: Level-dependent (10/30/50 for L1/L2/L3)
+%     \item \textbf{Context management}: Sliding window with 8K token limit; oldest turns dropped when exceeded
+%     \item \textbf{Timeout}: Per-task, specified in \texttt{task.toml} (default: 30 min)
+% \end{itemize}
+
+% \paragraph{Robustness via Repeated Runs.} Each model--harness--condition combination is run \textbf{5 times} per task to ensure statistical robustness. We report mean pass rates with 95\% bootstrap confidence intervals computed over these repeated runs. This design yields $85 \times 5 = 425$ runs per condition per model-harness pair, totaling over \num{50000} individual task executions across the full experimental matrix.
+
+% \subsection{Ablation Studies}
+% \label{sec:ablation}
+
+% We conduct four ablation studies to understand which Skills properties and model characteristics drive performance:
+
+% \paragraph{A1: Instruction Specificity.} We vary the detail level of Skills instructions:
+% \begin{enumerate}[nosep,leftmargin=*]
+%     \item Minimal: Task instruction only (baseline)
+%     \item Brief: One-sentence guidance
+%     \item Detailed: Full SOP with numbered steps
+%     \item Exemplified: SOP + worked examples
+%     \item Full Skills: All components including resources
+% \end{enumerate}
+
+% \paragraph{A2: Skills Granularity.} We compare:
+% \begin{enumerate}[nosep,leftmargin=*]
+%     \item Monolithic: Single large Skills covering all task aspects
+%     \item Modular: Multiple focused Skills composed together
+%     \item Retrieved: Automatically selected Skills via embedding similarity
+% \end{enumerate}
+
+% \paragraph{A3: Perturbation Robustness.} We perturb Skills instructions to test robustness:
+% \begin{enumerate}[nosep,leftmargin=*]
+%     \item Original (control)
+%     \item Typos: 5\% character-level noise
+%     \item Reordering: Shuffled instruction steps
+%     \item Paraphrasing: LLM-rewritten instructions
+% \end{enumerate}
+
+% \paragraph{A4: Model Family Skills Sensitivity.} We conduct a focused ablation using Terminus-2 with all three Claude models (Haiku, Sonnet, Opus 4.5) across all 5 Skills levels. This isolates model scale effects within a single model family while controlling for agent harness variation. Importantly, Claude models have been trained with awareness of the Agent Skills specification~\citep{anthropic2025agentskills}, making this ablation particularly informative for understanding how Skills-aware training affects Skills utilization across model scales.

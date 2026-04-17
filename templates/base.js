@@ -61,17 +61,23 @@ if (typeof imageMap !== 'undefined') {
     if (el) {
       const img = new Image();
       img.onload = () => {
-        const label = el.querySelector('.ph-label');
-        const labelText = label ? label.textContent : '';
+        // Label can be bilingual (recommended: two spans with lang-zh/lang-en)
+        // or legacy single-text (fallback: same text for both languages)
+        const labelEl = el.querySelector('.ph-label');
+        const labelZhSpan = el.querySelector('.ph-label [lang-zh]');
+        const labelEnSpan = el.querySelector('.ph-label [lang-en]');
+        const fallbackLabel = labelEl ? labelEl.textContent.trim() : '';
+        const labelZh = labelZhSpan ? labelZhSpan.textContent.trim() : fallbackLabel;
+        const labelEn = labelEnSpan ? labelEnSpan.textContent.trim() : fallbackLabel;
         const captionZh = el.querySelector('.ph-caption[lang-zh]');
         const captionEn = el.querySelector('.ph-caption[lang-en]');
         const zhText = captionZh ? captionZh.textContent : '';
         const enText = captionEn ? captionEn.textContent : '';
         el.outerHTML = `<figure style="margin:0;">
-          <img class="fig-img" src="${src}" alt="${labelText}" loading="lazy"
+          <img class="fig-img" src="${src}" alt="${labelEn || labelZh}" loading="lazy"
                style="width:100%;border-radius:var(--radius);border:1px solid var(--border);">
           <figcaption style="font-size:12.5px;color:var(--text-secondary);margin-top:8px;line-height:1.5;">
-            <strong>${labelText}</strong><br>
+            <strong><span lang-zh>${labelZh}</span><span lang-en>${labelEn}</span></strong><br>
             <span lang-zh>${zhText}</span>
             <span lang-en>${enText}</span>
           </figcaption>

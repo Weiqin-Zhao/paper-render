@@ -1,0 +1,69 @@
+\vspace{-4pt}
+\section{Discussion}
+\vspace{-4pt}
+\label{sec:discussion}
+
+\textbf{Skills close procedural gaps.}
+\looseness=-1
+Skills are most helpful when success depends on concrete procedures and verifier-facing details (steps, constraints, sanity checks), rather than broad conceptual knowledge. We observe large gains on domains with specialized workflows or brittle formats, and smaller or negative effects when models already have strong priors and the Skill adds overhead or conflicts.
+
+\textbf{Harnesses mediate Skills use.}
+\looseness=-1
+Skills efficacy depends not only on Skills quality but also on how the harness implements Skills. Some harnesses reliably retrieve and use Skills, while others frequently acknowledge Skills content but proceed without invoking them. Structured interfaces can also introduce long-trajectory failure modes (e.g., format drift), reducing the influence of early-injected Skills. This motivates evaluating Skills under multiple harnesses rather than treating “with Skills” as a single condition.
+
+\textbf{Implications for Skills authoring.}
+Our analysis suggests that concise, stepwise guidance with at least one working example is often more effective than exhaustive documentation; overly long Skills definitions can increase context burden without improving decisions. Modular Skills also appear to compose better on multi-part tasks, and Skills should explicitly match harness constraints (e.g., repeated format reminders for JSON-only protocols).
+
+
+\subsection{Limitations and Future Work}
+
+\textbf{Coverage and generalization.}
+\looseness=-1
+\benchmarkName{} focuses on terminal-based, containerized tasks for reproducible evaluation, so results may not directly transfer to GUI agents, multi-agent coordination, or very long-horizon workflows. We also evaluate a limited set of models and harnesses; commercial harness behavior and Skills integration can change over time. A natural extension is to develop multi-modal skills and protocols for vision-language agents operating in GUI environments.
+
+% \textbf{Causal attribution.}
+% Skills injection increases context length, so gains could partly reflect “more context” rather than procedural structure alone. Our perturbation and BYOS controls suggest structure matters, but stronger length-matched baselines (e.g., irrelevant text, retrieval-only docs) are needed to fully isolate mechanisms.
+
+\textbf{Causal attribution and controls.}
+Skills injection increases context length, so observed gains could partly reflect ``more context'' rather than procedural structure.
+Our self-generated Skills condition suggests structure matters---models cannot reliably produce effective procedural guidance despite having the same context budget---but future work requires stronger length-matched baselines (e.g., random/irrelevant text and retrieval-only documentation controls).
+These baselines also enable studying \textbf{automatic Skills synthesis} from demonstrations or documentation and isolating which Skills components (steps, examples, code resources) drive improvements.
+
+
+% \textbf{Determinism and contamination.}
+% Containerization provides state isolation, but not perfect determinism or immunity to training-set leakage. We mitigate with multiple runs, a leakage audit (\S\ref{sec:leakage}), and paired (Skills vs.\ no Skills) comparisons, yet cannot eliminate all nondeterminism or memorization effects.
+
+\textbf{Determinism, contamination, and ecological validity.}
+\looseness=-1
+Containerization provides state isolation but not perfect determinism or immunity to training-set leakage.
+We mitigate with multiple runs, a leakage audit (\S\ref{sec:leakage}), and paired (Skills vs.\ no Skills) comparisons, yet cannot eliminate all nondeterminism or memorization effects.
+Future work should evaluate \textbf{ecosystem-representative settings}, including lower-quality and automatically-selected Skills, and study \textbf{Skills composition}---when multiple Skills help or interfere, and whether composite performance can be predicted from atomic Skills effects.
+
+% \paragraph{Task Coverage.}
+% SkillsBench comprises 85 tasks across 13 domains. While this provides sufficient statistical power for our main comparisons, it cannot capture the full diversity of agent deployment scenarios. In particular, we focus on terminal-based tasks amenable to containerized evaluation; GUI-based tasks, multi-agent coordination, and long-horizon planning remain future work.
+
+% \paragraph{Skills Scope.}
+% Current Skills emphasize CLI-centric workflows (data analysis, DevOps, coding). Skills for creative tasks, open-ended research, or multimodal reasoning are underrepresented. The Skills specification (\S\ref{sec:skill_spec}) is intentionally minimal; richer specifications supporting environment requirements, dependency graphs, or compositional interfaces may enable more sophisticated agent behaviors.
+
+% \paragraph{Model and Harness Coverage.}
+% We evaluate 6 frontier LLMs across 4 agent harnesses (3 commercial + Terminus-2). Vision-language models with screenshot-based interfaces, code-specialized models (CodeLlama~\citep{roziere2023code}, StarCoder~\citep{li2023starcoder, lozhkov2024starcoder}, WizardCoder~\citep{luo2023wizardcoder}, Magicoder~\citep{wei2023magicoder}), and reasoning-augmented models (o1, o3) are not included. Our findings about harness-specific Skills utilization (e.g., Codex CLI and Gemini CLI neglecting Skills) may reflect current harness implementations and could change with updates.
+
+% \paragraph{Run Variance.}
+% Each (model, harness, task, condition) configuration is evaluated 5 times for robustness. Despite deterministic settings (temperature 0), we observe run-to-run variance (mean CV: 3.8\%) due to API-side sampling and timeout-induced trajectory differences. Five runs yields stable confidence intervals (95\% CI width: $\pm$1.2--2.1pp) for our main findings.
+
+% \paragraph{Epistemic vs.\ Container Isolation.}
+% Container isolation ensures \emph{state isolation}---no information leaks between runs or tasks.
+% However, it does not address \emph{knowledge contamination}---models may have seen similar tasks during training.
+% We mitigate this by: (1) using tasks from recent repositories (post-training cutoff where known), (2) conducting the leakage audit (\S\ref{sec:leakage}), and (3) focusing on \emph{differential} performance (vanilla vs.\ Skills), which controls for baseline contamination.
+
+% \paragraph{Skills Authorship.}
+% All Skills in SkillsBench were authored by humans (domain experts or the research team). We do not evaluate automatically synthesized Skills, though this represents a promising direction. The quality variance across hand-authored Skills (efficacy range: +8pp to +31pp) may introduce confounds.
+
+% \paragraph{Evaluation Determinism.}
+% While verifiers are programmatic, some tasks involve inherent stochasticity (e.g., model training with random initialization). We mitigate this through tolerance thresholds in assertions, but perfect reproducibility is not achievable for all task types.
+
+% \paragraph{Ecological Validity.}
+% Containerized evaluation, while reproducible, may not capture all aspects of real-world agent deployment. Network latency, concurrent users, rate limiting, and integration with production systems introduce challenges not represented in our sandboxed environment.
+
+% \paragraph{Benchmark vs.\ Ecosystem Gap.}
+% Our 85 curated tasks with high-quality Skills represent an optimistic scenario. Real-world Skills usage involves lower-quality Skills (ecosystem mean: 6.2/12 vs.\ benchmark mean: 10.1/12 on our quality rubric) and imperfect Skills-task matching. Future work should evaluate with ecosystem-representative Skills samples.

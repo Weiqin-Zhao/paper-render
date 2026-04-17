@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta-Harness - Paper Notes</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+<style>
+  /* ===== CSS Reset & Base ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fafbfc;
+    --card-bg: #ffffff;
+    --text: #1a1a2e;
+    --text-secondary: #5a5a7a;
+    --accent: #0d9488;
+    --accent-light: #f0fdfa;
+    --accent-dark: #134e4a;
+    --border: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.03);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --teal: #0d9488;
+    --teal-light: #f0fdfa;
+    --amber: #d97706;
+    --amber-light: #fffbeb;
+    --rose: #e11d48;
+    --rose-light: #fff1f2;
+    --emerald: #059669;
+    --emerald-light: #ecfdf5;
+    --blue: #2563eb;
+    --blue-light: #eff6ff;
+    --purple: #7c3aed;
+    --purple-light: #f5f3ff;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.35s ease, color 0.35s ease;
+  }
+
+  body.dark {
+    --bg: #0d1017;
+    --card-bg: #161b22;
+    --text: #e6edf3;
+    --text-secondary: #8b949e;
+    --accent: #5eead4;
+    --accent-light: #0f2a2a;
+    --accent-dark: #99f6e4;
+    --border: #30363d;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.25);
+    --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.5), 0 4px 6px -2px rgba(0,0,0,0.3);
+    --teal: #5eead4;
+    --teal-light: #0f2a2a;
+    --amber: #fbbf24;
+    --amber-light: #2a2000;
+    --rose: #fb7185;
+    --rose-light: #2a0f14;
+    --emerald: #34d399;
+    --emerald-light: #0f2a1e;
+    --blue: #60a5fa;
+    --blue-light: #0f1a2a;
+    --purple: #a78bfa;
+    --purple-light: #1a0f2a;
+  }
+  body.dark .hero { background: linear-gradient(135deg, #064e3b 0%, #0d4f6e 50%, #0f766e 100%); }
+  body.dark .hero::before { background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%); }
+  body.dark .hero::after { background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%); }
+  body.dark .hero .tag { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.08); }
+  body.dark .toc-sidebar { box-shadow: 2px 0 12px rgba(0,0,0,0.3); }
+  body.dark .toc-sidebar a:hover { background: var(--accent-light); }
+  body.dark .toc-sidebar a.active { background: var(--accent-light); }
+  body.dark .menu-toggle { color: var(--text); }
+  body.dark .box-insight { background: #1a1840; border-color: #312e81; color: #c7d2fe; }
+  body.dark .box-warn { background: #2a2000; border-color: #854d0e; color: #fde68a; }
+  body.dark .box-note { background: #0f2a2a; border-color: #115e59; color: #99f6e4; }
+  body.dark .box-key { background: #2a0f14; border-color: #9f1239; color: #fecdd3; }
+  body.dark thead th { background: #1c2128; }
+  body.dark tbody td { border-bottom-color: #21262d; }
+  body.dark tbody tr:hover { background: #1c2128; }
+  body.dark .flow { background: #111820; }
+  body.dark .flow-box.highlight { background: #0f2a2a; border-color: #115e59; color: #99f6e4; }
+  body.dark .flow-box.green { background: #0f2a1e; border-color: #065f46; color: #6ee7b7; }
+  body.dark .flow-box.amber { background: #2a2000; border-color: #92400e; color: #fde68a; }
+  body.dark .flow-box.purple { background: #1a0f2a; border-color: #5b21b6; color: #c4b5fd; }
+  body.dark .bar-track { background: #1c2128; }
+  body.dark .img-placeholder { background: linear-gradient(135deg, #111820 0%, #1c2128 100%); border-color: #30363d; }
+  body.dark .img-placeholder:hover { border-color: var(--accent); background: linear-gradient(135deg, #0f2a2a 0%, #0f2a2a 100%); }
+  body.dark .img-placeholder .ph-caption { color: #6e7681; }
+  body.dark .img-placeholder .ph-filename { color: var(--accent); background: rgba(94,234,212,0.1); }
+  body.dark .formula { background: #111820; }
+  body.dark .timeline-tag { background: #1c2128; }
+  body.dark .timeline-item::before { border-color: var(--card-bg); }
+  body.dark .discussion-card summary:hover { background: #1c2128; }
+  body.dark footer { border-top-color: var(--border); }
+  body.dark ::-webkit-scrollbar { width: 8px; }
+  body.dark ::-webkit-scrollbar-track { background: var(--bg); }
+  body.dark ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+  body.dark ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+
+  .top-controls { position: fixed; top: 20px; right: 24px; z-index: 1000; display: flex; align-items: center; gap: 10px; }
+  .ctrl-group { display: flex; background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 3px; box-shadow: var(--shadow-md); backdrop-filter: blur(12px); transition: background 0.35s ease, border-color 0.35s ease; }
+  .ctrl-btn { padding: 6px 18px; border: none; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 600; background: transparent; color: var(--text-secondary); transition: all 0.25s ease; letter-spacing: 0.5px; line-height: 1.4; }
+  .ctrl-btn.active { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(13,148,136,0.3); }
+  .theme-btn { padding: 6px 14px; border: none; border-radius: 20px; cursor: pointer; font-size: 16px; background: transparent; color: var(--text-secondary); transition: all 0.25s ease; line-height: 1; display: flex; align-items: center; justify-content: center; }
+  .theme-btn:hover { color: var(--accent); }
+  .theme-icon-light, .theme-icon-dark { transition: opacity 0.3s ease; }
+  .theme-icon-dark { display: none; }
+  body.dark .theme-icon-light { display: none; }
+  body.dark .theme-icon-dark { display: inline; }
+
+  .toc-sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: var(--card-bg); border-right: 1px solid var(--border); overflow-y: auto; z-index: 900; padding: 24px 16px; box-shadow: 2px 0 8px rgba(0,0,0,0.03); transition: transform 0.3s ease, background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease; }
+  .toc-sidebar .toc-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 16px; padding-left: 8px; }
+  .toc-sidebar a { display: block; padding: 8px 12px; font-size: 13.5px; color: var(--text-secondary); text-decoration: none; border-radius: var(--radius-sm); transition: all 0.2s ease; line-height: 1.5; margin-bottom: 2px; }
+  .toc-sidebar a:hover { background: var(--accent-light); color: var(--accent); }
+  .toc-sidebar a.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+  .toc-sidebar a.sub { padding-left: 28px; font-size: 12.5px; }
+
+  .menu-toggle { display: none; position: fixed; top: 20px; left: 16px; z-index: 1001; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; cursor: pointer; box-shadow: var(--shadow-md); font-size: 18px; line-height: 1; }
+
+  .main-content { margin-left: 280px; max-width: 960px; padding: 40px 48px 80px; }
+
+  .hero { background: linear-gradient(135deg, #0d4f6e 0%, #0d9488 50%, #14b8a6 100%); border-radius: var(--radius); padding: 48px 44px; margin-bottom: 40px; color: #fff; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -60%; right: -20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); border-radius: 50%; }
+  .hero::after { content: ''; position: absolute; bottom: -40%; left: -10%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); border-radius: 50%; }
+  .hero h1 { font-size: 32px; font-weight: 800; line-height: 1.3; margin-bottom: 16px; position: relative; z-index: 1; }
+  .hero .subtitle { font-size: 15px; opacity: 0.95; position: relative; z-index: 1; line-height: 1.7; }
+  .hero .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; position: relative; z-index: 1; }
+  .hero .tag { background: rgba(255,255,255,0.18); padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.15); }
+
+  section { margin-bottom: 48px; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--accent-light); }
+  .section-num { background: var(--accent); color: #fff; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+  .section-header h2 { font-size: 24px; font-weight: 700; color: var(--text); line-height: 1.3; }
+
+  .subsection h3 { font-size: 18px; font-weight: 700; color: var(--accent-dark); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .subsection h3::before { content: ''; width: 4px; height: 20px; background: var(--accent); border-radius: 2px; flex-shrink: 0; }
+  .subsection h4 { font-size: 15px; font-weight: 700; color: var(--text); margin: 24px 0 12px; }
+
+  p { margin-bottom: 14px; color: var(--text); }
+
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
+  .card-accent { border-left: 4px solid var(--accent); }
+
+  .box { border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0; font-size: 14.5px; line-height: 1.7; }
+  .box-insight { background: var(--purple-light); border: 1px solid #ddd6fe; color: #5b21b6; }
+  .box-insight::before { content: '\01F4A1 '; }
+  .box-warn { background: var(--amber-light); border: 1px solid #fde68a; color: #92400e; }
+  .box-warn::before { content: '\026A0\0FE0F '; }
+  .box-note { background: var(--teal-light); border: 1px solid #99f6e4; color: #134e4a; }
+  .box-note::before { content: '\01F4CC '; }
+  .box-key { background: var(--rose-light); border: 1px solid #fecdd3; color: #9f1239; }
+  .box-key::before { content: '\01F511 '; }
+
+  .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead th { background: #f8fafc; font-weight: 700; text-align: left; padding: 12px 16px; border-bottom: 2px solid var(--border); color: var(--text); white-space: nowrap; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+  tbody td { padding: 10px 16px; border-bottom: 1px solid #f1f5f9; color: var(--text-secondary); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #f8fafc; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td strong { color: var(--text); }
+  td.best { color: var(--emerald); font-weight: 700; }
+  td.neg { color: var(--rose); }
+  td.pos { color: var(--emerald); }
+
+  .flow { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 20px 0; padding: 24px; background: #f8fafc; border-radius: var(--radius); border: 1px solid var(--border); }
+  .flow-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .flow-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 18px; font-size: 13.5px; font-weight: 600; color: var(--text); box-shadow: var(--shadow); text-align: center; max-width: 300px; }
+  .flow-box.highlight { background: var(--accent-light); border-color: #99f6e4; color: var(--accent-dark); }
+  .flow-box.green { background: var(--emerald-light); border-color: #a7f3d0; color: #065f46; }
+  .flow-box.amber { background: var(--amber-light); border-color: #fde68a; color: #92400e; }
+  .flow-box.purple { background: var(--purple-light); border-color: #ddd6fe; color: #5b21b6; }
+  .flow-box small { display: block; font-weight: 400; font-size: 11.5px; margin-top: 4px; opacity: 0.8; }
+  .flow-arrow { color: var(--accent); font-size: 20px; font-weight: 700; line-height: 1; flex-shrink: 0; }
+  .flow-arrow-down { text-align: center; padding: 4px 0; }
+  .flow-label { font-size: 11.5px; color: var(--text-secondary); text-align: center; padding: 0 8px; font-style: italic; }
+
+  .chart-container { margin: 20px 0; padding: 24px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .chart-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .chart-source { font-size: 11.5px; color: var(--text-secondary); margin-bottom: 16px; font-style: italic; opacity: 0.8; }
+  .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row { display: flex; align-items: center; gap: 12px; }
+  .bar-label { width: 140px; font-size: 12.5px; color: var(--text-secondary); text-align: right; flex-shrink: 0; font-weight: 500; }
+  .bar-track { flex: 1; height: 28px; background: #f1f5f9; border-radius: 6px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 6px; transition: width 1s ease-out; display: flex; align-items: center; padding-left: 10px; }
+  .bar-value { font-size: 11.5px; font-weight: 700; color: #fff; white-space: nowrap; text-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+
+  .compare-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 16px 0; }
+  .compare-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; box-shadow: var(--shadow); }
+  .compare-card h5 { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: var(--accent); }
+  .compare-card p { font-size: 13.5px; color: var(--text-secondary); margin-bottom: 0; }
+
+  .metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 16px 0; }
+  .metric-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; box-shadow: var(--shadow); }
+  .metric-value { font-size: 28px; font-weight: 800; color: var(--accent); line-height: 1.2; }
+  .metric-label { font-size: 12px; color: var(--text-secondary); margin-top: 6px; font-weight: 500; }
+  .metric-card.green .metric-value { color: var(--emerald); }
+  .metric-card.amber .metric-value { color: var(--amber); }
+  .metric-card.rose .metric-value { color: var(--rose); }
+  .metric-card.blue .metric-value { color: var(--blue); }
+  .metric-card.purple .metric-value { color: var(--purple); }
+
+  .img-placeholder { background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border: 2px dashed #cbd5e1; border-radius: var(--radius); padding: 40px 24px; text-align: center; margin: 20px 0; position: relative; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; }
+  .img-placeholder:hover { border-color: var(--accent); background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%); }
+  .img-placeholder .icon { font-size: 36px; opacity: 0.5; }
+  .img-placeholder .ph-label { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+  .img-placeholder .ph-caption { font-size: 12.5px; color: #94a3b8; max-width: 500px; line-height: 1.5; }
+  .img-placeholder .ph-filename { font-size: 11px; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--accent); background: rgba(13,148,136,0.08); padding: 3px 10px; border-radius: 4px; margin-top: 4px; }
+
+  .fig-img { width: 100%; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-md); margin: 20px 0 8px; }
+  .fig-caption { font-size: 13px; color: var(--text-secondary); text-align: center; font-style: italic; margin-bottom: 16px; }
+
+  ul, ol { margin: 12px 0; padding-left: 24px; }
+  li { margin-bottom: 8px; color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
+  li strong { color: var(--text); }
+
+  .formula { background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 13px; color: var(--text); overflow-x: auto; line-height: 1.6; white-space: pre; text-align: left; }
+  .formula.center { text-align: center; white-space: normal; font-size: 15px; line-height: 2; }
+
+  .loss-hierarchy { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+  .loss-item { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-radius: var(--radius-sm); background: var(--card-bg); border: 1px solid var(--border); box-shadow: var(--shadow); font-size: 14px; }
+  .loss-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; font-size: 14px; flex-shrink: 0; }
+
+  .discussion-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; box-shadow: var(--shadow); }
+  .discussion-card summary { padding: 16px 20px; cursor: pointer; font-weight: 700; font-size: 15px; color: var(--text); display: flex; align-items: center; gap: 10px; transition: background 0.2s; list-style: none; }
+  .discussion-card summary::-webkit-details-marker { display: none; }
+  .discussion-card summary::before { content: '\25B8'; color: var(--accent); font-size: 14px; transition: transform 0.2s; flex-shrink: 0; }
+  .discussion-card[open] summary::before { transform: rotate(90deg); }
+  .discussion-card summary:hover { background: #f8fafc; }
+  .discussion-card .detail-body { padding: 0 20px 16px; font-size: 14.5px; color: var(--text-secondary); line-height: 1.7; }
+
+  .ref-table td:first-child { font-weight: 700; color: var(--accent-dark); white-space: nowrap; width: 180px; }
+
+  /* Log quote box: for quoting proposer reasoning traces */
+  .logbox {
+    background: #f8fafc;
+    border-left: 4px solid var(--blue);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    margin: 12px 0;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+  body.dark .logbox { background: #111820; }
+
+  /* Iteration timeline */
+  .iter-timeline { margin: 20px 0; }
+  .iter-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding: 12px 14px;
+    border-left: 3px solid var(--border);
+    background: var(--card-bg);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    box-shadow: var(--shadow);
+  }
+  .iter-item.regress { border-left-color: var(--rose); }
+  .iter-item.diagnose { border-left-color: var(--amber); }
+  .iter-item.win { border-left-color: var(--emerald); }
+  .iter-item.compose { border-left-color: var(--blue); }
+  .iter-tag {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+  }
+  .iter-item.regress .iter-tag { color: var(--rose); }
+  .iter-item.diagnose .iter-tag { color: var(--amber); }
+  .iter-item.win .iter-tag { color: var(--emerald); }
+  .iter-item.compose .iter-tag { color: var(--blue); }
+  .iter-body { font-size: 14px; color: var(--text); line-height: 1.6; }
+
+  @media (max-width: 1024px) {
+    .toc-sidebar { transform: translateX(-100%); }
+    .toc-sidebar.open { transform: translateX(0); }
+    .menu-toggle { display: block; }
+    .main-content { margin-left: 0; padding: 24px 20px 60px; }
+    .hero { padding: 32px 24px; }
+    .hero h1 { font-size: 24px; }
+    .top-controls { top: 12px; right: 12px; gap: 6px; }
+    .ctrl-btn { padding: 5px 12px; font-size: 13px; }
+    .theme-btn { padding: 5px 10px; font-size: 14px; }
+    .iter-item { grid-template-columns: 1fr; }
+  }
+
+  .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  .toc-sidebar .zh { display: inline; }
+  .toc-sidebar .en { display: none; }
+  body.en .toc-sidebar .zh { display: none; }
+  body.en .toc-sidebar .en { display: inline; }
+  [lang-en] { display: none; }
+  body.en [lang-zh] { display: none; }
+  body.en [lang-en] { display: revert; }
+  body.en .toc-sidebar a[lang-en] { display: block; }
+  body.en .section-header h2[lang-en] { display: block; }
+  body.en .subsection h3[lang-en] { display: flex; }
+
+  .katex { font-size: 1em !important; }
+  .math-block { overflow-x: auto; padding: 12px 0; text-align: center; }
+
+  code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 13px; color: var(--rose); }
+  body.dark code { background: #1c2128; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+  @media print {
+    .toc-sidebar, .top-controls, .menu-toggle { display: none !important; }
+    .main-content { margin-left: 0; max-width: 100%; padding: 20px; }
+    .hero { break-inside: avoid; }
+    section { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-controls">
+  <div class="ctrl-group">
+    <button class="theme-btn" id="btn-theme" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+      <span class="theme-icon-light">&#9790;</span>
+      <span class="theme-icon-dark">&#9788;</span>
+    </button>
+  </div>
+  <div class="ctrl-group">
+    <button class="ctrl-btn active" id="btn-zh" onclick="setLang('zh')">中文</button>
+    <button class="ctrl-btn" id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<button class="menu-toggle" onclick="toggleTOC()">☰</button>
+
+<nav class="toc-sidebar" id="toc">
+  <div class="toc-title"><span class="zh">目录</span><span class="en">Contents</span></div>
+  <a href="#tldr"><span class="zh">TL;DR</span><span class="en">TL;DR</span></a>
+  <a href="#primer"><span class="zh">背景科普：前置概念</span><span class="en">Background primer</span></a>
+  <a href="#primer-harness" class="sub"><span class="zh">· Harness 是什么</span><span class="en">· What is a harness</span></a>
+  <a href="#primer-optimizer" class="sub"><span class="zh">· Text optimizer 是什么</span><span class="en">· What is a text optimizer</span></a>
+  <a href="#primer-glossary" class="sub"><span class="zh">· 方法速查表</span><span class="en">· Method cheat-sheet</span></a>
+  <a href="#primer-jargon" class="sub"><span class="zh">· 术语一句话翻译</span><span class="en">· Jargon in plain English</span></a>
+  <a href="#motivation"><span class="zh">1. 动机与问题</span><span class="en">1. Motivation</span></a>
+  <a href="#sub-harness-role" class="sub"><span class="zh">1.1 Harness 的重要性</span><span class="en">1.1 Why harness matters</span></a>
+  <a href="#sub-prior-limits" class="sub"><span class="zh">1.2 现有方法的局限</span><span class="en">1.2 Prior limits</span></a>
+  <a href="#method"><span class="zh">2. 方法</span><span class="en">2. Method</span></a>
+  <a href="#sub-formulation" class="sub"><span class="zh">2.1 问题定义</span><span class="en">2.1 Formulation</span></a>
+  <a href="#sub-filesystem" class="sub"><span class="zh">2.2 Filesystem 反馈</span><span class="en">2.2 Filesystem feedback</span></a>
+  <a href="#sub-coding-agent" class="sub"><span class="zh">2.3 Coding agent proposer</span><span class="en">2.3 Coding-agent proposer</span></a>
+  <a href="#sub-loop" class="sub"><span class="zh">2.4 搜索循环</span><span class="en">2.4 Search loop</span></a>
+  <a href="#experiments"><span class="zh">3. 实验</span><span class="en">3. Experiments</span></a>
+  <a href="#sub-textcls" class="sub"><span class="zh">3.1 在线文本分类</span><span class="en">3.1 Text classification</span></a>
+  <a href="#sub-math" class="sub"><span class="zh">3.2 数学检索推理</span><span class="en">3.2 Math retrieval</span></a>
+  <a href="#sub-tbench" class="sub"><span class="zh">3.3 TerminalBench-2</span><span class="en">3.3 TerminalBench-2</span></a>
+  <a href="#qualitative"><span class="zh">4. Proposer 定性行为</span><span class="en">4. Proposer behavior</span></a>
+  <a href="#discovered"><span class="zh">5. 发现的 Harness</span><span class="en">5. Discovered harnesses</span></a>
+  <a href="#discussion"><span class="zh">6. 讨论与思考</span><span class="en">6. Discussion</span></a>
+  <a href="#quickref"><span class="zh">7. 技术速查</span><span class="en">7. Quick Ref</span></a>
+</nav>
+
+<div class="main-content">
+
+  <!-- ======================== HERO ======================== -->
+  <header class="hero fade-in">
+    <h1 lang-zh>Meta-Harness: 端到端优化 LLM 模型的 Harness</h1>
+    <h1 lang-en>Meta-Harness: End-to-End Optimization of Model Harnesses</h1>
+    <div class="subtitle" lang-zh>Yoonho Lee, Roshen Nair, Qizheng Zhang (Stanford); Kangwook Lee (KRAFTON); Omar Khattab (MIT); Chelsea Finn (Stanford) · COLM 2026 · arXiv:2603.28052<br>让 coding agent 在 <strong>文件系统</strong> 中自主检索历史源码、分数与执行轨迹，自动发现超越手工 SOTA 的 LLM harness。</div>
+    <div class="subtitle" lang-en>Yoonho Lee, Roshen Nair, Qizheng Zhang (Stanford); Kangwook Lee (KRAFTON); Omar Khattab (MIT); Chelsea Finn (Stanford) · COLM 2026 · arXiv:2603.28052<br>A coding-agent proposer with full <strong>filesystem</strong> access to prior source code, traces, and scores automatically discovers LLM harnesses that beat hand-engineered SOTA.</div>
+    <div class="tag-row">
+      <span class="tag">Harness Engineering</span>
+      <span class="tag">Text Optimization</span>
+      <span class="tag">Coding Agent</span>
+      <span class="tag">Context Engineering</span>
+      <span class="tag">Claude Code + Opus 4.6</span>
+      <span class="tag">COLM 2026</span>
+    </div>
+  </header>
+
+  <!-- ======================== TL;DR ======================== -->
+  <section id="tldr" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">0</span>
+      <h2 lang-zh>TL;DR</h2>
+      <h2 lang-en>TL;DR</h2>
+    </div>
+
+    <div class="box box-key" lang-zh>
+      <strong>核心贡献。</strong>LLM 系统性能不仅取决于模型权重，也取决于 <strong>harness</strong>（围绕模型的代码：决定存什么、取什么、喂什么）。已有 text optimizer (GEPA / OpenEvolve / TextGrad 等) 把反馈压得太狠（100–30k tok/step），不足以诊断 harness 这种长程、有状态的程序。<strong>Meta-Harness</strong> 用 coding agent 作为 proposer，把所有历史候选的源码、trace、分数落入文件系统，让 proposer 用 <code>grep</code>/<code>cat</code> 自主检索——每步反馈预算达 <strong>10 MTok</strong>（比 prior SOTA 大 3 个数量级）。
+    </div>
+    <div class="box box-key" lang-en>
+      <strong>Core contribution.</strong> LLM system performance depends not only on model weights but also on the <strong>harness</strong> — the code that decides what to store, retrieve, and present. Existing text optimizers (GEPA / OpenEvolve / TextGrad, etc.) compress feedback too aggressively (100–30k tok/step), far below what is needed to diagnose harnesses, which are long-horizon stateful programs. <strong>Meta-Harness</strong> uses a coding agent as proposer and stores <em>all</em> prior candidates' source code, traces, and scores on a filesystem that the proposer queries with <code>grep</code>/<code>cat</code>. Each step has a ~<strong>10 MTok</strong> feedback budget — 3 orders of magnitude above prior work.
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="metric-value">+7.7 pp</div>
+        <div class="metric-label" lang-zh>文本分类超过 ACE（48.6% vs 40.9%）</div>
+        <div class="metric-label" lang-en>Text classification over ACE (48.6% vs 40.9%)</div>
+      </div>
+      <div class="metric-card green">
+        <div class="metric-value">4×</div>
+        <div class="metric-label" lang-zh>Context 更省（11.4k vs ACE 50.8k）</div>
+        <div class="metric-label" lang-en>4× fewer context tokens (11.4k vs ACE 50.8k)</div>
+      </div>
+      <div class="metric-card blue">
+        <div class="metric-value">+4.7 pp</div>
+        <div class="metric-label" lang-zh>IMO 级数学题 5 个未见模型平均提升</div>
+        <div class="metric-label" lang-en>IMO-level math avg gain across 5 held-out models</div>
+      </div>
+      <div class="metric-card amber">
+        <div class="metric-value">#1</div>
+        <div class="metric-label" lang-zh>TerminalBench-2 Haiku-4.5 排行</div>
+        <div class="metric-label" lang-en>TerminalBench-2 Haiku-4.5 leaderboard</div>
+      </div>
+      <div class="metric-card purple">
+        <div class="metric-value">10×</div>
+        <div class="metric-label" lang-zh>比 OpenEvolve/TTT-Discover 少用评估次数</div>
+        <div class="metric-label" lang-en>fewer evals than OpenEvolve/TTT-Discover</div>
+      </div>
+      <div class="metric-card rose">
+        <div class="metric-value">82</div>
+        <div class="metric-label" lang-zh>Proposer 每迭代读取文件中位数</div>
+        <div class="metric-label" lang-en>median files proposer reads per iteration</div>
+      </div>
+    </div>
+
+    <div class="img-placeholder" id="ph-fig1a">
+      <div class="icon">📈</div>
+      <div class="ph-label">
+        <span lang-zh>Figure 1 (Left): 文本分类学习曲线</span>
+        <span lang-en>Figure 1 (Left): Text classification learning curves</span>
+      </div>
+      <div class="ph-caption" lang-zh>Meta-Harness 仅需 4 次评估即匹配次优方法的最终精度，60 次评估后比其他文本优化器高出 10+ pp。</div>
+      <div class="ph-caption" lang-en>Meta-Harness matches the next-best method's final accuracy in 4 evaluations and ends >10 pp above all text-optimizer baselines at 60.</div>
+      <div class="ph-filename">figures/fig1a_learning_curves_simple.png</div>
+    </div>
+
+    <div class="img-placeholder" id="ph-fig1b">
+      <div class="icon">🏆</div>
+      <div class="ph-label">
+        <span lang-zh>Figure 1 (Right): TerminalBench-2 leaderboard</span>
+        <span lang-en>Figure 1 (Right): TerminalBench-2 leaderboard</span>
+      </div>
+      <div class="ph-caption" lang-zh>在 Claude Haiku 4.5 上，Meta-Harness 超过所有已公布的 harness，排名第一。</div>
+      <div class="ph-caption" lang-en>On Claude Haiku 4.5, Meta-Harness outperforms every reported harness and ranks #1.</div>
+      <div class="ph-filename">figures/fig1b_tbench_leaderboard.png</div>
+    </div>
+  </section>
+
+  <!-- ======================== BACKGROUND PRIMER ======================== -->
+  <section id="primer" class="fade-in">
+    <div class="section-header">
+      <span class="section-num" style="background: var(--purple);">?</span>
+      <h2 lang-zh>背景科普：读懂这篇论文需要的前置概念</h2>
+      <h2 lang-en>Background primer: concepts you need to read this paper</h2>
+    </div>
+
+    <div class="box box-insight" lang-zh>
+      <strong>为什么有这一节？</strong>这篇论文默认读者熟悉 "harness engineering"、"text optimizer"、"GEPA / OpenEvolve / ACE" 等概念。如果你是第一次接触这个 research topic，本节先用 2 分钟把这些关键词讲清楚，再读后面会顺畅得多。如果你已经了解这些概念，可以直接跳到 §1。
+    </div>
+    <div class="box box-insight" lang-en>
+      <strong>Why this section?</strong> This paper assumes familiarity with "harness engineering", "text optimizer", "GEPA / OpenEvolve / ACE", etc. If this research area is new to you, spend 2 minutes here first. If you already know the vocabulary, skip straight to §1.
+    </div>
+
+    <!-- ===== What is a harness ===== -->
+    <div class="subsection" id="primer-harness">
+      <h3 lang-zh>Harness 到底是什么？</h3>
+      <h3 lang-en>What exactly is a "harness"?</h3>
+
+      <p lang-zh>"Harness" 字面是马具/挽具，在 LLM 领域指的是<strong>围绕一个固定模型的所有代码</strong>——除了模型权重之外的一切。可以理解为：给你一个黑盒 <code>model(prompt) → text</code>，要把它变成"能解决具体任务的系统"时，你需要写的一切代码。</p>
+      <p lang-en>Literally "harness" = saddle/rigging. In the LLM world it means <strong>all the code wrapped around a fixed model</strong> — everything except the weights. Given a black-box <code>model(prompt) → text</code>, the harness is all the code you write to turn that into "a system that solves a concrete task."</p>
+
+      <div class="two-col">
+        <div class="card card-accent">
+          <h5 lang-zh>Harness 里常见的成分</h5>
+          <h5 lang-en>What a harness typically contains</h5>
+          <ul>
+            <li lang-zh><strong>Prompt 模板</strong>：system prompt、角色扮演、格式约束</li>
+            <li lang-en><strong>Prompt template.</strong> System prompt, persona, format constraints</li>
+            <li lang-zh><strong>Retrieval 逻辑</strong>：从外部库查什么、怎么排序、塞几条</li>
+            <li lang-en><strong>Retrieval logic.</strong> What to fetch from external stores, how to rank, how many to include</li>
+            <li lang-zh><strong>Memory / 状态</strong>：跨 turn 或跨 task 记什么、怎么更新</li>
+            <li lang-en><strong>Memory / state.</strong> What to remember across turns/tasks, how to update</li>
+            <li lang-zh><strong>Control flow</strong>：tool-calling 循环、完成判定、错误重试</li>
+            <li lang-en><strong>Control flow.</strong> Tool-calling loop, completion detection, retry logic</li>
+            <li lang-zh><strong>后处理</strong>：解析、验证、re-ask 机制</li>
+            <li lang-en><strong>Post-processing.</strong> Parse, validate, re-ask on failure</li>
+          </ul>
+        </div>
+        <div class="card card-accent">
+          <h5 lang-zh>具象例子：Claude Code、Cursor、Cline</h5>
+          <h5 lang-en>Concrete example: Claude Code, Cursor, Cline</h5>
+          <p lang-zh>这些 coding assistant 的底层模型都是 Claude/GPT，但 UX 和能力差异巨大——差的就是 harness：文件编辑 tool 的设计、context 压缩策略、补全展示方式、错误重试逻辑……<strong>同一个模型 + 不同 harness = 完全不同的产品体验</strong>。</p>
+          <p lang-en>Claude Code, Cursor, Cline all sit on top of Claude/GPT, yet their UX and capability differ enormously — the difference <em>is</em> the harness: file-edit tool design, context compaction, completion UI, retry logic... <strong>Same model + different harness = completely different product.</strong></p>
+        </div>
+      </div>
+
+      <div class="box box-note" lang-zh>
+        <strong>术语区分：</strong>"Prompt engineering" 只关心单次 prompt 的写法；"harness engineering" 更宽，关心<strong>整个围绕模型的程序</strong>——包括动态 prompt 构造、检索、记忆、工具、控制流等。"Context engineering" 是近年兴起的中间词，强调"塞给模型的 context 怎么动态构造"这一子问题。本论文的研究对象是最广义的 harness。
+      </div>
+      <div class="box box-note" lang-en>
+        <strong>Terminology.</strong> "Prompt engineering" concerns only how you write one prompt. "Harness engineering" is broader — the <strong>entire program around the model</strong>: dynamic prompt assembly, retrieval, memory, tools, control flow. "Context engineering" is a recent middle term focused on the subproblem of dynamically constructing what goes into context. This paper targets harness in the broadest sense.
+      </div>
+    </div>
+
+    <!-- ===== What is a text optimizer ===== -->
+    <div class="subsection" id="primer-optimizer">
+      <h3 lang-zh>Text optimizer 是什么？—— 一句话：把梯度下降搬到"文本/代码"上</h3>
+      <h3 lang-en>What is a "text optimizer"? — One sentence: gradient descent, but over text/code</h3>
+
+      <p lang-zh>训练神经网络时我们有一个闭环：<em>前向</em> → 算 loss → <em>反向</em>得梯度 → 更新权重。但如果要优化的不是权重、而是一段 <strong>prompt</strong> 或 <strong>代码</strong>（它们都是离散文本，没有梯度），该怎么办？答案是让 <strong>LLM 自己扮演 optimizer</strong>：</p>
+      <p lang-en>When you train a neural net you have a loop: <em>forward</em> → compute loss → <em>backward</em> → update weights. But what if what you want to optimize is not weights but a <strong>prompt</strong> or a <strong>piece of code</strong> — discrete text with no gradient? The answer: let an <strong>LLM play the optimizer</strong>.</p>
+
+      <div class="flow">
+        <div class="flow-row"><div class="flow-box highlight" lang-zh><strong>① 提议 (Propose)</strong><br><small>Proposer LLM 基于历史提出新 artifact</small></div><div class="flow-box highlight" lang-en><strong>① Propose</strong><br><small>Proposer LLM emits a new artifact given history</small></div></div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-row"><div class="flow-box green" lang-zh><strong>② 评估 (Evaluate)</strong><br><small>把 artifact 跑在验证集上得到分数</small></div><div class="flow-box green" lang-en><strong>② Evaluate</strong><br><small>Run the artifact on a val set, get scores</small></div></div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-row"><div class="flow-box amber" lang-zh><strong>③ 反馈 (Feedback)</strong><br><small>把分数 / trace / 摘要 写回历史</small></div><div class="flow-box amber" lang-en><strong>③ Feedback</strong><br><small>Write scores / trace / summary back to history</small></div></div>
+        <div class="flow-arrow-down">↺ loop</div>
+        <div class="flow-row"><div class="flow-box" lang-zh>最终输出：accuracy 最高的 artifact</div><div class="flow-box" lang-en>Final output: artifact with highest accuracy</div></div>
+      </div>
+
+      <p lang-zh>区分不同 text optimizer 的核心，其实就两个维度：</p>
+      <p lang-en>What distinguishes one text optimizer from another really comes down to two axes:</p>
+
+      <ul>
+        <li lang-zh><strong>A. 优化对象 (artifact)</strong>：是 prompt、还是一小段代码、还是完整可执行 harness？</li>
+        <li lang-en><strong>A. What's the artifact.</strong> A prompt? A small code snippet? A complete executable harness?</li>
+        <li lang-zh><strong>B. 反馈形式 (feedback channel)</strong>：传回去的是 scalar 分数？摘要？还是完整 trace？</li>
+        <li lang-en><strong>B. What's the feedback channel.</strong> A scalar score? A summary? A full trace?</li>
+      </ul>
+
+      <div class="box box-key" lang-zh>
+        <strong>Meta-Harness 的论点就是沿着这两个维度做到极限：</strong>artifact 是完整可执行 harness（最大），反馈是整个文件系统（code + trace + score，最大）。几乎所有 prior 方法都在这两个维度上偷过某种懒。
+      </div>
+      <div class="box box-key" lang-en>
+        <strong>Meta-Harness pushes both axes to the extreme:</strong> artifact = full executable harness (maximum); feedback = the entire filesystem (code + trace + score, maximum). Almost every prior method cuts corners on at least one of these axes.
+      </div>
+    </div>
+
+    <!-- ===== Cheat sheet ===== -->
+    <div class="subsection" id="primer-glossary">
+      <h3 lang-zh>相关方法一句话速查表</h3>
+      <h3 lang-en>Related-methods cheat-sheet</h3>
+
+      <p lang-zh>论文后面反复提到一堆缩写，这里先把它们各自是什么讲清楚：</p>
+      <p lang-en>The paper drops a lot of acronyms. Here's what each one actually is:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>名字</th><th lang-en>Name</th>
+              <th lang-zh>类别</th><th lang-en>Category</th>
+              <th lang-zh>一句话解释</th><th lang-en>One-line gist</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td lang-zh><strong>ProTeGi</strong></td><td lang-en><strong>ProTeGi</strong></td>
+              <td lang-zh>Text optimizer（prompt）</td><td lang-en>Text optimizer (prompt)</td>
+              <td lang-zh>早期开山：用 LLM 给错误例子写自然语言 "gradient"，用来改 prompt。</td>
+              <td lang-en>Early entry: an LLM writes natural-language "gradients" from wrong examples and rewrites the prompt.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>TextGrad</strong></td><td lang-en><strong>TextGrad</strong></td>
+              <td lang-zh>Text optimizer（文本 artifact）</td><td lang-en>Text optimizer (text artifact)</td>
+              <td lang-zh>把 "text 视作可微变量"，LLM 负责产生文本反馈当 "梯度"。</td>
+              <td lang-en>Treats "text as a differentiable variable"; an LLM produces textual feedback as the "gradient".</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>OPRO</strong></td><td lang-en><strong>OPRO</strong></td>
+              <td lang-zh>Prompt optimizer</td><td lang-en>Prompt optimizer</td>
+              <td lang-zh>Optimization by PROmpting：把过往 (prompt, score) 扔给 LLM 让它产新 prompt。</td>
+              <td lang-en>Optimization by PROmpting: feed past (prompt, score) pairs to an LLM to produce a new prompt.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>GEPA</strong></td><td lang-en><strong>GEPA</strong></td>
+              <td lang-zh>Prompt optimizer（带 trace 反思）</td><td lang-en>Prompt optimizer (with trace reflection)</td>
+              <td lang-zh>每个候选跑完得到轨迹，LLM 做 "反思摘要" 后改 prompt。反馈最接近 Meta-Harness 但仍是摘要级。</td>
+              <td lang-en>After each candidate runs, an LLM produces a reflective summary of the trace and rewrites the prompt. Closest to Meta-Harness in feedback richness, but still summary-level.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>AlphaEvolve / OpenEvolve</strong></td><td lang-en><strong>AlphaEvolve / OpenEvolve</strong></td>
+              <td lang-zh>Code-search（进化算法）</td><td lang-en>Code search (evolutionary)</td>
+              <td lang-zh>维护程序数据库，LLM 扮演 mutation/crossover 算子，按 scalar 分数做锦标赛选择。偏向"发现算法/kernel"这种单函数目标。</td>
+              <td lang-en>Maintains a program database; an LLM acts as mutation/crossover operator; tournament selection by scalar score. Best suited to "discover one algorithm / kernel".</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>TTT-Discover</strong></td><td lang-en><strong>TTT-Discover</strong></td>
+              <td lang-zh>Test-time text search</td><td lang-en>Test-time text search</td>
+              <td lang-zh>用 PUCT (一种 MCTS 变体) 在先前解法片段上做搜索。</td>
+              <td lang-en>Uses PUCT (an MCTS variant) to search over fragments of prior solutions.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Feedback Descent</strong></td><td lang-en><strong>Feedback Descent</strong></td>
+              <td lang-zh>Text optimizer</td><td lang-en>Text optimizer</td>
+              <td lang-zh>把候选两两对比，LLM 产对比式文本反馈。</td>
+              <td lang-en>Compares candidates pairwise; an LLM produces comparative textual feedback.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>ACE</strong></td><td lang-en><strong>ACE</strong></td>
+              <td lang-zh>Harness（手工 SOTA，本文的主要对比对象）</td><td lang-en>Harness (hand-designed SOTA, main comparison)</td>
+              <td lang-zh>Agentic Context Engineering：通过反思性 memory 管理，在线累积 context 来提升分类精度。</td>
+              <td lang-en>Agentic Context Engineering: reflective memory curation that accumulates context online to improve classification accuracy.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>MCE</strong></td><td lang-en><strong>MCE</strong></td>
+              <td lang-zh>Harness（手工）</td><td lang-en>Harness (hand-designed)</td>
+              <td lang-zh>Meta Context Engineering：维护一个 "自然语言技能库" 来构造 context。</td>
+              <td lang-en>Meta Context Engineering: maintains a library of natural-language skills used to construct context.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Terminus-KIRA</strong></td><td lang-en><strong>Terminus-KIRA</strong></td>
+              <td lang-zh>Harness（TerminalBench 上的手工 SOTA）</td><td lang-en>Harness (hand SOTA on TerminalBench)</td>
+              <td lang-zh>TerminalBench-2 上公开的强 agent harness，Meta-Harness 在它基础上搜索改进。</td>
+              <td lang-en>Publicly reported strong agent harness on TerminalBench-2; Meta-Harness searches for improvements on top of it.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Proposer</strong></td><td lang-en><strong>Proposer</strong></td>
+              <td lang-zh>术语（上面图里 ①）</td><td lang-en>Term (① in the diagram above)</td>
+              <td lang-zh>负责"产生下一个候选 artifact"的 LLM / Agent。本论文的 proposer = Claude Code + Opus-4.6。</td>
+              <td lang-en>The LLM/agent responsible for producing the next candidate. In this paper, proposer = Claude Code + Opus-4.6.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Trace / Rollout</strong></td><td lang-en><strong>Trace / Rollout</strong></td>
+              <td lang-zh>术语</td><td lang-en>Term</td>
+              <td lang-zh>一次候选 harness 执行时产生的完整日志：prompt、tool 调用、模型输出、状态更新等。术语源自 RL。</td>
+              <td lang-en>The full log produced by one run of a candidate harness: prompt, tool calls, model outputs, state updates, etc. Term borrowed from RL.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box box-insight" lang-zh>
+        <strong>读到这里你应该能 parse 论文的核心叙事：</strong>ACE / MCE 是人手调的 harness，GEPA / OpenEvolve / TTT-Discover 是自动 text optimizer 但反馈很窄。Meta-Harness 想一次击败两拨人：<strong>比手工 harness 好 + 比其他自动方法用更少评估且搜到更强结果</strong>，靠的是把 proposer 换成 coding agent、把反馈换成整个 filesystem。
+      </div>
+      <div class="box box-insight" lang-en>
+        <strong>With that, the paper's core narrative parses:</strong> ACE / MCE are hand-tuned harnesses; GEPA / OpenEvolve / TTT-Discover are automatic text optimizers but with narrow feedback. Meta-Harness aims to beat both: <strong>better than hand-designed harnesses AND fewer evaluations with stronger results than other auto methods</strong> — by swapping the proposer for a coding agent and the feedback for a whole filesystem.
+      </div>
+    </div>
+
+    <!-- ===== Jargon in plain English ===== -->
+    <div class="subsection" id="primer-jargon">
+      <h3 lang-zh>论文中常见术语的"人话翻译"</h3>
+      <h3 lang-en>Paper jargon translated to plain English</h3>
+
+      <p lang-zh>这篇论文（和本笔记）会反复用到一堆让人头大的词。这里一次性翻译清楚，后文碰到直接回来查即可：</p>
+      <p lang-en>The paper (and these notes) lean heavily on jargon. Here's a single translation table — bounce back here whenever you see an unfamiliar term:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>术语</th><th lang-en>Term</th>
+              <th lang-zh>字面意思 / 出处</th><th lang-en>Literal meaning / origin</th>
+              <th lang-zh>在本论文里就是说……</th><th lang-en>In this paper it just means...</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td lang-zh><strong>Pareto dominance / frontier</strong></td><td lang-en><strong>Pareto dominance / frontier</strong></td>
+              <td lang-zh>经济学里的多目标优化概念</td><td lang-en>Multi-objective optimization concept from economics</td>
+              <td lang-zh>有 accuracy 和 context 两个目标时，一个方案"严格优于"另一个，<strong>当且仅当两个目标都不更差且至少一个更好</strong>。所有"没被任何方案严格击败"的点组成的集合叫 Pareto 前沿。换句话说：既不牺牲精度、context 又不更多的那条曲线。</td>
+              <td lang-en>With two goals (accuracy + context), one method "strictly beats" another <strong>iff it's at least as good on both and better on at least one</strong>. Points that nothing beats form the Pareto frontier — the curve along which you can't improve one axis without losing on the other.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Scalarize</strong></td><td lang-en><strong>Scalarize</strong></td>
+              <td lang-zh>多目标 → 单一数字</td><td lang-en>Multi-objective → one number</td>
+              <td lang-zh>把"accuracy 高 + context 少"用某种加权（比如 <code>0.7×acc - 0.3×cost</code>）压成一个分数。<strong>论文刻意不这么做</strong>，因为一旦定权重就丢了 trade-off 信息。</td>
+              <td lang-en>Squash multi-objective ("high accuracy + low context") into one score via weighting (e.g. <code>0.7×acc − 0.3×cost</code>). <strong>The paper deliberately doesn't</strong> — fixing weights throws away trade-off info.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Stateful 程序</strong></td><td lang-en><strong>Stateful program</strong></td>
+              <td lang-zh>有内部状态的程序（对比 stateless）</td><td lang-en>A program that keeps internal state (vs stateless)</td>
+              <td lang-zh>Harness 不只是"输入 → 输出"的纯函数；它能在多次调用间<strong>保留记忆</strong>（比如积累过的样本、历史 prompt）。所以一个 harness 的早期决策可能几十步后才出后果。</td>
+              <td lang-en>A harness isn't a pure "input → output" function; it <strong>keeps memory across calls</strong> (accumulated examples, past prompts). A choice made early can affect behaviour many steps later.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Rollout / Trace</strong></td><td lang-en><strong>Rollout / Trace</strong></td>
+              <td lang-zh>RL 术语，一次 episode 的全记录</td><td lang-en>RL term: full record of one episode</td>
+              <td lang-zh>一次跑完 harness 时的<strong>所有过程数据</strong>：prompt、模型输出、tool 调用、状态变化、最终分数。本论文说 "full trace" 就是这个完整日志。</td>
+              <td lang-en>The <strong>full process record</strong> of one harness run: prompt, model output, tool calls, state updates, final score. "Full trace" in this paper = this complete log.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Markov / non-Markov</strong></td><td lang-en><strong>Markov / non-Markov</strong></td>
+              <td lang-zh>马尔可夫性（"只依赖上一步"）</td><td lang-en>Markov property ("depends only on the previous step")</td>
+              <td lang-zh>Markov = proposer 只看最近一个 parent；<strong>non-Markov</strong> = proposer 会跨多个先前候选一起看。本论文观察到 proposer 每迭代读 82 个文件（跨 20+ 候选），所以是"非 Markov"。</td>
+              <td lang-en>Markov = proposer looks only at the most recent parent; <strong>non-Markov</strong> = it looks across many prior candidates. The paper observes proposer reads 82 files/iter across 20+ candidates → non-Markov.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Confound / 隔离变量</strong></td><td lang-en><strong>Confound / isolate variables</strong></td>
+              <td lang-zh>实验设计术语（"混杂变量"）</td><td lang-en>Experimental-design term ("confounding variable")</td>
+              <td lang-zh>一次改了两个东西（bugfix + prompt 模板），结果变差，<strong>搞不清是谁导致的</strong>。"隔离"就是下次只改其中一个，看到底哪个是 root cause。</td>
+              <td lang-en>If you change two things at once (bugfix + prompt template) and performance drops, you can't tell <strong>which caused it</strong>. "Isolating" = change only one next time to find the root cause.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Additive 修改</strong></td><td lang-en><strong>Additive modification</strong></td>
+              <td lang-zh>只加、不改、不删</td><td lang-en>Only add — don't rewrite or delete</td>
+              <td lang-zh>相比重写 prompt / 改控制流，"additive"只是往 prompt 前面塞更多信息（如环境快照），<strong>风险低</strong>——原本通过的 task 不会受影响，只可能帮到原本失败的 task。</td>
+              <td lang-en>Instead of rewriting a prompt or editing control flow, "additive" means prepending more info (e.g. env snapshot). <strong>Low risk</strong> — already-passing tasks aren't affected; only failing ones might improve.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Bitter lesson</strong></td><td lang-en><strong>Bitter lesson</strong></td>
+              <td lang-zh>Rich Sutton 2019 的著名观点</td><td lang-en>Rich Sutton's 2019 essay</td>
+              <td lang-zh>"随算力增长，把结构让给通用搜索 / 学习方法总是赢。"——所以本论文 <strong>不</strong> 写 mutation / parent selection 等硬编码规则，而是把决策全权交给 coding agent，期待 agent 随时间变强。</td>
+              <td lang-en>"As compute grows, general search/learning methods always beat hand-engineered structure." Hence the paper deliberately <strong>omits</strong> mutation / parent-selection rules and delegates everything to the coding agent, betting it'll improve with capability.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Mutation / Crossover / Parent-selection</strong></td><td lang-en><strong>Mutation / Crossover / Parent-selection</strong></td>
+              <td lang-zh>遗传算法术语</td><td lang-en>Genetic-algorithm terms</td>
+              <td lang-zh>Mutation = 随机小改一个 candidate；Crossover = 拼接两个 parent 生孩子；Parent-selection = 选哪些 candidate 来当 parent。<strong>本论文三个都没用</strong>，完全交给 proposer 自己决定。</td>
+              <td lang-en>Mutation = randomly tweak a candidate; crossover = splice two parents; parent-selection = pick which candidates become parents. <strong>The paper uses none</strong> — the proposer decides everything.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Held-out / 搜索集 vs 测试集</strong></td><td lang-en><strong>Held-out / search vs test set</strong></td>
+              <td lang-zh>ML 标准做法</td><td lang-en>Standard ML practice</td>
+              <td lang-zh>Held-out = 搜索/训练期间<strong>从不见到</strong>的样本，只在最后一次用来测试。避免方法"只是背熟了搜索集"。</td>
+              <td lang-en>Held-out = examples the method <strong>never sees</strong> during search/training, only used for final test. Guards against "memorizing the search set".</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Discovery problem</strong></td><td lang-en><strong>Discovery problem</strong></td>
+              <td lang-zh>AI for Science 的术语</td><td lang-en>Term from AI-for-Science</td>
+              <td lang-zh>任务本身就是"在一个公开 benchmark 上打榜"。搜索集 = 测试集 = 同一个 benchmark，类似于 Kaggle 竞赛。TerminalBench-2 实验采用这个 framing。</td>
+              <td lang-en>The task itself is "top a public benchmark." Search set = test set = one benchmark, Kaggle-style. TerminalBench-2 experiments are framed this way.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>BM25 / TF-IDF</strong></td><td lang-en><strong>BM25 / TF-IDF</strong></td>
+              <td lang-zh>经典文本检索算法</td><td lang-en>Classical text-retrieval algorithms</td>
+              <td lang-zh>基于<strong>关键词匹配</strong>（不用 embedding model），快、可解释。对数学这种有特定 token（<code>\frac</code>、<code>^{2}</code>）的场景特别合适。</td>
+              <td lang-en>Keyword-based retrieval (no embedding model needed): fast, interpretable. Great for math where specific tokens like <code>\frac</code>, <code>^{2}</code> matter.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Dense retrieval</strong></td><td lang-en><strong>Dense retrieval</strong></td>
+              <td lang-zh>向量检索</td><td lang-en>Vector retrieval</td>
+              <td lang-zh>用 embedding model 把 query 和文档转向量，按余弦相似度找邻居。对比 BM25 能捕语义但依赖 embedding 质量。</td>
+              <td lang-en>Encode query + docs as vectors via an embedding model, retrieve by cosine similarity. Captures semantics but depends on embedding quality.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>PUCT</strong></td><td lang-en><strong>PUCT</strong></td>
+              <td lang-zh>MCTS 的变体</td><td lang-en>A variant of MCTS</td>
+              <td lang-zh>Polynomial UCB for Trees，AlphaGo / AlphaZero 里用的搜索算法。TTT-Discover 把它用在"选下一个文本候选"上。</td>
+              <td lang-en>Polynomial UCB for Trees — the search algorithm inside AlphaGo / AlphaZero. TTT-Discover applies it to "choose the next text candidate".</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>pass@1</strong></td><td lang-en><strong>pass@1</strong></td>
+              <td lang-zh>代码/数学评估指标</td><td lang-en>Code / math eval metric</td>
+              <td lang-zh>采样 1 次时的通过率。"pass@3 avg 3 samples" = 每题采 3 次取平均（本文数学实验的做法）。</td>
+              <td lang-en>Pass rate when sampling once. "pass@1 averaged over 3 samples" = sample 3 times per problem and average (what the math experiments do).</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Negative transfer</strong></td><td lang-en><strong>Negative transfer</strong></td>
+              <td lang-zh>迁移学习术语</td><td lang-en>Transfer-learning term</td>
+              <td lang-zh>在 A 上学的策略迁到 B 上反而让 B 掉点。论文中 Dense retrieval 在 GPT-5.4m 上 <code>-4.3 pp</code> 就是 negative transfer。</td>
+              <td lang-en>A policy learned on A <em>hurts</em> when transferred to B. In the paper, Dense retrieval's <code>-4.3 pp</code> on GPT-5.4m is negative transfer.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Marginal value 递减</strong></td><td lang-en><strong>Diminishing marginal returns</strong></td>
+              <td lang-zh>经济学术语</td><td lang-en>Econ term</td>
+              <td lang-zh>多给反馈还能涨分，但每多一倍只涨一点点。本笔记问"从 5M → 10M tokens 到底还有多少增益"就是问这个。</td>
+              <td lang-en>More feedback still helps, but each extra chunk buys less. The note's "how much gain from 5M → 10M tokens" asks exactly this.</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>OOD</strong></td><td lang-en><strong>OOD</strong></td>
+              <td lang-zh>Out-of-Distribution</td><td lang-en>Out-of-Distribution</td>
+              <td lang-zh>测试数据不来自训练分布。本论文的 9 个 OOD 分类任务（SciCite、Bank77 等）在搜索期间完全没见过。</td>
+              <td lang-en>Test data not drawn from the training distribution. The 9 OOD classification tasks (SciCite, Bank77, ...) are fully unseen during search.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box box-note" lang-zh>
+        <strong>之后读到一句"专业话"不好理解，第一反应就回这张表。</strong>绝大多数 jargon 都能翻译成一句可读中文。
+      </div>
+      <div class="box box-note" lang-en>
+        <strong>Whenever a jargon-heavy sentence trips you up, come back to this table.</strong> Almost all of it translates to one readable sentence.
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 1. MOTIVATION ======================== -->
+  <section id="motivation" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">1</span>
+      <h2 lang-zh>动机与问题</h2>
+      <h2 lang-en>Motivation & Problem</h2>
+    </div>
+
+    <div class="subsection" id="sub-harness-role">
+      <h3 lang-zh>1.1 Harness 为什么重要</h3>
+      <h3 lang-en>1.1 Why harnesses matter</h3>
+      <p lang-zh>Tian 2026 SWEBench-MC 显示：<strong>在同一 benchmark 上只换 harness 不换模型，性能能差 6×</strong>。"harness"（围绕固定模型决定存/取/展示什么的代码）往往和模型本身同等重要。但 harness engineering 至今几乎全靠手工：人检查 failure、调启发式、迭代小规模设计。</p>
+      <p lang-en>Tian 2026 SWEBench-MC shows: <strong>changing only the harness around a fixed LLM can produce a 6× performance gap</strong> on the same benchmark. The harness — the code that decides what to store, retrieve, and show to the model — matters as much as the model itself. Yet harness engineering remains largely manual: inspect failures, tweak heuristics, iterate a handful of designs.</p>
+      <div class="box box-insight" lang-zh>
+        <strong>本文核心问题：</strong>这个过程本身能不能自动化？能不能构建一个外层系统，让它自己发现比人手工设计更好的 harness？
+      </div>
+      <div class="box box-insight" lang-en>
+        <strong>Core question.</strong> Can this process itself be automated? Can we build an outer-loop system that discovers better harnesses than hand design?
+      </div>
+    </div>
+
+    <div class="subsection" id="sub-prior-limits">
+      <h3 lang-zh>1.2 已有 text optimizer 为什么不够</h3>
+      <h3 lang-en>1.2 Why existing text optimizers fall short</h3>
+      <p lang-zh>一眼看过去，harness 优化和文本优化很像（都是"根据过去尝试改 artifact"）。但现有方法有一个共同瓶颈：<strong>反馈被压缩得太狠</strong>——要么只看当前候选，要么主要传 scalar 分数，要么限定成短模板/摘要。而 harness 是 <strong>长程、有状态</strong> 的程序：某个"什么时候存什么"的决策可能几十步之后才影响 behavior。Summary 往往把追溯失败到早期 harness 决策所需的诊断线索扔掉。</p>
+      <p lang-en>Text optimization looks similar on the surface: iteratively improve an artifact from past attempts. But prior methods share one bottleneck — <strong>feedback is too compressed</strong>: they condition only on the current candidate, propagate mostly scalar scores, or restrict feedback to short templates / LLM summaries. Harnesses, however, are <strong>long-horizon, stateful programs</strong>: a single "what to store, when" decision can affect behavior many steps later. Summaries typically drop the diagnostic detail needed to trace downstream failures to earlier harness choices.</p>
+      <p lang-zh>论文用一张表把这一点量化：跨 6 个主流 text optimizer，每步可用 context 只有 100–30k tokens，远低于 harness 搜索所需的诊断量级。</p>
+      <p lang-en>The paper quantifies this: across 6 representative text optimizers, available context per step is only 100–30k tokens — far below the diagnostic footprint required for harness search.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>方法</th><th lang-en>Method</th>
+              <th lang-zh>历史形式</th><th lang-en>History</th>
+              <th lang-zh>Log 内容</th><th lang-en>Log content</th>
+              <th lang-zh>MTok/iter</th><th lang-en>MTok/iter</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td lang-zh>OPRO</td><td lang-en>OPRO</td>
+              <td lang-zh>窗口</td><td lang-en>Window</td>
+              <td lang-zh>过去 (solution, score) pair</td><td lang-en>past (solution, score) pairs</td>
+              <td lang-zh>0.002</td><td lang-en>0.002</td>
+            </tr>
+            <tr>
+              <td lang-zh>TextGrad</td><td lang-en>TextGrad</td>
+              <td lang-zh>最新一条</td><td lang-en>Last</td>
+              <td lang-zh>对当前 artifact 的文本反馈</td><td lang-en>textual feedback on current artifact</td>
+              <td lang-zh>0.015</td><td lang-en>0.015</td>
+            </tr>
+            <tr>
+              <td lang-zh>AlphaEvolve</td><td lang-en>AlphaEvolve</td>
+              <td lang-zh>窗口</td><td lang-en>Window</td>
+              <td lang-zh>程序数据库 + 评估分数</td><td lang-en>program database + eval. scores</td>
+              <td lang-zh>0.022</td><td lang-en>0.022</td>
+            </tr>
+            <tr>
+              <td lang-zh>GEPA</td><td lang-en>GEPA</td>
+              <td lang-zh>摘要</td><td lang-en>Summary</td>
+              <td lang-zh>基于 rollout 的反思性反馈</td><td lang-en>reflective feedback from rollout traces</td>
+              <td lang-zh>0.008</td><td lang-en>0.008</td>
+            </tr>
+            <tr>
+              <td lang-zh>Feedback Descent</td><td lang-en>Feedback Descent</td>
+              <td lang-zh>摘要</td><td lang-en>Summary</td>
+              <td lang-zh>对比 + 文本反馈</td><td lang-en>comparison + textual feedback</td>
+              <td lang-zh>0.012</td><td lang-en>0.012</td>
+            </tr>
+            <tr>
+              <td lang-zh>TTT-Discover</td><td lang-en>TTT-Discover</td>
+              <td lang-zh>窗口</td><td lang-en>Window</td>
+              <td lang-zh>先前解法片段</td><td lang-en>prev. solution fragment</td>
+              <td lang-zh>0.026</td><td lang-en>0.026</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Meta-Harness</strong></td><td lang-en><strong>Meta-Harness</strong></td>
+              <td lang-zh><strong>完整</strong></td><td lang-en><strong>Full</strong></td>
+              <td lang-zh><strong>所有 log 与分数</strong></td><td lang-en><strong>all logs and scores</strong></td>
+              <td lang-zh><strong>10.0</strong></td><td lang-en><strong>10.0</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="fig-caption" lang-zh>Table 1: 各 text optimizer 在"最大 setting"下的每迭代反馈量。Meta-Harness 比 TTT-Discover 大 ~400×，比 GEPA 大 ~1250×。</div>
+      <div class="fig-caption" lang-en>Table 1: Per-iteration feedback budget in each method's largest setting. Meta-Harness is ~400× larger than TTT-Discover and ~1250× larger than GEPA.</div>
+    </div>
+  </section>
+
+  <!-- ======================== 2. METHOD ======================== -->
+  <section id="method" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">2</span>
+      <h2 lang-zh>方法</h2>
+      <h2 lang-en>Method</h2>
+    </div>
+
+    <div class="img-placeholder" id="ph-fig2">
+      <div class="icon">🔄</div>
+      <div class="ph-label">
+        <span lang-zh>Figure 2: Meta-Harness 搜索循环</span>
+        <span lang-en>Figure 2: Meta-Harness search loop</span>
+      </div>
+      <div class="ph-caption" lang-zh>(1) Agent 从文件系统读取所有先前候选的源码、trace、分数，提议新 harness；(2) 在评估任务上运行；(3) 所有日志落入新目录，循环继续。</div>
+      <div class="ph-caption" lang-en>(1) The agent reads a filesystem of all prior candidates' source, traces, and scores, then proposes a new harness. (2) It is evaluated on tasks. (3) All logs land in a new directory; repeat.</div>
+      <div class="ph-filename">figures/fig2_method_pipeline.png</div>
+    </div>
+
+    <div class="subsection" id="sub-formulation">
+      <h3 lang-zh>2.1 问题定义</h3>
+      <h3 lang-en>2.1 Formulation</h3>
+      <p lang-zh>固定模型 $M$，任务分布 $\mathcal{X}$。<strong>Harness $H$</strong> 是一个 stateful 程序，接受任务实例 $x \sim \mathcal{X}$，执行一条轨迹 $\tau \sim p_M(H, x)$，奖励函数 $r(\tau, x)$。目标：</p>
+      <p lang-en>Fix a model $M$ and task distribution $\mathcal{X}$. A <strong>harness $H$</strong> is a stateful program; on task $x \sim \mathcal{X}$ it produces a trajectory $\tau \sim p_M(H, x)$ scored by $r(\tau, x)$. Objective:</p>
+      <div class="math-block">
+        $$H^* = \arg\max_{H} \; \mathbb{E}_{x \sim \mathcal{X},\; \tau \sim p_M(H, x)} \; r(\tau, x)$$
+      </div>
+      <p lang-zh>当同时关心多个指标时（例如 accuracy 和 context token 消耗），论文<strong>不</strong>用"<code>0.7×acc − 0.3×cost</code>"这种加权把它们捏成一个分数（即"不 scalarize"），而是用 <strong>Pareto 支配</strong>关系比大小：一个 harness "更好" 当且仅当它在所有维度上都不更差、且至少一个维度更好。最后只报告那条"既想精度更高、又不想 context 更多就没法再进一步"的 trade-off 曲线（Pareto 前沿）。</p>
+      <p lang-en>When multiple metrics matter (e.g. accuracy and context-token cost), the paper <strong>does not</strong> squash them into one number via weighting like "<code>0.7×acc − 0.3×cost</code>" (that would be "scalarizing"). Instead it uses <strong>Pareto dominance</strong>: one harness is "better" iff it's at least as good on every axis and strictly better on at least one. The reported result is the trade-off curve (Pareto frontier) — the points where you can't push accuracy up without also paying more context.</p>
+    </div>
+
+    <div class="subsection" id="sub-filesystem">
+      <h3 lang-zh>2.2 关键设计 1：Filesystem 作为反馈通道</h3>
+      <h3 lang-en>2.2 Key design 1: Filesystem as feedback channel</h3>
+      <p lang-zh>不把历史写进 prompt，而是写进一个 proposer 能自主查询的文件系统。每个候选 harness 有自己的目录：</p>
+      <p lang-en>History is not packed into the prompt; it lives on a filesystem the proposer queries on demand. Each candidate gets its own directory:</p>
+
+      <div class="formula">filesystem/
+├── harness_001/                <span lang-zh style="color:#94a3b8;"># 第 1 次尝试的 harness</span><span lang-en style="color:#94a3b8;"># the 1st candidate harness</span>
+│   ├── source.py               <span lang-zh style="color:#94a3b8;"># 这次的 harness 源码本体（单文件 Python）</span><span lang-en style="color:#94a3b8;"># this candidate's harness source (single-file Python)</span>
+│   ├── scores.json             <span lang-zh style="color:#94a3b8;"># 这次在 eval set 上的数值分数</span><span lang-en style="color:#94a3b8;"># its numerical scores on the eval set</span>
+│   └── traces/                 <span lang-zh style="color:#94a3b8;"># 这次跑每个 task 的完整轨迹</span><span lang-en style="color:#94a3b8;"># full trajectory for each task run</span>
+│       ├── task_0001.log       <span lang-zh style="color:#94a3b8;">#   prompt / 模型输出 / tool 调用 / 状态变化</span><span lang-en style="color:#94a3b8;">#   prompt / model output / tool calls / state updates</span>
+│       ├── task_0002.log
+│       └── ...
+├── harness_002/                <span lang-zh style="color:#94a3b8;"># 第 2 次尝试，同样结构</span><span lang-en style="color:#94a3b8;"># 2nd candidate, same structure</span>
+│   └── ...
+</div>
+
+      <div class="box box-key" lang-zh>
+        <strong>常见误解澄清：</strong>每个 <code>harness_00N/</code> 装的是"<strong>这一次候选 harness 的原始尝试记录</strong>"（源码 + 分数 + trace），<strong>不是</strong>沉淀出来的 skill 文档或 guideline 库。
+        <ul style="margin:6px 0 0 0;">
+          <li>Proposer 的"使用说明"（skill 文档）是<strong>另一份极小的固定文件</strong>，不在这个历史库里——它只告诉 proposer"新 harness 写到哪、用什么命令查历史、哪些文件不能碰"，整个 run 不变。</li>
+          <li><strong>智能来自于 proposer 跨多个 <code>harness_00N/</code> 做横向对比和因果诊断</strong>，不是把经验浓缩成"learned rule" 给下一个候选用。</li>
+          <li>这正是和 ACE / MCE 的关键区别：<strong>ACE / MCE 的"历史"是 curated 后的 rule / skill 库</strong>（proposer 只看浓缩过的经验）；<strong>Meta-Harness 的"历史"是原始尝试本身</strong>，由 proposer 自己读自己解读。</li>
+        </ul>
+      </div>
+      <div class="box box-key" lang-en>
+        <strong>Clearing a common misconception.</strong> Each <code>harness_00N/</code> contains the <strong>raw attempt record for one candidate harness</strong> (source + scores + trace). It is <strong>not</strong> a distilled skill document or guideline library.
+        <ul style="margin:6px 0 0 0;">
+          <li>The proposer's "instruction manual" (the skill doc) is a <strong>separate, tiny, fixed file</strong> that lives outside this history. It only says "write new harnesses here, query history with these commands, don't touch these files"; it doesn't change across iterations.</li>
+          <li><strong>Intelligence comes from the proposer cross-reading many <code>harness_00N/</code> directories and doing causal diagnosis</strong>, not from distilling experience into "learned rules" for the next candidate.</li>
+          <li>This is the key contrast with ACE / MCE: <strong>ACE / MCE's "history" is a curated rule / skill library</strong> (the proposer sees condensed experience); <strong>Meta-Harness's "history" is the raw attempts themselves</strong>, which the proposer reads and interprets first-hand.</li>
+        </ul>
+      </div>
+
+      <p lang-zh>Proposer（Claude Code）通过 <code>grep</code>、<code>cat</code>、<code>ls</code> 等标准终端工具检索，<strong>永远不把整个 filesystem 塞进 context</strong>。</p>
+      <p lang-en>The proposer (Claude Code) queries the store with standard terminal tools (<code>grep</code>, <code>cat</code>, <code>ls</code>); it <strong>never ingests the whole filesystem as a prompt</strong>.</p>
+
+      <div class="box box-note" lang-zh>
+        <strong>实际用量：</strong>TerminalBench-2 run 中 proposer 每迭代中位读 <strong>82 个文件</strong>，跨 <strong>20+ 个先前候选</strong>。单次评估可产生 <strong>10M token</strong> 诊断信息。访问模式是 <strong>"非 Markov"</strong> 的——<em>不是</em>只看最近一个 parent（那会是 Markov 式的"只依赖前一步"），而是<strong>主动跨多个历史候选做横向对比</strong>。
+      </div>
+      <div class="box box-note" lang-en>
+        <strong>Observed usage.</strong> On the TerminalBench-2 run the proposer reads a median of <strong>82 files per iteration</strong> across <strong>20+ prior candidates</strong>. A single evaluation can emit <strong>10M tokens</strong> of diagnostic info. The access pattern is <strong>non-Markovian</strong> — <em>not</em> just conditioning on the latest parent (which would be Markov-style "only depends on the previous step"), but <strong>comparing across many historical candidates at once</strong>.
+      </div>
+    </div>
+
+    <div class="subsection" id="sub-coding-agent">
+      <h3 lang-zh>2.3 关键设计 2：Coding agent 而非 raw LLM</h3>
+      <h3 lang-en>2.3 Key design 2: Coding agent rather than raw LLM</h3>
+      <p lang-zh>Proposer 必须是能执行工具调用 + 修改代码的 agent，三个原因：</p>
+      <p lang-en>The proposer must be an agent that can invoke tools and edit code, for three reasons:</p>
+      <ul>
+        <li lang-zh><strong>历史规模远超 context</strong>：必须主动决定 <em>查什么</em>。</li>
+        <li lang-en><strong>History outgrows any context.</strong> The agent must decide <em>what to inspect</em>.</li>
+        <li lang-zh><strong>Harness 是可执行代码</strong>：需要写入/语法校验/运行等真实交互。</li>
+        <li lang-en><strong>Harnesses are executable code.</strong> Writing, syntax-checking, and running code are first-class operations.</li>
+        <li lang-zh><strong>对齐 coding agent 训练分布</strong>：read-write-execute 正是 frontier coding assistant 被重度训练的 workflow。</li>
+        <li lang-en><strong>Aligned with coding-agent training.</strong> Read–write–execute is exactly what frontier coding assistants are trained on.</li>
+      </ul>
+      <div class="box box-key" lang-zh>
+        <strong>实现：</strong>Proposer = Claude Code + <code>Opus-4.6</code>（max reasoning）。只给一份极简 skill 文档说明目录布局和哪些文件可/不可改，<strong>不给</strong>诊断流程约束。
+      </div>
+      <div class="box box-key" lang-en>
+        <strong>Implementation.</strong> Proposer = Claude Code + <code>Opus-4.6</code> (max reasoning). Only a minimal skill document describes directory layout and read/write permissions — <strong>no</strong> diagnosis-flow prescription.
+      </div>
+    </div>
+
+    <div class="subsection" id="sub-loop">
+      <h3 lang-zh>2.4 搜索循环（Algorithm 1）</h3>
+      <h3 lang-en>2.4 Search loop (Algorithm 1)</h3>
+
+      <div class="box box-insight" lang-zh>
+        <strong>先看人话版</strong>，再看下面的 pseudocode 就直观了：
+        <ol style="margin:8px 0 0 0;">
+          <li><strong>准备阶段。</strong>扔几个"种子 harness"进去（zero-shot、few-shot、ACE 等已有 baseline）。每个都跑一遍、打分，把<strong>源码 + 分数 + trace</strong>一起写到一个文件夹里——这个文件夹就是"历史数据库" $\mathcal{D}$。</li>
+          <li><strong>主循环（重复 N 次，典型值 N = 20）</strong>：
+            <ol style="list-style:lower-alpha; margin:4px 0 0 20px;">
+              <li>告诉 proposer（Claude Code + Opus-4.6）："你可以 <code>grep</code> / <code>cat</code> 这个文件夹里的一切，想看哪个候选的源码、想看哪条 trace 都行，然后给我写一个新的 harness。"</li>
+              <li>Proposer 自己决定读什么（论文观察：每轮中位读 82 个文件），最后写出 <strong>k 个（典型 k=2–3）新 harness</strong>。</li>
+              <li>每个新 harness 先过一个超轻量的 interface check（能不能 import、签名对不对），<strong>过了才真正跑 eval</strong>（eval 是最贵的一步）。</li>
+              <li>跑完 eval 把（源码 + 分数 + trace）也丢进文件夹，下一轮 proposer 就能看到。</li>
+            </ol>
+          </li>
+          <li><strong>收尾。</strong>所有候选里挑出 Pareto 前沿（见 §2.1 解释：accuracy 或 context 没被任何别的候选同时击败的点集）作为最终结果。</li>
+        </ol>
+        <strong>关键省略：</strong>没有"选 parent、mutate、crossover"这些遗传算法套路——proposer 看什么、从哪个候选派生，<strong>全靠它自己</strong>。外层循环只负责"跑评估、落盘"。
+      </div>
+      <div class="box box-insight" lang-en>
+        <strong>Plain-English walkthrough first</strong>, then the pseudocode reads directly:
+        <ol style="margin:8px 0 0 0;">
+          <li><strong>Setup.</strong> Drop a handful of "seed harnesses" in (zero-shot, few-shot, ACE — existing baselines). Run each, score, write <strong>code + score + trace</strong> to a folder. That folder is our "history database" $\mathcal{D}$.</li>
+          <li><strong>Main loop (repeat N times, typically N = 20):</strong>
+            <ol style="list-style:lower-alpha; margin:4px 0 0 20px;">
+              <li>Tell the proposer (Claude Code + Opus-4.6): "You can <code>grep</code> / <code>cat</code> anything in this folder — inspect any prior candidate's source, read any trace — and then write me a new harness."</li>
+              <li>The proposer picks what to read on its own (paper measures: median 82 files/iter). It then emits <strong>k (typically k=2–3) new harnesses</strong>.</li>
+              <li>Each new harness first passes an ultra-light interface check (does it import, does the signature match?); <strong>only if it passes do we run the full eval</strong> (eval is the expensive step).</li>
+              <li>After eval, (code + score + trace) is dumped into the folder, so the next iteration's proposer sees it.</li>
+            </ol>
+          </li>
+          <li><strong>Finish.</strong> Report the Pareto frontier across all candidates (see §2.1 — points not dominated on both accuracy and context).</li>
+        </ol>
+        <strong>What's deliberately missing:</strong> no parent selection, no mutation, no crossover — the proposer decides what to read and where to branch from <strong>entirely on its own</strong>. The outer loop only runs evals and writes logs.
+      </div>
+
+      <p lang-zh>对照着上面人话版看 pseudocode（右侧灰色是每行在干嘛）：</p>
+      <p lang-en>With the walkthrough above, the pseudocode (gray inline annotations explain each line):</p>
+
+      <div class="formula">Input: tasks X, LLM M, proposer P, iterations N  <span lang-zh style="color:#94a3b8;"># X=任务分布, M=固定的 base LLM, P=Claude Code 这种 coding agent, N=20</span><span lang-en style="color:#94a3b8;"># X=task distribution, M=fixed base LLM, P=coding agent like Claude Code, N=20</span>
+Initialize: population H (seed harnesses)         <span lang-zh style="color:#94a3b8;"># 种子：zero-shot / few-shot / ACE 等现成 baseline</span><span lang-en style="color:#94a3b8;"># seeds: existing baselines like zero-shot / few-shot / ACE</span>
+Initialize: filesystem D ← ∅                     <span lang-zh style="color:#94a3b8;"># 空文件夹；之后所有候选的代码+trace+分数都塞这里</span><span lang-en style="color:#94a3b8;"># empty folder; all later candidates' code + trace + score go here</span>
+
+for H in H:                                       <span lang-zh style="color:#94a3b8;"># 先把种子每个都评一遍</span><span lang-en style="color:#94a3b8;"># evaluate each seed once first</span>
+    E_H ← Evaluate(H, M, X)                       <span lang-zh style="color:#94a3b8;">#   用固定的 M 跑 H 在 X 上，得到分数和 trace</span><span lang-en style="color:#94a3b8;">#   run H on X with the fixed M; get scores and trace</span>
+    D ← D ∪ {(H, E_H)}                            <span lang-zh style="color:#94a3b8;">#   结果写回文件夹</span><span lang-en style="color:#94a3b8;">#   write result back to the folder</span>
+
+for t = 1 … N:                                    <span lang-zh style="color:#94a3b8;"># 主循环（典型 N=20）</span><span lang-en style="color:#94a3b8;"># main loop (typically N=20)</span>
+    P queries filesystem D                        <span lang-zh style="color:#94a3b8;">#   proposer 自由 grep/cat — 每轮中位读 82 个文件</span><span lang-en style="color:#94a3b8;">#   proposer freely greps/cats — median 82 files per iter</span>
+    P proposes k new harnesses {H_1 … H_k}        <span lang-zh style="color:#94a3b8;">#   基于读到的内容，写出 k 个新 harness（单文件 Python, 100–1000 行）</span><span lang-en style="color:#94a3b8;">#   from what it read, emits k new harnesses (single-file Python, 100–1000 lines)</span>
+    for H in {H_1 … H_k}:
+        if H passes interface check:              <span lang-zh style="color:#94a3b8;">#     轻量校验（能 import、签名对）再跑贵的 eval</span><span lang-en style="color:#94a3b8;">#     light check (import OK, signature matches) before the expensive eval</span>
+            D ← D ∪ {(H, Evaluate(H, M, X))}      <span lang-zh style="color:#94a3b8;">#     评估结果也落盘，下一轮 proposer 看得到</span><span lang-en style="color:#94a3b8;">#     eval results also land in the folder; next iter's proposer can see them</span>
+
+return Pareto frontier of D                       <span lang-zh style="color:#94a3b8;"># 最终汇报 Pareto 前沿（§2.1 有解释）</span><span lang-en style="color:#94a3b8;"># return the Pareto frontier (see §2.1 for definition)</span>
+</div>
+
+      <div class="box box-note" lang-zh>
+        <strong>一个具体时序（TerminalBench-2 run）：</strong>种子 = Terminus 2 + Terminus-KIRA。<strong>Iter 1</strong> 里 proposer 读了 82 个文件（40% 是种子源码 + 40% 是种子 trace），发现 trace 里有 <code>__CMDEND__</code> 字符 leak → 提议一个 marker-stripping + loop-breaker harness；过 interface check 后跑 eval，跌到 58.9%（-5.6 pp）。新 harness 的源码 + trace + 分数落回文件夹。<strong>Iter 2</strong> 的 proposer 就能看到 Iter 1 为什么失败；Iter 3 进一步做出"其实是 prompt 改动在害事，不是 bugfix"这样的因果推断（见 §4 详细时间线）。
+      </div>
+      <div class="box box-note" lang-en>
+        <strong>Concrete timeline (TerminalBench-2 run):</strong> seeds = Terminus 2 + Terminus-KIRA. In <strong>Iter 1</strong>, the proposer reads 82 files (40% seed source, 40% seed traces), spots a leaked <code>__CMDEND__</code> marker in traces → proposes a marker-stripping + loop-breaker harness; passes interface check, runs eval, lands at 58.9% (-5.6 pp). That run's code + trace + score is written to the folder. <strong>Iter 2's</strong> proposer can see why Iter 1 failed; Iter 3 goes further and makes the causal inference "the prompt edit was the actual culprit, not the bugfix" (see §4 for the full timeline).
+      </div>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>常见疑问：为什么不直接保留分数最高的那个 harness，非要弄个 Pareto 前沿？</summary>
+        <summary lang-en>Common question: why not just keep the highest-scoring harness — why bother with a Pareto frontier?</summary>
+        <div class="detail-body">
+          <p lang-zh><strong>这个答案是 two-part 的，取决于"你只有一个目标还是多个目标"。</strong></p>
+          <p lang-en><strong>The answer is two-part: it depends on whether you have one objective or several.</strong></p>
+
+          <h4 lang-zh>① 单目标场景——其实就是 argmax，论文确实也是这么做的</h4>
+          <h4 lang-en>① Single-objective case — it really is just argmax, and that's exactly what the paper does</h4>
+          <p lang-zh>Math 实验只看 accuracy，没有 context 作为对立目标。论文原话（§3.2）：</p>
+          <p lang-en>The math experiment cares only about accuracy; there is no opposing context objective. Direct quote (§3.2):</p>
+          <blockquote style="border-left:3px solid var(--accent); padding:6px 14px; margin:8px 0; font-style:italic; color:var(--text-secondary);">
+            "We select a single harness based on search-set performance using <code>GPT-OSS-20B</code>."
+          </blockquote>
+          <p lang-zh>所以 math 场景就是按搜索集分数取 argmax——无需 Pareto。</p>
+          <p lang-en>So in the math setting they <em>do</em> take argmax on the search set — no Pareto needed.</p>
+
+          <h4 lang-zh>② 多目标场景——Pareto 是作者的 explicit 设计选择</h4>
+          <h4 lang-en>② Multi-objective case — Pareto is the authors' explicit design choice</h4>
+          <p lang-zh>分类实验同时关心 accuracy <em>和</em> context token 消耗。论文在 §3.1.4 "Accuracy–Context Tradeoffs" 明确解释为什么不捏成一个数：</p>
+          <p lang-en>The classification experiment cares about both accuracy <em>and</em> context-token cost. §3.1.4 "Accuracy–Context Tradeoffs" explicitly says why they don't collapse to one number:</p>
+          <blockquote style="border-left:3px solid var(--accent); padding:6px 14px; margin:8px 0; font-style:italic; color:var(--text-secondary);">
+            "... we can express a joint preference for both accuracy and context cost <strong>rather than committing to a single scalar objective in advance</strong> ... rather than committing to a single hand-designed operating point."
+          </blockquote>
+          <p lang-zh>结果是作者得到一整条 Pareto 曲线（Table 9 / <code>tab:classification_pareto</code>，见 §3.1.4 表格），8 个变体各守一个 accuracy–context trade-off：</p>
+          <p lang-en>The result is an entire Pareto curve (Table 9 / <code>tab:classification_pareto</code>; see §3.1.4), with 8 variants covering a range of accuracy–context trade-offs:</p>
+          <ul>
+            <li lang-zh>想省 token？<strong>Draft Verification</strong>：40.1% acc / 5.4k ctx（context 是最强那个的 1/9）</li>
+            <li lang-en>Want to save tokens? <strong>Draft Verification</strong>: 40.1% acc / 5.4k ctx (1/9 the context of the strongest)</li>
+            <li lang-zh>想要最准？<strong>Label-Primed Query</strong>：48.6% acc / 45.5k ctx</li>
+            <li lang-en>Want max accuracy? <strong>Label-Primed Query</strong>: 48.6% acc / 45.5k ctx</li>
+            <li lang-zh>想折中？<strong>RRF + Contrastive</strong>：47.5% / 41.4k（context 省 10%，accuracy 只掉 1.1 pp）</li>
+            <li lang-en>Want a middle ground? <strong>RRF + Contrastive</strong>: 47.5% / 41.4k (10% less context for only -1.1 pp accuracy)</li>
+          </ul>
+          <p lang-zh>如果提前用 <code>0.7×acc − 0.3×cost</code> 这种加权压成一个分数，你就只能看到其中<strong>一个</strong>点——丢掉了整条曲线的形状信息。</p>
+          <p lang-en>If you scalarized in advance with something like <code>0.7×acc − 0.3×cost</code>, you'd only see <strong>one</strong> point — losing the shape of the entire curve.</p>
+
+          <h4 lang-zh>③ 另一个相关但独立的设计：filesystem 里保留<em>所有</em>候选（含失败的）</h4>
+          <h4 lang-en>③ A related but separate design: the filesystem keeps <em>all</em> candidates (including failures)</h4>
+          <p lang-zh>这<strong>不是</strong>"为什么用 Pareto"的理由（两件事在论文里是分开讲的），但顺便说一下：即便最终只报 1 个最优 harness，filesystem 里也必须保留所有历史候选。原因是 proposer 要靠这些失败 trace 做因果诊断。论文 §A.2 原话：</p>
+          <p lang-en>This is <strong>not</strong> a reason for using Pareto (the paper treats them as separate decisions), but worth noting: even if you only reported the single best harness, the filesystem still has to keep all prior candidates — because the proposer uses the failed traces for causal diagnosis. §A.2 quote:</p>
+          <blockquote style="border-left:3px solid var(--accent); padding:6px 14px; margin:8px 0; font-style:italic; color:var(--text-secondary);">
+            "This kind of causal reasoning over prior failures is precisely what full-history filesystem access enables and what compressed-feedback optimizers cannot support."
+          </blockquote>
+
+          <div class="box box-insight" lang-zh style="margin-top:12px;">
+            <strong>一句话总结：</strong>Pareto 不是为了"不丢最优"，而是为了<strong>交出选择权给用户</strong>——让用户按自己实际的 accuracy/context 预算在曲线上挑点，而不是让作者替所有人决定权重。
+          </div>
+          <div class="box box-insight" lang-en style="margin-top:12px;">
+            <strong>One-liner:</strong> Pareto isn't about "not losing the best" — it's about <strong>handing the choice to the user</strong>, letting them pick a point on the curve according to their real accuracy/context budget, rather than the authors hardcoding a weighting for everyone.
+          </div>
+        </div>
+      </details>
+
+      <div class="two-col">
+        <div class="card card-accent">
+          <h5 lang-zh>刻意简洁（遗传算法里常见的套路都不用）</h5>
+          <h5 lang-en>Deliberately minimal (skips the usual GA machinery)</h5>
+          <ul>
+            <li lang-zh>没有 <strong>parent-selection</strong> 规则（不指定"从哪个候选出发改"）</li>
+            <li lang-en>No <strong>parent-selection</strong> rule (no prescribed "which candidate to branch from")</li>
+            <li lang-zh>没有 <strong>mutation / crossover</strong> 算子（不小修小改、不拼接两个候选）</li>
+            <li lang-en>No <strong>mutation / crossover</strong> operator (no random tweaks, no splicing two candidates)</li>
+            <li lang-zh>没有跨 run 保留的 <strong>persistent memory</strong> 或固定骨架 scaffold</li>
+            <li lang-en>No cross-run <strong>persistent memory</strong> or fixed scaffold</li>
+            <li lang-zh>只维护一个 Pareto 前沿用于最终报告，<strong>不用它约束 proposer 看什么</strong></li>
+            <li lang-en>A Pareto frontier is kept only for final reporting — it <strong>does not constrain what the proposer reads</strong></li>
+          </ul>
+        </div>
+        <div class="card card-accent">
+          <h5 lang-zh>为什么这样设计</h5>
+          <h5 lang-en>Why this design</h5>
+          <p lang-zh>把诊断和编辑决策完全 delegate 给 proposer。系统随 coding agent 的能力增长而自动变强 — 这是 bitter-lesson 式的下注。</p>
+          <p lang-en>Diagnosis and edit decisions are delegated to the proposer. The system improves automatically as coding agents get stronger — a bitter-lesson-style bet.</p>
+        </div>
+      </div>
+
+      <div class="card card-accent">
+        <h5 lang-zh>实现细节</h5>
+        <h5 lang-en>Implementation details</h5>
+        <ul>
+          <li lang-zh>Harness = 单文件 Python 程序，修改 task 特定的 prompt / retrieval / memory / orchestration。</li>
+          <li lang-en>Each harness is a single-file Python program modifying task-specific prompt / retrieval / memory / orchestration.</li>
+          <li lang-zh>典型 run：<strong>20 iterations × ~3 candidates/iter ≈ 60 评估</strong>。</li>
+          <li lang-en>Typical run: <strong>20 iterations × ~3 candidates/iter ≈ 60 evaluations</strong>.</li>
+          <li lang-zh>Base model $M$ 按 domain 不同（GPT-OSS-120B / 20B / Claude Opus 4.6 / Haiku 4.5）且始终冻结。</li>
+          <li lang-en>Base model $M$ varies by domain (GPT-OSS-120B / 20B / Claude Opus 4.6 / Haiku 4.5) and is always frozen.</li>
+          <li lang-zh>Full implementation per harness: 100–1000 行代码。</li>
+          <li lang-en>Each discovered harness: 100–1000 lines of code.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 3. EXPERIMENTS ======================== -->
+  <section id="experiments" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">3</span>
+      <h2 lang-zh>实验</h2>
+      <h2 lang-en>Experiments</h2>
+    </div>
+
+    <p lang-zh>三个 domain：<strong>在线文本分类</strong>、<strong>数学检索推理</strong>、<strong>智能体编程</strong>。每个 domain 都与 (a) 手工 SOTA harness + (b) program-search 方法对比。</p>
+    <p lang-en>Three domains: <strong>online text classification</strong>, <strong>math retrieval reasoning</strong>, <strong>agentic coding</strong>. Each is compared against (a) hand-designed SOTA harnesses and (b) program-search methods.</p>
+
+    <!-- ==== Train/Test Split Protocol ==== -->
+    <div class="card card-accent">
+      <h5 lang-zh>⚠️ 读实验前先搞清：三个实验的 train/test split 策略不一样</h5>
+      <h5 lang-en>⚠️ Before reading the results: the three experiments use different train/test protocols</h5>
+
+      <p lang-zh>一个关键问题是：<strong>用来给 proposer 打分、驱动搜索的任务，和最后报告数字的任务，是不是同一批？</strong>如果是，就是 data leakage——候选就是被"按测试集成绩挑出来"的。论文三个实验对这点处理方式完全不同：</p>
+      <p lang-en>Key question: <strong>are the tasks used to score candidates during search the same tasks used to report final numbers?</strong> If so, that's data leakage — candidates were selected <em>by their test-set performance</em>. The paper treats this differently across the three experiments:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>实验</th><th lang-en>Experiment</th>
+              <th lang-zh>搜索期间评估用的数据</th><th lang-en>Data used during search</th>
+              <th lang-zh>最终测试用的数据</th><th lang-en>Data used for final test</th>
+              <th lang-zh>是否 clean split</th><th lang-en>Clean split?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td lang-zh><strong>§3.1 文本分类</strong></td><td lang-en><strong>§3.1 Text classif.</strong></td>
+              <td lang-zh>Search set（各数据集的训练子集）</td><td lang-en>Search set (train split of each dataset)</td>
+              <td lang-zh>Held-out test set + 9 个完全未见的 OOD 数据集</td><td lang-en>Held-out test set + 9 unseen OOD datasets</td>
+              <td lang-zh>✅ 干净</td><td lang-en>✅ Clean</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>§3.2 数学检索</strong></td><td lang-en><strong>§3.2 Math retrieval</strong></td>
+              <td lang-zh>250 道 Olympiad 题（OlympiadBench + Omni-MATH hard）+ base model <code>GPT-OSS-20B</code></td><td lang-en>250 Olympiad problems (OlympiadBench + Omni-MATH hard) + base model <code>GPT-OSS-20B</code></td>
+              <td lang-zh>200 道 IMO 级题（IMO-AnswerBench / IMO-ProofBench / ArXivMath）+ <strong>4 个搜索时完全没用过的模型</strong></td><td lang-en>200 IMO-level problems (IMO-AnswerBench / IMO-ProofBench / ArXivMath) + <strong>4 base models never seen during search</strong></td>
+              <td lang-zh>✅ 干净（题目 + 模型双重 held-out）</td><td lang-en>✅ Clean (both problems and models held out)</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>§3.3 TerminalBench-2</strong></td><td lang-en><strong>§3.3 TerminalBench-2</strong></td>
+              <td lang-zh>89 任务全部</td><td lang-en>All 89 tasks</td>
+              <td lang-zh><strong>同一个 89 任务</strong></td><td lang-en><strong>the same 89 tasks</strong></td>
+              <td lang-zh>⚠️ <strong>有 leakage</strong>，论文 explicit acknowledged</td><td lang-en>⚠️ <strong>Leakage</strong>, explicitly acknowledged</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p lang-zh><strong>§3.1 原话（清洁 split）：</strong></p>
+      <p lang-en><strong>§3.1 quote (clean split):</strong></p>
+      <blockquote style="border-left:3px solid var(--accent); padding:6px 14px; margin:8px 0 14px; font-style:italic; color:var(--text-secondary);">
+        "... select candidates solely based on search-set performance, and <strong>hold out the test sets until the final evaluation</strong>. ... The proposer never sees test-set results; its only feedback comes from the search set..."
+      </blockquote>
+
+      <p lang-zh><strong>§3.3 原话（作者承认 leakage 并给出 defense）：</strong></p>
+      <p lang-en><strong>§3.3 quote (authors acknowledge the leakage and defend it):</strong></p>
+      <blockquote style="border-left:3px solid var(--amber); padding:6px 14px; margin:8px 0 14px; font-style:italic; color:var(--text-secondary);">
+        "... we perform search and final evaluation on the <strong>same 89-task benchmark</strong>. We use this benchmark as a <em>discovery problem</em> ... the benchmark is small and expensive enough that <strong>introducing a separate split would materially weaken the search signal</strong>. We additionally check for overfitting by <strong>manual inspection and regex-based audits for task-specific string leakage</strong> into evolved harnesses."
+      </blockquote>
+
+      <div class="box box-warn" lang-zh>
+        <strong>我的判断：</strong>§3.1 和 §3.2 的 split 都很干净，尤其是 §3.2 做了双重 held-out（题目 + 模型），结论可信。§3.3 是 methodological weakness，论文自己也只能 defend "discovery problem 是公开实践、而且做了正则审计"——但 "我正则搜过没找到 task-specific 字符串" 不等于 "没过拟合"，仅提供有限保障。我在 <a href="#discussion" style="color:var(--accent);">§6.2 可深入讨论的问题</a> 里把这列为主要 concern 之一。
+      </div>
+      <div class="box box-warn" lang-en>
+        <strong>My read.</strong> §3.1 and §3.2 are clean splits; §3.2 is especially strong (problems AND models held out). §3.3 is a real methodological weakness — the authors can only defend it as "discovery-problem framing is standard community practice, plus we did regex audits". But "my regex didn't catch task-specific strings" ≠ "no overfitting" — this is only limited assurance. I flag this as a primary concern in <a href="#discussion" style="color:var(--accent);">§6.2 open questions</a>.
+      </div>
+    </div>
+
+    <!-- ==== 3.1 Text Classification ==== -->
+    <div class="subsection" id="sub-textcls">
+      <h3 lang-zh>3.1 在线文本分类</h3>
+      <h3 lang-en>3.1 Online text classification</h3>
+
+      <p lang-zh><strong>设置</strong>（沿用 ACE [Zhang 2025ace]）：LLM 逐条接收 labeled example，更新 memory，在 held-out 上测评。</p>
+      <p lang-en><strong>Setup</strong> (following ACE [Zhang 2025ace]): the LLM receives labeled examples one at a time, updates its memory, then is tested on a held-out set.</p>
+      <ul>
+        <li lang-zh>Base model：<code>GPT-OSS-120B</code>（冻结）</li>
+        <li lang-en>Base model: <code>GPT-OSS-120B</code> (frozen)</li>
+        <li lang-zh>3 个数据集：<strong>LawBench</strong>（法律，215 类）/ <strong>Symptom2Disease</strong>（医疗，22 类）/ <strong>USPTO-50k</strong>（化学，180 类）</li>
+        <li lang-en>3 datasets: <strong>LawBench</strong> (law, 215 classes) / <strong>Symptom2Disease</strong> (medical, 22 classes) / <strong>USPTO-50k</strong> (chemistry, 180 classes)</li>
+        <li lang-zh>搜索种群：zero-shot + few-shot + ACE + MCE；20 iter × 2 候选 = 40 候选</li>
+        <li lang-en>Seed population: zero-shot + few-shot + ACE + MCE; 20 iter × 2 candidates = 40 candidates</li>
+      </ul>
+
+      <h4 lang-zh>3.1.1 主结果：vs. 手工 SOTA harness</h4>
+      <h4 lang-en>3.1.1 Main result: vs. hand-designed SOTA</h4>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>Harness</th><th lang-en>Harness</th>
+              <th lang-zh>USPTO</th><th lang-en>USPTO</th>
+              <th lang-zh>S2D</th><th lang-en>S2D</th>
+              <th lang-zh>Law</th><th lang-en>Law</th>
+              <th lang-zh>Avg Acc</th><th lang-en>Avg Acc</th>
+              <th lang-zh>Ctx (K) ↓</th><th lang-en>Ctx (K) ↓</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td lang-zh>Zero-Shot</td><td lang-en>Zero-Shot</td>
+              <td lang-zh>12.0</td><td lang-en>12.0</td>
+              <td lang-zh>63.2</td><td lang-en>63.2</td>
+              <td lang-zh>7.0</td><td lang-en>7.0</td>
+              <td lang-zh>27.4</td><td lang-en>27.4</td>
+              <td lang-zh>0</td><td lang-en>0</td>
+            </tr>
+            <tr>
+              <td lang-zh>Few-Shot (8)</td><td lang-en>Few-Shot (8)</td>
+              <td lang-zh>14.0</td><td lang-en>14.0</td>
+              <td lang-zh>67.9</td><td lang-en>67.9</td>
+              <td lang-zh>21.0</td><td lang-en>21.0</td>
+              <td lang-zh>34.3</td><td lang-en>34.3</td>
+              <td lang-zh>2.0</td><td lang-en>2.0</td>
+            </tr>
+            <tr>
+              <td lang-zh>Few-Shot (32)</td><td lang-en>Few-Shot (32)</td>
+              <td lang-zh>13.0</td><td lang-en>13.0</td>
+              <td lang-zh>72.2</td><td lang-en>72.2</td>
+              <td lang-zh>21.0</td><td lang-en>21.0</td>
+              <td lang-zh>35.4</td><td lang-en>35.4</td>
+              <td lang-zh>7.9</td><td lang-en>7.9</td>
+            </tr>
+            <tr>
+              <td lang-zh>Few-Shot (all)</td><td lang-en>Few-Shot (all)</td>
+              <td lang-zh>15.0</td><td lang-en>15.0</td>
+              <td lang-zh>78.3</td><td lang-en>78.3</td>
+              <td lang-zh>29.0</td><td lang-en>29.0</td>
+              <td lang-zh>40.8</td><td lang-en>40.8</td>
+              <td lang-zh>12.3</td><td lang-en>12.3</td>
+            </tr>
+            <tr>
+              <td lang-zh>MCE</td><td lang-en>MCE</td>
+              <td lang-zh>14.0</td><td lang-en>14.0</td>
+              <td lang-zh>83.0</td><td lang-en>83.0</td>
+              <td lang-zh>23.0</td><td lang-en>23.0</td>
+              <td lang-zh>40.0</td><td lang-en>40.0</td>
+              <td lang-zh>28.5</td><td lang-en>28.5</td>
+            </tr>
+            <tr>
+              <td lang-zh>ACE</td><td lang-en>ACE</td>
+              <td lang-zh><strong>16.0</strong></td><td lang-en><strong>16.0</strong></td>
+              <td lang-zh>77.8</td><td lang-en>77.8</td>
+              <td lang-zh>29.0</td><td lang-en>29.0</td>
+              <td lang-zh>40.9</td><td lang-en>40.9</td>
+              <td lang-zh>50.8</td><td lang-en>50.8</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Meta-Harness</strong></td><td lang-en><strong>Meta-Harness</strong></td>
+              <td lang-zh>14.0</td><td lang-en>14.0</td>
+              <td lang-zh><strong>86.8</strong></td><td lang-en><strong>86.8</strong></td>
+              <td lang-zh><strong>45.0</strong></td><td lang-en><strong>45.0</strong></td>
+              <td lang-zh><strong>48.6</strong></td><td lang-en><strong>48.6</strong></td>
+              <td lang-zh><strong>11.4</strong></td><td lang-en><strong>11.4</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="fig-caption" lang-zh>Table 2 (tab:main_results): 测试集精度。Meta-Harness 超 ACE +7.7 pp，context 仅 1/4（11.4k vs 50.8k）。LawBench 一项涨 +16 pp。</div>
+      <div class="fig-caption" lang-en>Table 2 (tab:main_results): test accuracy. Meta-Harness beats ACE by +7.7 pp with only 1/4 the context (11.4k vs 50.8k). LawBench alone gains +16 pp.</div>
+
+      <h4 lang-zh>3.1.2 vs. text optimizer（相同 proposer + 预算）</h4>
+      <h4 lang-en>3.1.2 vs. text optimizers (same proposer + budget)</h4>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>方法</th><th lang-en>Method</th>
+              <th lang-zh>Median</th><th lang-en>Median</th>
+              <th lang-zh>Best</th><th lang-en>Best</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td lang-zh>GEPA</td><td lang-en>GEPA</td><td lang-zh>32.6</td><td lang-en>32.6</td><td lang-zh>40.2</td><td lang-en>40.2</td></tr>
+            <tr><td lang-zh>Best-of-N</td><td lang-en>Best-of-N</td><td lang-zh>34.0</td><td lang-en>34.0</td><td lang-zh>44.2</td><td lang-en>44.2</td></tr>
+            <tr><td lang-zh>OpenEvolve</td><td lang-en>OpenEvolve</td><td lang-zh>39.1</td><td lang-en>39.1</td><td lang-zh>43.3</td><td lang-en>43.3</td></tr>
+            <tr><td lang-zh>TTT-Discover</td><td lang-en>TTT-Discover</td><td lang-zh>34.1</td><td lang-en>34.1</td><td lang-zh>45.6</td><td lang-en>45.6</td></tr>
+            <tr><td lang-zh><strong>Meta-Harness</strong></td><td lang-en><strong>Meta-Harness</strong></td><td lang-zh><strong>50.0</strong></td><td lang-en><strong>50.0</strong></td><td lang-zh><strong>56.7</strong></td><td lang-en><strong>56.7</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="fig-caption" lang-zh>Table 3 (tab:text_classification_optimizer_comparison)：相同 proposer 和 evaluation 预算下，Meta-Harness 用 1/10 次评估就匹配 OpenEvolve/TTT-Discover 的最终精度。</div>
+      <div class="fig-caption" lang-en>Table 3: under matched proposer and budget, Meta-Harness matches OpenEvolve/TTT-Discover's final accuracy in 1/10 the evaluations.</div>
+
+      <h4 lang-zh>3.1.3 消融：到底是反馈里的哪部分在起作用？</h4>
+      <h4 lang-en>3.1.3 Ablation: which part of the feedback carries the signal?</h4>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>Interface</th><th lang-en>Interface</th>
+              <th lang-zh>Scores</th><th lang-en>Scores</th>
+              <th lang-zh>Code</th><th lang-en>Code</th>
+              <th lang-zh>Summary</th><th lang-en>Summary</th>
+              <th lang-zh>Traces</th><th lang-en>Traces</th>
+              <th lang-zh>Median ↑</th><th lang-en>Median ↑</th>
+              <th lang-zh>Best ↑</th><th lang-en>Best ↑</th>
+              <th lang-zh>Runs > ZS</th><th lang-en>Runs > ZS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td lang-zh>Scores Only</td><td lang-en>Scores Only</td>
+              <td lang-zh>✓</td><td lang-en>✓</td>
+              <td lang-zh>✓</td><td lang-en>✓</td>
+              <td lang-zh>✗</td><td lang-en>✗</td>
+              <td lang-zh>✗</td><td lang-en>✗</td>
+              <td lang-zh>34.6</td><td lang-en>34.6</td>
+              <td lang-zh>41.3</td><td lang-en>41.3</td>
+              <td lang-zh>26</td><td lang-en>26</td>
+            </tr>
+            <tr>
+              <td lang-zh>Scores + Summary</td><td lang-en>Scores + Summary</td>
+              <td lang-zh>✓</td><td lang-en>✓</td>
+              <td lang-zh>✓</td><td lang-en>✓</td>
+              <td lang-zh>✓</td><td lang-en>✓</td>
+              <td lang-zh>✗</td><td lang-en>✗</td>
+              <td lang-zh>34.9</td><td lang-en>34.9</td>
+              <td lang-zh>38.7</td><td lang-en>38.7</td>
+              <td lang-zh>23</td><td lang-en>23</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Meta-Harness (full)</strong></td><td lang-en><strong>Meta-Harness (full)</strong></td>
+              <td lang-zh>✓</td><td lang-en>✓</td>
+              <td lang-zh>✓</td><td lang-en>✓</td>
+              <td lang-zh>—</td><td lang-en>—</td>
+              <td lang-zh>✓</td><td lang-en>✓</td>
+              <td lang-zh><strong>50.0</strong></td><td lang-en><strong>50.0</strong></td>
+              <td lang-zh><strong>56.7</strong></td><td lang-en><strong>56.7</strong></td>
+              <td lang-zh><strong>39</strong></td><td lang-en><strong>39</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="fig-caption" lang-zh>Table 4 (tab:text_classification_history_ablation)：ablation 覆盖 3 种 proposer 接口。</div>
+      <div class="fig-caption" lang-en>Table 4: ablation across 3 proposer interfaces.</div>
+
+      <div class="box box-key" lang-zh>
+        <strong>结论：raw execution traces 是最关键的成分。</strong>Summary 几乎不帮助（中位 34.6 → 34.9），在 Best 上反而掉点（41.3 → 38.7）。加入 traces 后跳到 50.0 / 56.7，即便 median candidate 都超过 ablation 的 best。<strong>压缩本身是 negative information carrier</strong>。
+      </div>
+      <div class="box box-key" lang-en>
+        <strong>Raw execution traces are the key ingredient.</strong> Summary barely helps (median 34.6 → 34.9) and even hurts Best (41.3 → 38.7). Adding traces jumps to 50.0 / 56.7 — even the median candidate beats the ablation's best. <strong>Compression itself is a negative information carrier.</strong>
+      </div>
+
+      <h4 lang-zh>3.1.4 Pareto 前沿：accuracy vs context</h4>
+      <h4 lang-en>3.1.4 Pareto frontier: accuracy vs context</h4>
+
+      <div class="img-placeholder" id="ph-fig3">
+        <div class="icon">📊</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 3: Accuracy-Context Pareto 前沿</span>
+          <span lang-en>Figure 3: Accuracy-context Pareto frontier</span>
+        </div>
+        <div class="ph-caption" lang-zh>Meta-Harness 的 accuracy-context 前沿严格优于所有对比方法。同一个 proposer 在给定 trade-off 下自发探索到多个 Pareto 最优点。</div>
+        <div class="ph-caption" lang-en>Meta-Harness's accuracy-context frontier strictly dominates all baselines. The same proposer spontaneously discovers multiple Pareto-optimal points across the desired trade-off.</div>
+        <div class="ph-filename">figures/fig3_pareto_frontier.png</div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>Pareto 变体</th><th lang-en>Pareto variant</th>
+              <th lang-zh>USPTO</th><th lang-en>USPTO</th>
+              <th lang-zh>S2D</th><th lang-en>S2D</th>
+              <th lang-zh>Law</th><th lang-en>Law</th>
+              <th lang-zh>Avg</th><th lang-en>Avg</th>
+              <th lang-zh>Ctx (K)</th><th lang-en>Ctx (K)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td lang-zh>Draft Verification</td><td lang-en>Draft Verification</td>
+              <td lang-zh><strong>18.0</strong></td><td lang-en><strong>18.0</strong></td>
+              <td lang-zh>85.4</td><td lang-en>85.4</td>
+              <td lang-zh>17.0</td><td lang-en>17.0</td>
+              <td lang-zh>40.1</td><td lang-en>40.1</td>
+              <td lang-zh>5.4</td><td lang-en>5.4</td>
+            </tr>
+            <tr>
+              <td lang-zh>Error-Annotated</td><td lang-en>Error-Annotated</td>
+              <td lang-zh>9.0</td><td lang-en>9.0</td>
+              <td lang-zh>87.7</td><td lang-en>87.7</td>
+              <td lang-zh>24.0</td><td lang-en>24.0</td>
+              <td lang-zh>40.2</td><td lang-en>40.2</td>
+              <td lang-zh>22.3</td><td lang-en>22.3</td>
+            </tr>
+            <tr>
+              <td lang-zh>CoT Replay</td><td lang-en>CoT Replay</td>
+              <td lang-zh>13.0</td><td lang-en>13.0</td>
+              <td lang-zh>88.2</td><td lang-en>88.2</td>
+              <td lang-zh>25.0</td><td lang-en>25.0</td>
+              <td lang-zh>42.1</td><td lang-en>42.1</td>
+              <td lang-zh>23.3</td><td lang-en>23.3</td>
+            </tr>
+            <tr>
+              <td lang-zh>Cluster Coverage</td><td lang-en>Cluster Coverage</td>
+              <td lang-zh>12.0</td><td lang-en>12.0</td>
+              <td lang-zh>86.8</td><td lang-en>86.8</td>
+              <td lang-zh>33.0</td><td lang-en>33.0</td>
+              <td lang-zh>43.9</td><td lang-en>43.9</td>
+              <td lang-zh>31.2</td><td lang-en>31.2</td>
+            </tr>
+            <tr>
+              <td lang-zh>Cascade Retrieval</td><td lang-en>Cascade Retrieval</td>
+              <td lang-zh>12.0</td><td lang-en>12.0</td>
+              <td lang-zh>86.8</td><td lang-en>86.8</td>
+              <td lang-zh>36.0</td><td lang-en>36.0</td>
+              <td lang-zh>44.9</td><td lang-en>44.9</td>
+              <td lang-zh>39.2</td><td lang-en>39.2</td>
+            </tr>
+            <tr>
+              <td lang-zh>RRF + Contrastive</td><td lang-en>RRF + Contrastive</td>
+              <td lang-zh><strong>18.0</strong></td><td lang-en><strong>18.0</strong></td>
+              <td lang-zh>89.6</td><td lang-en>89.6</td>
+              <td lang-zh>35.0</td><td lang-en>35.0</td>
+              <td lang-zh>47.5</td><td lang-en>47.5</td>
+              <td lang-zh>41.4</td><td lang-en>41.4</td>
+            </tr>
+            <tr>
+              <td lang-zh>Relevance + Contrastive</td><td lang-en>Relevance + Contrastive</td>
+              <td lang-zh><strong>18.0</strong></td><td lang-en><strong>18.0</strong></td>
+              <td lang-zh><strong>90.6</strong></td><td lang-en><strong>90.6</strong></td>
+              <td lang-zh>36.0</td><td lang-en>36.0</td>
+              <td lang-zh>48.2</td><td lang-en>48.2</td>
+              <td lang-zh>43.9</td><td lang-en>43.9</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Label-Primed Query ← main result</strong></td><td lang-en><strong>Label-Primed Query ← main result</strong></td>
+              <td lang-zh>14.0</td><td lang-en>14.0</td>
+              <td lang-zh>86.8</td><td lang-en>86.8</td>
+              <td lang-zh><strong>45.0</strong></td><td lang-en><strong>45.0</strong></td>
+              <td lang-zh><strong>48.6</strong></td><td lang-en><strong>48.6</strong></td>
+              <td lang-zh>45.5</td><td lang-en>45.5</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4 lang-zh>3.1.5 OOD 泛化（9 个完全未见过的数据集）</h4>
+      <h4 lang-en>3.1.5 OOD generalization (9 entirely held-out datasets)</h4>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>Harness</th><th lang-en>Harness</th>
+              <th lang-zh>SciC</th><th lang-en>SciC</th>
+              <th lang-zh>FiNER</th><th lang-en>FiNER</th>
+              <th lang-zh>Amz5</th><th lang-en>Amz5</th>
+              <th lang-zh>FPB</th><th lang-en>FPB</th>
+              <th lang-zh>GoEmo</th><th lang-en>GoEmo</th>
+              <th lang-zh>Bank77</th><th lang-en>Bank77</th>
+              <th lang-zh>News</th><th lang-en>News</th>
+              <th lang-zh>SciT</th><th lang-en>SciT</th>
+              <th lang-zh>TwHate</th><th lang-en>TwHate</th>
+              <th lang-zh>Avg ↑</th><th lang-en>Avg ↑</th>
+              <th lang-zh>Ctx ↓</th><th lang-en>Ctx ↓</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td lang-zh>Zero-shot</td><td lang-en>Zero-shot</td>
+              <td lang-zh>32.7</td><td lang-en>32.7</td>
+              <td lang-zh>56.0</td><td lang-en>56.0</td>
+              <td lang-zh>52.7</td><td lang-en>52.7</td>
+              <td lang-zh>90.0</td><td lang-en>90.0</td>
+              <td lang-zh>42.0</td><td lang-en>42.0</td>
+              <td lang-zh>80.7</td><td lang-en>80.7</td>
+              <td lang-zh>84.7</td><td lang-en>84.7</td>
+              <td lang-zh>89.3</td><td lang-en>89.3</td>
+              <td lang-zh>75.3</td><td lang-en>75.3</td>
+              <td lang-zh>67.0</td><td lang-en>67.0</td>
+              <td lang-zh>—</td><td lang-en>—</td>
+            </tr>
+            <tr>
+              <td lang-zh>Few-shot (8)</td><td lang-en>Few-shot (8)</td>
+              <td lang-zh>34.0</td><td lang-en>34.0</td>
+              <td lang-zh>63.0</td><td lang-en>63.0</td>
+              <td lang-zh>54.0</td><td lang-en>54.0</td>
+              <td lang-zh>90.0</td><td lang-en>90.0</td>
+              <td lang-zh>44.0</td><td lang-en>44.0</td>
+              <td lang-zh>82.7</td><td lang-en>82.7</td>
+              <td lang-zh>84.7</td><td lang-en>84.7</td>
+              <td lang-zh><strong>91.3</strong></td><td lang-en><strong>91.3</strong></td>
+              <td lang-zh>76.7</td><td lang-en>76.7</td>
+              <td lang-zh>68.9</td><td lang-en>68.9</td>
+              <td lang-zh>2.2</td><td lang-en>2.2</td>
+            </tr>
+            <tr>
+              <td lang-zh>Few-shot (32)</td><td lang-en>Few-shot (32)</td>
+              <td lang-zh>38.7</td><td lang-en>38.7</td>
+              <td lang-zh>62.0</td><td lang-en>62.0</td>
+              <td lang-zh>53.3</td><td lang-en>53.3</td>
+              <td lang-zh>90.7</td><td lang-en>90.7</td>
+              <td lang-zh>43.3</td><td lang-en>43.3</td>
+              <td lang-zh><strong>86.0</strong></td><td lang-en><strong>86.0</strong></td>
+              <td lang-zh>85.3</td><td lang-en>85.3</td>
+              <td lang-zh>90.7</td><td lang-en>90.7</td>
+              <td lang-zh>76.7</td><td lang-en>76.7</td>
+              <td lang-zh>69.6</td><td lang-en>69.6</td>
+              <td lang-zh>5.2</td><td lang-en>5.2</td>
+            </tr>
+            <tr>
+              <td lang-zh>Few-shot (all)</td><td lang-en>Few-shot (all)</td>
+              <td lang-zh>35.3</td><td lang-en>35.3</td>
+              <td lang-zh>61.0</td><td lang-en>61.0</td>
+              <td lang-zh>50.0</td><td lang-en>50.0</td>
+              <td lang-zh>93.3</td><td lang-en>93.3</td>
+              <td lang-zh>42.7</td><td lang-en>42.7</td>
+              <td lang-zh>80.7</td><td lang-en>80.7</td>
+              <td lang-zh>84.0</td><td lang-en>84.0</td>
+              <td lang-zh>90.0</td><td lang-en>90.0</td>
+              <td lang-zh>76.7</td><td lang-en>76.7</td>
+              <td lang-zh>68.2</td><td lang-en>68.2</td>
+              <td lang-zh>7.4</td><td lang-en>7.4</td>
+            </tr>
+            <tr>
+              <td lang-zh>ACE</td><td lang-en>ACE</td>
+              <td lang-zh>40.7</td><td lang-en>40.7</td>
+              <td lang-zh><strong>74.0</strong></td><td lang-en><strong>74.0</strong></td>
+              <td lang-zh>48.0</td><td lang-en>48.0</td>
+              <td lang-zh><strong>96.7</strong></td><td lang-en><strong>96.7</strong></td>
+              <td lang-zh>44.0</td><td lang-en>44.0</td>
+              <td lang-zh>83.3</td><td lang-en>83.3</td>
+              <td lang-zh>86.0</td><td lang-en>86.0</td>
+              <td lang-zh>90.7</td><td lang-en>90.7</td>
+              <td lang-zh>68.7</td><td lang-en>68.7</td>
+              <td lang-zh>70.2</td><td lang-en>70.2</td>
+              <td lang-zh>11.7</td><td lang-en>11.7</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Meta-Harness</strong></td><td lang-en><strong>Meta-Harness</strong></td>
+              <td lang-zh><strong>53.3</strong></td><td lang-en><strong>53.3</strong></td>
+              <td lang-zh>67.0</td><td lang-en>67.0</td>
+              <td lang-zh><strong>60.0</strong></td><td lang-en><strong>60.0</strong></td>
+              <td lang-zh>94.0</td><td lang-en>94.0</td>
+              <td lang-zh><strong>46.0</strong></td><td lang-en><strong>46.0</strong></td>
+              <td lang-zh>82.7</td><td lang-en>82.7</td>
+              <td lang-zh><strong>86.7</strong></td><td lang-en><strong>86.7</strong></td>
+              <td lang-zh><strong>91.3</strong></td><td lang-en><strong>91.3</strong></td>
+              <td lang-zh><strong>77.3</strong></td><td lang-en><strong>77.3</strong></td>
+              <td lang-zh><strong>73.1</strong></td><td lang-en><strong>73.1</strong></td>
+              <td lang-zh><strong>7.3</strong></td><td lang-en><strong>7.3</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="fig-caption" lang-zh>Table 5 (tab:ood_results)：9 个搜索期间完全未见的数据集。Meta-Harness 在 6/9 上最好，平均高 ACE +2.9 pp，context 还更省。</div>
+      <div class="fig-caption" lang-en>Table 5: 9 datasets never seen during search. Meta-Harness wins 6/9, averages +2.9 pp above ACE, and uses less context.</div>
+
+      <div class="box box-note" lang-zh>
+        <strong>反直觉发现：</strong>Few-shot 加到 32 以上在 7/9 任务上反而掉点——说明对某些任务"更多示例 ≠ 更好"，harness 策略必须更精细。
+      </div>
+      <div class="box box-note" lang-en>
+        <strong>Counter-intuitive finding.</strong> Adding more than 32 few-shot examples <em>hurts</em> on 7/9 tasks — more examples ≠ better, harness strategy has to be smarter.
+      </div>
+    </div>
+
+    <!-- ==== 3.2 Math ==== -->
+    <div class="subsection" id="sub-math">
+      <h3 lang-zh>3.2 数学检索推理（Retrieval-Augmented Reasoning）</h3>
+      <h3 lang-en>3.2 Retrieval-augmented math reasoning</h3>
+
+      <p lang-zh><strong>动机</strong>：数学题共享可复用的 proof pattern，检索原则上该有帮助。但以往结果显示 retrieval 在 reasoning-heavy 数学上远不如 fact-grounded 领域有效——<strong>难点不是"要不要检索"，而是"策略怎么设计"</strong>。正好适合搜索。</p>
+      <p lang-en><strong>Motivation.</strong> Math problems share reusable proof patterns, so retrieval <em>should</em> help. But prior work shows retrieval is much less effective on reasoning-heavy math than fact-grounded domains — <strong>the difficulty is not whether to retrieve but how</strong>. A perfect fit for search.</p>
+
+      <div class="box box-note" lang-zh>
+        <strong>三个数据集分别干啥（容易混）：</strong>
+        <ul style="margin:6px 0 0 0;">
+          <li><strong>检索语料 535k</strong>：harness 运行时 BM25 查阅的<strong>"题库"</strong>（不是要解的题，是参考材料）</li>
+          <li><strong>Search set 250</strong>：搜索期间<strong>给候选 harness 打分</strong>的题，决定哪个 harness 好</li>
+          <li><strong>Test set 200</strong>：最终报告数字的题，搜索中从未见过</li>
+        </ul>
+        三者严格互斥（语料对 search set 和 test set 都做了 Jaccard 0.8 + prefix 去污染）。
+      </div>
+      <div class="box box-note" lang-en>
+        <strong>Three datasets, three different roles (easy to confuse):</strong>
+        <ul style="margin:6px 0 0 0;">
+          <li><strong>Retrieval corpus (535k)</strong>: the <strong>"library"</strong> the harness queries via BM25 at inference time (reference material, <em>not</em> problems to solve)</li>
+          <li><strong>Search set (250)</strong>: problems used to <strong>score candidate harnesses during search</strong>, deciding which harness wins</li>
+          <li><strong>Test set (200)</strong>: problems for the final reported numbers, never seen during search</li>
+        </ul>
+        All three are strictly disjoint (the corpus was decontaminated against both search set and test set via Jaccard 0.8 + prefix match).
+      </div>
+
+      <ul>
+        <li lang-zh>检索语料：<strong>535,356 道题</strong>（OpenMathReasoning 281k / DeepMath 103k / NuminaMath 129k / PolyMath 11k / Omni-MATH 4.3k / FineProofs 4.3k / AIME 933 / Putnam-AXIOM 492），精细去污染（Jaccard 0.8 + exact prefix）</li>
+        <li lang-en>Retrieval corpus: <strong>535,356 problems</strong> (OpenMathReasoning 281k / DeepMath 103k / NuminaMath 129k / PolyMath 11k / Omni-MATH 4.3k / FineProofs 4.3k / AIME 933 / Putnam-AXIOM 492), carefully decontaminated (Jaccard 0.8 + exact prefix)</li>
+        <li lang-zh>Search set：250 道 Olympiad 难题（OlympiadBench + Omni-MATH hard），40 iter × ~2.7 候选 = <strong>109 个候选 retrieval harness</strong></li>
+        <li lang-en>Search set: 250 Olympiad-difficulty problems (OlympiadBench + Omni-MATH hard); 40 iter × ~2.7 candidates = <strong>109 candidate retrieval harnesses</strong></li>
+        <li lang-zh>搜索期间 base model：<code>GPT-OSS-20B</code>；测试：<strong>200 道 IMO 级题</strong> (IMO-AnswerBench 100 + IMO-ProofBench 60 + ArXivMath Dec 2025 17 + ArXivMath Jan 2026 23)</li>
+        <li lang-en>Search base model: <code>GPT-OSS-20B</code>. Test: <strong>200 IMO-level problems</strong> (IMO-AnswerBench 100 + IMO-ProofBench 60 + ArXivMath Dec 2025 17 + ArXivMath Jan 2026 23)</li>
+        <li lang-zh>测试 base model（5 个，搜索中全部没见过）：<code>GPT-5.4-nano</code> / <code>GPT-5.4-mini</code> / <code>Gemini-3.1-Flash-Lite</code> / <code>Gemini-3-Flash</code> / <code>GPT-OSS-20B</code></li>
+        <li lang-en>Test base models (5, none seen during search): <code>GPT-5.4-nano</code> / <code>GPT-5.4-mini</code> / <code>Gemini-3.1-Flash-Lite</code> / <code>Gemini-3-Flash</code> / <code>GPT-OSS-20B</code></li>
+      </ul>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>方法</th><th lang-en>Method</th>
+              <th lang-zh>GPT-5.4n</th><th lang-en>GPT-5.4n</th>
+              <th lang-zh>GPT-5.4m</th><th lang-en>GPT-5.4m</th>
+              <th lang-zh>Gem-3.1FL</th><th lang-en>Gem-3.1FL</th>
+              <th lang-zh>Gem-3F</th><th lang-en>Gem-3F</th>
+              <th lang-zh>GPT-20B</th><th lang-en>GPT-20B</th>
+              <th lang-zh>Avg</th><th lang-en>Avg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td lang-zh>No Retriever</td><td lang-en>No Retriever</td>
+              <td lang-zh>23.0</td><td lang-en>23.0</td>
+              <td lang-zh>28.8</td><td lang-en>28.8</td>
+              <td lang-zh>28.6</td><td lang-en>28.6</td>
+              <td lang-zh>42.6</td><td lang-en>42.6</td>
+              <td lang-zh>47.6</td><td lang-en>47.6</td>
+              <td lang-zh>34.1</td><td lang-en>34.1</td>
+            </tr>
+            <tr>
+              <td lang-zh>Dense (k=1)</td><td lang-en>Dense (k=1)</td>
+              <td lang-zh>27.1 (+4.1)</td><td lang-en>27.1 (+4.1)</td>
+              <td lang-zh>24.5 (-4.3)</td><td lang-en>24.5 (-4.3)</td>
+              <td lang-zh>31.3 (+2.7)</td><td lang-en>31.3 (+2.7)</td>
+              <td lang-zh>42.3 (-0.3)</td><td lang-en>42.3 (-0.3)</td>
+              <td lang-zh>46.9 (-0.7)</td><td lang-en>46.9 (-0.7)</td>
+              <td lang-zh>34.4 (+0.3)</td><td lang-en>34.4 (+0.3)</td>
+            </tr>
+            <tr>
+              <td lang-zh>Dense (k=5)</td><td lang-en>Dense (k=5)</td>
+              <td lang-zh>31.1 (+8.1)</td><td lang-en>31.1 (+8.1)</td>
+              <td lang-zh>28.3 (-0.5)</td><td lang-en>28.3 (-0.5)</td>
+              <td lang-zh>37.1 (+8.5)</td><td lang-en>37.1 (+8.5)</td>
+              <td lang-zh>47.2 (+4.6)</td><td lang-en>47.2 (+4.6)</td>
+              <td lang-zh>46.7 (-0.9)</td><td lang-en>46.7 (-0.9)</td>
+              <td lang-zh>38.1 (+4.0)</td><td lang-en>38.1 (+4.0)</td>
+            </tr>
+            <tr>
+              <td lang-zh>Random Few-shot</td><td lang-en>Random Few-shot</td>
+              <td lang-zh>23.1 (+0.1)</td><td lang-en>23.1 (+0.1)</td>
+              <td lang-zh>24.5 (-4.3)</td><td lang-en>24.5 (-4.3)</td>
+              <td lang-zh>31.0 (+2.4)</td><td lang-en>31.0 (+2.4)</td>
+              <td lang-zh>40.4 (-2.2)</td><td lang-en>40.4 (-2.2)</td>
+              <td lang-zh>41.8 (-5.8)</td><td lang-en>41.8 (-5.8)</td>
+              <td lang-zh>32.2 (-1.9)</td><td lang-en>32.2 (-1.9)</td>
+            </tr>
+            <tr>
+              <td lang-zh>BM25</td><td lang-en>BM25</td>
+              <td lang-zh>30.2 (+7.2)</td><td lang-en>30.2 (+7.2)</td>
+              <td lang-zh>29.2 (+0.4)</td><td lang-en>29.2 (+0.4)</td>
+              <td lang-zh>32.8 (+4.2)</td><td lang-en>32.8 (+4.2)</td>
+              <td lang-zh>46.6 (+4.0)</td><td lang-en>46.6 (+4.0)</td>
+              <td lang-zh>48.9 (+1.3)</td><td lang-en>48.9 (+1.3)</td>
+              <td lang-zh>37.5 (+3.4)</td><td lang-en>37.5 (+3.4)</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Meta-Harness</strong></td><td lang-en><strong>Meta-Harness</strong></td>
+              <td lang-zh><strong>31.7 (+8.7)</strong></td><td lang-en><strong>31.7 (+8.7)</strong></td>
+              <td lang-zh><strong>30.4 (+1.6)</strong></td><td lang-en><strong>30.4 (+1.6)</strong></td>
+              <td lang-zh>34.9 (+6.3)</td><td lang-en>34.9 (+6.3)</td>
+              <td lang-zh>46.3 (+3.7)</td><td lang-en>46.3 (+3.7)</td>
+              <td lang-zh><strong>50.6 (+3.0)</strong></td><td lang-en><strong>50.6 (+3.0)</strong></td>
+              <td lang-zh><strong>38.8 (+4.7)</strong></td><td lang-en><strong>38.8 (+4.7)</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="fig-caption" lang-zh>Table 6 (tab:math_results)：pass@1 averaged over 3 samples/问题，括号内是相对 No Retriever 的变化。Meta-Harness <strong>5 个模型全部提升</strong>（对比其他方法大多在某个模型上退化）。</div>
+      <div class="fig-caption" lang-en>Table 6: pass@1 averaged over 3 samples/problem; parentheses show Δ vs. No Retriever. Meta-Harness <strong>improves on all 5 models</strong> (other methods regress on at least one).</div>
+
+      <div class="box box-key" lang-zh>
+        <strong>跨模型迁移是核心观察：</strong>搜索时只见过 GPT-OSS-20B，却在 4 个未见模型上都涨——harness 学到的是通用 retrieval 策略，不是某个模型的过拟合。
+      </div>
+      <div class="box box-key" lang-en>
+        <strong>Cross-model transfer is the key observation.</strong> The harness was searched only on GPT-OSS-20B but improves 4 held-out models — it encodes a general retrieval strategy, not per-model overfitting.
+      </div>
+    </div>
+
+    <!-- ==== 3.3 TerminalBench ==== -->
+    <div class="subsection" id="sub-tbench">
+      <h3 lang-zh>3.3 TerminalBench-2（Agentic Coding）</h3>
+      <h3 lang-en>3.3 TerminalBench-2 (agentic coding)</h3>
+
+      <p lang-zh><strong>设置</strong>：89 任务，需要长程自主执行、复杂依赖、领域知识。种子 harness = Terminus 2 + Terminus-KIRA；Base models = Claude Opus 4.6 / Claude Haiku 4.5。作为 <em>discovery problem</em>（<strong>人话：任务本身就是"打榜这个公开 benchmark"，所以搜索集 = 测试集都是这 89 任务，类似 Kaggle</strong>），通过人工 + 正则审计检查 task-specific 字符串泄露。</p>
+      <p lang-en><strong>Setup.</strong> 89 tasks requiring long-horizon autonomous execution, complex dependencies, and domain knowledge. Seed harnesses: Terminus 2 + Terminus-KIRA. Base models: Claude Opus 4.6 / Claude Haiku 4.5. Framed as a <em>discovery problem</em> (<strong>plain English: the goal <em>is</em> topping this public benchmark, so search set = test set = the same 89 tasks, Kaggle-style</strong>) with manual + regex audits for task-specific string leakage.</p>
+
+      <div class="two-col">
+        <div class="card card-accent">
+          <h5>Claude Opus 4.6</h5>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th lang-zh>Harness</th><th lang-en>Harness</th>
+                  <th lang-zh>Auto</th><th lang-en>Auto</th>
+                  <th lang-zh>Pass %</th><th lang-en>Pass %</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td lang-zh>Claude Code</td><td lang-en>Claude Code</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>58.0</td><td lang-en>58.0</td></tr>
+                <tr><td lang-zh>Terminus 2</td><td lang-en>Terminus 2</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>62.9</td><td lang-en>62.9</td></tr>
+                <tr><td lang-zh>Mux</td><td lang-en>Mux</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>66.5</td><td lang-en>66.5</td></tr>
+                <tr><td lang-zh>Droid</td><td lang-en>Droid</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>69.9</td><td lang-en>69.9</td></tr>
+                <tr><td lang-zh>TongAgents</td><td lang-en>TongAgents</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>71.9</td><td lang-en>71.9</td></tr>
+                <tr><td lang-zh>MAYA-V2</td><td lang-en>MAYA-V2</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>72.1</td><td lang-en>72.1</td></tr>
+                <tr><td lang-zh>Terminus-KIRA</td><td lang-en>Terminus-KIRA</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>74.7</td><td lang-en>74.7</td></tr>
+                <tr><td lang-zh>Capy</td><td lang-en>Capy</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>75.3</td><td lang-en>75.3</td></tr>
+                <tr><td lang-zh>ForgeCode*</td><td lang-en>ForgeCode*</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>81.8</td><td lang-en>81.8</td></tr>
+                <tr><td lang-zh><strong>Meta-Harness</strong></td><td lang-en><strong>Meta-Harness</strong></td><td lang-zh>✓</td><td lang-en>✓</td><td lang-zh><strong>76.4</strong></td><td lang-en><strong>76.4</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p lang-zh style="font-size:12px;">* ForgeCode 81.8% 但作者无法从公开代码复现 → 其成绩依赖未公开组件。Meta-Harness 在可复现 Opus-4.6 agent 中排 <strong>#2</strong>（超 Terminus-KIRA）。</p>
+          <p lang-en style="font-size:12px;">* ForgeCode 81.8% but authors cannot reproduce from public code → score depends on unpublished components. Meta-Harness ranks <strong>#2 among reproducible Opus-4.6 agents</strong> (above Terminus-KIRA).</p>
+        </div>
+        <div class="card card-accent">
+          <h5>Claude Haiku 4.5</h5>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th lang-zh>Harness</th><th lang-en>Harness</th>
+                  <th lang-zh>Auto</th><th lang-en>Auto</th>
+                  <th lang-zh>Pass %</th><th lang-en>Pass %</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td lang-zh>OpenHands</td><td lang-en>OpenHands</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>13.9</td><td lang-en>13.9</td></tr>
+                <tr><td lang-zh>Claude Code</td><td lang-en>Claude Code</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>27.5</td><td lang-en>27.5</td></tr>
+                <tr><td lang-zh>Terminus 2</td><td lang-en>Terminus 2</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>28.3</td><td lang-en>28.3</td></tr>
+                <tr><td lang-zh>Mini-SWE-Agent</td><td lang-en>Mini-SWE-Agent</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>29.8</td><td lang-en>29.8</td></tr>
+                <tr><td lang-zh>Terminus-KIRA</td><td lang-en>Terminus-KIRA</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>33.7</td><td lang-en>33.7</td></tr>
+                <tr><td lang-zh>Goose</td><td lang-en>Goose</td><td lang-zh>✗</td><td lang-en>✗</td><td lang-zh>35.5</td><td lang-en>35.5</td></tr>
+                <tr><td lang-zh><strong>Meta-Harness</strong></td><td lang-en><strong>Meta-Harness</strong></td><td lang-zh>✓</td><td lang-en>✓</td><td lang-zh><strong>37.6</strong></td><td lang-en><strong>37.6</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p lang-zh style="font-size:12px;">Meta-Harness 在 Haiku-4.5 上排 <strong>#1</strong>，比次好 Goose 高 +2.1 pp。</p>
+          <p lang-en style="font-size:12px;">Meta-Harness ranks <strong>#1 on Haiku-4.5</strong>, +2.1 pp above the next-best (Goose).</p>
+        </div>
+      </div>
+
+      <div class="box box-insight" lang-zh>
+        <strong>为什么值得注意：</strong>TerminalBench-2 是一个被多个团队直接手调的活跃 benchmark（ForgeCode、Warp 等都写过 post）。一个"自动发现"方法能在这种 frontier 上刷新记录，说明长程 text-optimization 的 loop 已经触达工业前沿。
+      </div>
+      <div class="box box-insight" lang-en>
+        <strong>Why it matters.</strong> TerminalBench-2 is actively tuned by multiple teams (ForgeCode, Warp, etc. have public posts). That an <em>automatic</em> search method tops the frontier signals long-horizon text-optimization loops have reached industrial scale.
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 4. QUALITATIVE PROPOSER BEHAVIOR ======================== -->
+  <section id="qualitative" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">4</span>
+      <h2 lang-zh>Proposer 的定性行为（核心存在性证明）</h2>
+      <h2 lang-en>Qualitative proposer behavior (existence proof)</h2>
+    </div>
+
+    <p lang-zh>这一节是论文最 compelling 的论据——证明 proposer 不是在做随机 mutation，而是在做 <strong>因果诊断</strong>。TerminalBench-2 run, 10 iterations, Opus 4.6。</p>
+    <p lang-en>This is the paper's most compelling evidence: the proposer is not doing random mutation — it is doing <strong>causal diagnosis</strong>. TerminalBench-2 run, 10 iterations, Opus 4.6.</p>
+
+    <h4 lang-zh>文件访问统计</h4>
+    <h4 lang-en>File access statistics</h4>
+
+    <div class="chart-container">
+      <div class="chart-title" lang-zh>每迭代读文件的类型分布</div>
+      <div class="chart-title" lang-en>Per-iteration file-read type breakdown</div>
+      <div class="chart-source" lang-zh>TerminalBench-2 run, 10 iter, Opus 4.6。总中位 82 文件 / iter（范围 69–99）</div>
+      <div class="chart-source" lang-en>TerminalBench-2 run, 10 iter, Opus 4.6. Median 82 files / iter (range 69–99)</div>
+      <div class="bar-chart">
+        <div class="bar-row">
+          <div class="bar-label" lang-zh>Harness 源码</div>
+          <div class="bar-label" lang-en>Harness source</div>
+          <div class="bar-track"><div class="bar-fill" style="width:41%; background: var(--accent);"><span class="bar-value">41%</span></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" lang-zh>执行 Trace</div>
+          <div class="bar-label" lang-en>Execution traces</div>
+          <div class="bar-track"><div class="bar-fill" style="width:40%; background: var(--blue);"><span class="bar-value">40%</span></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" lang-zh>分数 / Summary</div>
+          <div class="bar-label" lang-en>Scores / summary</div>
+          <div class="bar-track"><div class="bar-fill" style="width:6%; background: var(--amber);"><span class="bar-value">6%</span></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" lang-zh>其他</div>
+          <div class="bar-label" lang-en>Other</div>
+          <div class="bar-track"><div class="bar-fill" style="width:13%; background: var(--text-secondary);"><span class="bar-value">13%</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <h4 lang-zh>搜索轨迹：因果推理在迭代中涌现</h4>
+    <h4 lang-en>Search trajectory: causal reasoning emerges across iterations</h4>
+
+    <div class="iter-timeline">
+      <div class="iter-item regress">
+        <div class="iter-tag" lang-zh>Iter 1–2<br>Regress</div>
+        <div class="iter-tag" lang-en>Iter 1–2<br>Regress</div>
+        <div class="iter-body">
+          <div lang-zh>两个 bugfix 都捆绑 "cleanup 导向的 prompt 模板"，分别退步至 <strong>58.9%</strong>（-5.6 pp）和 <strong>57.8%</strong>（-6.7 pp）。Proposer 记录的假设：</div>
+          <div lang-en>Two bugfixes bundled with "cleanup-heavy prompt templates"; both regress to <strong>58.9%</strong> (-5.6 pp) and <strong>57.8%</strong> (-6.7 pp). Proposer's recorded hypothesis:</div>
+          <div class="logbox">Hypothesis: __CMDEND__ marker fragments leak into LLM observations on long-running tasks, causing the model to get confused and enter infinite no-tool-call loops. Stripping these markers + adding a loop breaker will recover wasted steps.</div>
+        </div>
+      </div>
+
+      <div class="iter-item diagnose">
+        <div class="iter-tag" lang-zh>Iter 3<br>Diagnose</div>
+        <div class="iter-tag" lang-en>Iter 3<br>Diagnose</div>
+        <div class="iter-body">
+          <div lang-zh><strong>关键因果推理时刻：</strong>proposer 自己推断出 "regression 的 root cause 是 prompt 变更导致 agent 在完成前删除必要状态，而不是 structural bugfix"。</div>
+          <div lang-en><strong>Key causal-reasoning moment.</strong> The proposer infers "the root cause is the prompt change deleting necessary state before task completion — not the structural bugfix."</div>
+          <div class="logbox">Prior attempts: evo_marker_fix (58.9%, -5.6pp), evo_single_confirm (57.8%, -6.7pp) — both regressed. Root cause of regressions: Prompt template changes (cleanup directives) caused the agent to delete necessary state before task completion. The structural bugfixes were confounded with harmful prompt changes. evo_strip_only isolates the two proven structural fixes.</div>
+          <div lang-zh>隔离 confound 后：63.3% (-1.1 pp)，验证了假设。</div>
+          <div lang-en>After isolating the confound: 63.3% (-1.1 pp) — hypothesis confirmed.</div>
+        </div>
+      </div>
+
+      <div class="iter-item regress">
+        <div class="iter-tag" lang-zh>Iter 4–6<br>Probe</div>
+        <div class="iter-tag" lang-en>Iter 4–6<br>Probe</div>
+        <div class="iter-body">
+          <div lang-zh>继续探测完成流程 bug（state-machine reset、softened cleanup、smart waiting），全部 regress。</div>
+          <div lang-en>Continues probing completion-flow bugs (state-machine reset, softened cleanup, smart waiting); all regress.</div>
+          <div lang-zh>学到一个经验教训：<strong>修改 prompt / completion flow 是高风险的，即便 local 假设听起来合理</strong>。</div>
+          <div lang-en>Lesson learned: <strong>modifying prompts / completion flow is high risk even when local hypotheses sound reasonable</strong>.</div>
+        </div>
+      </div>
+
+      <div class="iter-item win">
+        <div class="iter-tag" lang-zh>Iter 7<br>Win</div>
+        <div class="iter-tag" lang-en>Iter 7<br>Win</div>
+        <div class="iter-body">
+          <div lang-zh>从"修控制流"转向"在循环开始前添加信息"——纯 additive 的 environment bootstrap。一举成为最好候选。</div>
+          <div lang-en>Pivots from "modify control flow" to "add info before the loop" — a purely additive environment bootstrap. Becomes the best candidate.</div>
+          <div class="logbox">All 6 prior iterations regressed from the 64.4% baseline because they modified the completion flow, prompt template, or observation processing. evo_env_bootstrap takes a different approach — purely additive. It gathers an environment snapshot via a single shell command before the first LLM call and appends it to the initial prompt. No other methods are changed. This should eliminate 3–5 wasted exploration turns on dependency-heavy tasks without risking regression on already-passing tasks.</div>
+        </div>
+      </div>
+
+      <div class="iter-item compose">
+        <div class="iter-tag" lang-zh>Iter 8<br>Compose</div>
+        <div class="iter-tag" lang-en>Iter 8<br>Compose</div>
+        <div class="iter-body">
+          <div lang-zh>尝试组合两个正交改动（env bootstrap + marker stripping）：</div>
+          <div lang-en>Attempts to compose two orthogonal fixes (env bootstrap + marker stripping):</div>
+          <div class="logbox">Combining two orthogonal fixes — env snapshot (saves early exploration turns) + marker stripping with no-tool-call loop breaker — will yield +1–3pp because they address independent failure modes without touching prompts or confirmation flows (which caused regressions in 5 of 7 prior iterations).</div>
+        </div>
+      </div>
+
+      <div class="iter-item compose">
+        <div class="iter-tag" lang-zh>Iter 10<br>Transfer</div>
+        <div class="iter-tag" lang-en>Iter 10<br>Transfer</div>
+        <div class="iter-body">
+          <div lang-zh><strong>跨 run 迁移</strong>——引用另一条独立搜索链的经验："don't cleanup service artifacts 值 +18 pp"。</div>
+          <div lang-en><strong>Cross-run transfer</strong> — references experience from a separate search run: "don't cleanup service artifacts worth +18 pp."</div>
+          <div class="logbox">The evolution history showed "don't cleanup service artifacts" was worth +18pp. Iter 9 (evo_no_cleanup_directive) targeted the same idea but crashed before evaluation.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box box-key" lang-zh>
+      <strong>存在性证明：</strong>proposer 能主动识别 "prompt intervention 是 confound"、隔离变量、pivot 到更安全的 additive 修改空间。这种"跨多个候选比较"的因果诊断，<strong>只有完整 filesystem 历史能支持</strong>——scalar score 和 summary 不够。
+    </div>
+    <div class="box box-key" lang-en>
+      <strong>Existence proof.</strong> The proposer actively identifies "the prompt intervention is a confound", isolates variables, and pivots to a safer additive modification space. That cross-candidate causal diagnosis is <strong>only supportable by full filesystem history</strong> — scalar scores and summaries cannot.
+    </div>
+  </section>
+
+  <!-- ======================== 5. DISCOVERED HARNESSES ======================== -->
+  <section id="discovered" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">5</span>
+      <h2 lang-zh>发现的具体 Harness 结构</h2>
+      <h2 lang-en>Discovered harness structures</h2>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>5.1 文本分类：两个代表性的发现 harness</h3>
+      <h3 lang-en>5.1 Text classification: two representative discovered harnesses</h3>
+
+      <p lang-zh>论文在 §3.1.4 的 Pareto 曲线里选了<strong>两个"极端点"</strong>来详细讲——因为它们代表了 accuracy-vs-context 这条权衡曲线的两端：</p>
+      <p lang-en>The paper highlights <strong>two "endpoints"</strong> from the §3.1.4 Pareto curve — they bookend the accuracy-vs-context trade-off:</p>
+      <ul style="margin-bottom:14px;">
+        <li lang-zh><strong>Draft Verification</strong>：40.1% avg accuracy, 5.4k context token（3 数据集平均）——只比 40.9% 的 ACE 低 0.8 pp，但 context 是它的 <strong>1/9</strong></li>
+        <li lang-en><strong>Draft Verification</strong>: 40.1% avg accuracy, 5.4k context tokens (averaged over 3 datasets) — only 0.8 pp below ACE's 40.9%, but with <strong>1/9 the context</strong></li>
+        <li lang-zh><strong>Label-Primed Query</strong>：48.6% avg accuracy, 45.5k context——比 ACE 高 <strong>+7.7 pp</strong>（主文主打的那个）</li>
+        <li lang-en><strong>Label-Primed Query</strong>: 48.6% avg accuracy, 45.5k context — <strong>+7.7 pp</strong> above ACE (the headline result)</li>
+      </ul>
+
+      <div class="two-col">
+        <div class="card card-accent">
+          <h5 lang-zh>Draft Verification — 最便宜的那端（5.4k ctx, 40.1%）</h5>
+          <h5 lang-en>Draft Verification — cheapest endpoint (5.4k ctx, 40.1%)</h5>
+          <p lang-zh><strong>设计思路：</strong>把单次 LLM 调用拆成两次小的，每次都只带很短的 context，总成本反而比一次性塞大量 few-shot 低。</p>
+          <p lang-en><strong>Idea:</strong> split one LLM call into two small calls, each with a tiny prompt; total cost ends up lower than one big few-shot call.</p>
+          <ul>
+            <li lang-zh><strong>Stage 1 (Draft)</strong>：从已积累的带标签 memory 里，按 TF-IDF 相似度取最像当前 query 的 <strong>5 个</strong> 例子 → 模型给出一个初步 label $D$。</li>
+            <li lang-en><strong>Stage 1 (Draft).</strong> From memory of labeled examples, retrieve the <strong>5</strong> most TF-IDF-similar to the query → model produces a draft label $D$.</li>
+            <li lang-zh><strong>Stage 2 (Verify)</strong>：现在已经有 $D$ 了，<strong>第二次检索条件于 $D$</strong> —— 拿 5 个"和 query 相似 <em>且</em> 标签 = $D$"的 <em>confirmer</em> + 5 个"和 query 相似 <em>但</em> 标签 ≠ $D$"的 <em>challenger</em>，让模型 keep 或 revise。</li>
+            <li lang-en><strong>Stage 2 (Verify).</strong> Now that $D$ exists, <strong>second retrieval conditions on $D$</strong> — fetch 5 <em>confirmers</em> (similar to query AND labeled = $D$) + 5 <em>challengers</em> (similar to query BUT labeled ≠ $D$), model keeps or revises.</li>
+            <li lang-zh><strong>为什么这招关键：</strong>单次检索的 neighbors 只"最像 query"，但你真正想反驳 draft 的例子是"<em>长得像 query 但偏偏不是 $D$ 的</em>"——第二次检索才能拿到这种 targeted counterexample。</li>
+            <li lang-en><strong>Why this matters:</strong> one-pass neighbors are only "most similar to query", but the examples that actually challenge the draft are "similar to query AND labeled ≠ $D$" — only the second retrieval can surface such targeted counterexamples.</li>
+            <li lang-zh><strong>为什么便宜：</strong>两次调用各只带 ~5–10 个短样本，总 token 远小于一口气塞几十条 few-shot。</li>
+            <li lang-en><strong>Why cheap:</strong> two calls each with only ~5–10 short examples; total tokens far below loading 30+ few-shot at once.</li>
+            <li lang-zh><strong>冷启动：</strong>积累不到 5 个样本时 fallback 到普通 few-shot 单次调用。</li>
+            <li lang-en><strong>Cold start:</strong> if &lt;5 labeled examples accumulated, fall back to a plain single-call few-shot.</li>
+          </ul>
+        </div>
+        <div class="card card-accent">
+          <h5 lang-zh>Label-Primed Query — 最准的那端（45.5k ctx, 48.6%）</h5>
+          <h5 lang-en>Label-Primed Query — strongest endpoint (45.5k ctx, 48.6%)</h5>
+          <p lang-zh><strong>设计思路：</strong>单次调用，但 prompt 刻意分三段，每段解决一个典型失败模式。</p>
+          <p lang-en><strong>Idea:</strong> a single call, but the prompt is split into three blocks, each addressing a typical failure mode.</p>
+          <ul>
+            <li lang-zh><strong>Label primer</strong>：在任何示例之前，先列出所有合法 label（LawBench 215 类、USPTO 180 类那种大类空间尤其重要）。<em>为什么</em>：模型不会编造不存在的 label，也保证它一开始就知道答案空间。</li>
+            <li lang-en><strong>Label primer.</strong> Before any examples, list all valid labels (critical for LawBench's 215 classes or USPTO's 180). <em>Why:</em> prevents the model from hallucinating non-existent labels and grounds the answer space up front.</li>
+            <li lang-zh><strong>Coverage block</strong>：对<em>每一个</em>已见过的 label，从 memory 里挑 1 个"最贴 query"的样本放进来。<em>为什么</em>：即便是罕见 label，prompt 里也至少有一个例子，不至于被完全忽略。</li>
+            <li lang-en><strong>Coverage block.</strong> For <em>every</em> label seen so far, pick 1 memory example most relevant to the query. <em>Why:</em> even rare labels get at least one example in prompt, so they're not forgotten.</li>
+            <li lang-zh><strong>Contrastive block</strong>：构造"<em>长得很像 <strong>但</strong> 标签不同</em>"的例子对，把这些对并排放进 prompt。<em>为什么</em>：这种对子直接向模型展示"哪些细微差别决定了 label 翻转"——局部决策边界。</li>
+            <li lang-en><strong>Contrastive block.</strong> Build pairs of examples that are <em>highly similar <strong>but</strong> labeled differently</em>; place them side-by-side in the prompt. <em>Why:</em> these pairs directly expose "which subtle features flip the label" — the local decision boundary.</li>
+            <li lang-zh><strong>检索规则：TF-IDF + query-anchored pairing</strong> —— 意思是 contrastive 对子不是全局找"最相似但不同 label 的两个"，而是<strong>以当前 query 为锚</strong>，找"query 附近"的那种对子。重点在这个 query 附近的决策边界，而不是全局最刁钻的对子。</li>
+            <li lang-en><strong>Retrieval rule: TF-IDF + query-anchored pairing</strong> — contrastive pairs are not global "most similar but differently labeled" pairs; they're anchored to the <em>current query</em>, surfacing pairs from the query's local neighborhood. Focus is on the boundary near this query, not the globally trickiest pair.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>5.2 数学检索 harness：4-route BM25 程序</h3>
+      <h3 lang-en>5.2 Math retrieval harness: 4-route BM25 program</h3>
+
+      <p lang-zh>轻量词法路由器（关键词 + 正则）把每道题路由到 <strong>1 个</strong> 子策略；<strong>不</strong> 跨路由聚合（选定路由后其他路由不贡献任何例子）。所有阈值 / rerank 项 / per-route 数量都是 40 轮搜索自发涌现出来的，不是作者事后手调。</p>
+      <p lang-en>A lightweight lexical router (keywords + regex) routes each problem to <strong>exactly one</strong> sub-policy; <strong>no</strong> aggregation across routes (once a route is picked, the others contribute nothing). Every threshold, rerank term, and per-route size emerged from 40 rounds of search — not hand-tuned after the fact.</p>
+
+      <div class="box box-note" lang-zh>
+        <strong>先解释每个技术词在干嘛，否则下面的流程图只是符号：</strong>
+        <ul style="margin:6px 0 0 0;">
+          <li><strong>BM25@K</strong>：在 535k 题库上跑 BM25 关键词检索，保留得分最高的 <strong>K 条</strong>（即 top-K）。</li>
+          <li><strong>Dedup to N</strong>：把 BM25 结果里"几乎重复的题"合并，最后留 <strong>N 条</strong> 不同题。</li>
+          <li><strong>Rerank</strong>：按 BM25 打分再加一些额外因素重新排序。不同路由加的因素不同（见下）。</li>
+          <li><strong>Keep K / Adaptive K</strong>：从 rerank 后的列表挑前 K 条放进 prompt。"Adaptive K"指 K 不是固定值，根据 top 几条分数集中程度动态决定（分数差距大→少取几条，分数差距小→多取几条）。</li>
+          <li><strong>Hard NuminaMath reference</strong>：预先从 NuminaMath 筛出来的"难度 &gt; 6"的题，在几何路由里当固定参考。</li>
+        </ul>
+      </div>
+      <div class="box box-note" lang-en>
+        <strong>What each term means (otherwise the diagram below is just symbols):</strong>
+        <ul style="margin:6px 0 0 0;">
+          <li><strong>BM25@K</strong>: run BM25 keyword retrieval on the 535k corpus, keep the <strong>top K</strong> scores.</li>
+          <li><strong>Dedup to N</strong>: merge near-duplicates in the BM25 hits, keep <strong>N</strong> distinct problems.</li>
+          <li><strong>Rerank</strong>: re-sort by BM25 score plus extra factors (which factors varies by route, see below).</li>
+          <li><strong>Keep K / Adaptive K</strong>: take top K from the reranked list for the prompt. "Adaptive K" means K isn't fixed — it depends on how clustered the top scores are (tight scores → include more; big gaps → fewer).</li>
+          <li><strong>Hard NuminaMath reference</strong>: a precomputed pool of "difficulty &gt; 6" NuminaMath problems, used as a fixed reference in the geometry route.</li>
+        </ul>
+      </div>
+
+      <div class="flow">
+        <div class="flow-row"><div class="flow-box">Query</div></div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-row"><div class="flow-box highlight" lang-zh>词法路由器（关键词 + 正则）</div><div class="flow-box highlight" lang-en>Lexical router (keywords + regex)</div></div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-row">
+          <div class="flow-box green"><strong lang-zh>组合</strong><strong lang-en>Combinatorics</strong><br><small lang-zh>BM25@20 → dedup 8 → rerank → keep 3</small><small lang-en>BM25@20 → dedup 8 → rerank → keep 3</small></div>
+          <div class="flow-box amber"><strong lang-zh>几何</strong><strong lang-en>Geometry</strong><br><small lang-zh>1 hard NuminaMath ref + 2 raw BM25</small><small lang-en>1 hard NuminaMath ref + 2 raw BM25</small></div>
+          <div class="flow-box purple"><strong lang-zh>数论</strong><strong lang-en>Number theory</strong><br><small lang-zh>BM25@12 → rerank (+技术早示 bonus) → keep 3</small><small lang-en>BM25@12 → rerank (+early-technique bonus) → keep 3</small></div>
+          <div class="flow-box"><strong lang-zh>代数/其他</strong><strong lang-en>Algebra / Other</strong><br><small lang-zh>BM25@10 → rerank → adaptive K</small><small lang-en>BM25@10 → rerank → adaptive K</small></div>
+        </div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-row"><div class="flow-box" lang-zh>最终 prompt</div><div class="flow-box" lang-en>Final prompt</div></div>
+      </div>
+
+      <p lang-zh><strong>各路由的"不一样"都有理由</strong>（这些是搜索涌现出来的 domain-specific insight，本身就是发现结果）：</p>
+      <p lang-en><strong>Each route's quirks reflect search-discovered domain insight</strong> (these patterns themselves are part of the finding):</p>
+      <ul>
+        <li lang-zh><strong>组合（BM25@20 → dedup → rerank → keep 3）</strong>：宽召回 + 去重 + 挑难题重排——<strong>组合题解法多样性高</strong>，必须拉宽召回池，再 rerank 把"难例题"顶上来。</li>
+        <li lang-en><strong>Combinatorics (BM25@20 → dedup → rerank → keep 3):</strong> wide recall + dedup + difficulty rerank. <strong>Solutions are highly diverse</strong>, so widen the pool, then rerank to surface harder examples.</li>
+        <li lang-zh><strong>几何（1 hard ref + 2 raw BM25，<em>不 rerank</em>）</strong>：唯一不做 rerank 的路由。<strong>论文 §A.5 原话：</strong>搜索反复验证"几何题的原始词法匹配（比如 <code>\triangle</code>、<code>\angle</code> 这种符号对上）比按难度排序更有用"——符号结构对齐 > 难度偏好。</li>
+        <li lang-en><strong>Geometry (1 hard ref + 2 raw BM25, <em>no rerank</em>):</strong> the only route that skips reranking. <strong>§A.5 quote:</strong> search repeatedly preferred raw lexical matches (e.g. matching <code>\triangle</code>, <code>\angle</code> tokens) over difficulty sorting — symbolic-structure alignment &gt; difficulty preference here.</li>
+        <li lang-zh><strong>数论（BM25@12 → rerank + 技术早示 bonus → keep 3）</strong>：独有"技术早示 bonus"——rerank 时给"解法前几行就明示 technique 的题"加分（比如开头就写 "Use LTE"、"Apply Fermat"）。<strong>道理：</strong>数论解法往往靠一个特定技巧打开，把这个技巧<em>早早暴露</em>的例子比藏在中段的更有用作模板。</li>
+        <li lang-en><strong>Number theory (BM25@12 → rerank + early-technique bonus → keep 3):</strong> the unique "early-technique bonus" gives extra weight in rerank to solutions that state a technique up front (e.g. opening line "Use LTE", "Apply Fermat"). <strong>Why:</strong> NT solutions hinge on one key trick; examples that surface it <em>early</em> are more useful as templates than those burying it mid-proof.</li>
+        <li lang-zh><strong>代数/其他（BM25@10 → rerank → adaptive K）</strong>：兜底路由，用 adaptive K 处理"多样题型"——分数集中就多取、分散就少取。</li>
+        <li lang-en><strong>Algebra / other (BM25@10 → rerank → adaptive K):</strong> the fallback route; adaptive K handles heterogeneous problems — more retrievals when scores cluster, fewer when they spread.</li>
+      </ul>
+
+      <div class="box box-note" lang-zh>
+        最终程序是 <strong>两条成功搜索谱系的自主 merge</strong>：一条贡献 geometry route，另一条贡献 combinatorics route。Proposer 自己看出两条谱系互补、<strong>主动</strong>把它们合到一个程序里——没有外部 crossover 算子。
+      </div>
+      <div class="box box-note" lang-en>
+        The final program is an <strong>autonomous merge of two successful search lineages</strong> — one contributed geometry, the other combinatorics. The proposer noticed the two lineages were complementary and <strong>merged them itself</strong> — no external crossover operator.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>5.3 TerminalBench-2 harness：Environment Bootstrap</h3>
+      <h3 lang-en>5.3 TerminalBench-2 harness: Environment Bootstrap</h3>
+
+      <p lang-zh>在 Terminus-KIRA 基础上增加一个 ~80 行的 pre-loop 步骤，收集 sandbox 快照注入 initial prompt。</p>
+      <p lang-en>Adds a ~80-line pre-loop step on top of Terminus-KIRA: gather a sandbox snapshot and inject it into the initial prompt.</p>
+
+      <div class="flow">
+        <div class="flow-row"><div class="flow-box" lang-zh>任务指令</div><div class="flow-box" lang-en>Task instruction</div></div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-row"><div class="flow-box amber" lang-zh><strong>Env bootstrap</strong> (新增, ~80 行)<br><small>pwd / /app ls / 语言 / 包管理器 / 内存</small></div><div class="flow-box amber" lang-en><strong>Env bootstrap</strong> (new, ~80 lines)<br><small>pwd / /app ls / langs / package mgrs / memory</small></div></div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-row"><div class="flow-box" lang-zh>Initial prompt (task + snapshot)</div><div class="flow-box" lang-en>Initial prompt (task + snapshot)</div></div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-row"><div class="flow-box green" lang-zh>Agent loop<br><small>native tool calling, 30KB 输出上限</small></div><div class="flow-box green" lang-en>Agent loop<br><small>native tool calling, 30KB output cap</small></div></div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-row"><div class="flow-box green" lang-zh>多视角完成 checklist</div><div class="flow-box green" lang-en>Multi-perspective completion checklist</div></div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-row"><div class="flow-box" lang-zh>任务完成</div><div class="flow-box" lang-en>Task complete</div></div>
+      </div>
+
+      <ul>
+        <li lang-zh>Snapshot 包含：工作目录、<code>/app</code> 列表（≤20 entries）、Python/GCC/G++/Node/Java/Rust/Go 及版本、pip/apt、可用内存</li>
+        <li lang-en>Snapshot includes: working dir, <code>/app</code> listing (≤20 entries), Python/GCC/G++/Node/Java/Rust/Go + versions, pip/apt, available memory</li>
+        <li lang-zh>15s timeout + 静默失败（陌生环境不会破坏 agent）</li>
+        <li lang-en>15 s timeout + silent failure (can't break the agent in unusual environments)</li>
+        <li lang-zh><strong>为什么"additive + 早注入"这么好用：</strong>已经通过的 task 根本不需要 snapshot，额外信息被模型忽略掉就行，<strong>风险几乎为零</strong>；而原本失败的 task 里有 2–4 轮是在"盲试 <code>which python</code> / <code>ls /app</code> / ..."摸环境——snapshot 把这几轮直接省掉，留出 turn budget 去做真正的工作。</li>
+        <li lang-en><strong>Why "additive + inject-early" works so well:</strong> tasks that already pass can simply ignore the snapshot — <strong>near-zero risk</strong>. Tasks that fail typically burned 2–4 turns blindly probing with <code>which python</code> / <code>ls /app</code> / etc. — the snapshot saves those turns, leaving more turn budget for actual work.</li>
+        <li lang-zh><strong>Per-task 分析（§A.7）：</strong>89 任务中 <strong>7 个</strong> 受益最大，共同特征是"需要领域特定工具 + 环境不明确 + turn budget 紧"——典型例子 <code>protein-assembly</code>（生信库）、<code>path-tracing</code>（渲染流水线）、chess engine、密码学工具、CoreWars 模拟器等。反之，环境标准、工具明确的任务（简单脚本题）根本用不上这个 snapshot。</li>
+        <li lang-en><strong>Per-task analysis (§A.7):</strong> <strong>7 of 89</strong> tasks gain the most, sharing the profile "needs domain-specific tooling + uncertain env + tight turn budget" — e.g. <code>protein-assembly</code> (bioinformatics libs), <code>path-tracing</code> (rendering pipelines), chess engines, crypto utilities, CoreWars sims. Tasks with standard envs and obvious tools don't benefit.</li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>5.4 学习曲线全图（Figure 4）+ 过拟合诊断图（Figure 5）</h3>
+      <h3 lang-en>5.4 Full learning curves (Figure 4) + overfit diagnostic (Figure 5)</h3>
+
+      <!-- =========== Figure 4 =========== -->
+      <h4 lang-zh>Figure 4：学习曲线——不同 optimizer 随评估次数的提升情况</h4>
+      <h4 lang-en>Figure 4: learning curves — how each optimizer improves with more evaluations</h4>
+
+      <div class="box box-note" lang-zh>
+        <strong>怎么读这张图：</strong>
+        <ul style="margin:6px 0 0 0;">
+          <li><strong>X 轴</strong>：已评估的候选 harness 数量（搜索花了多少次 eval；越往右等于花了越多钱）</li>
+          <li><strong>Y 轴</strong>：search-set accuracy（%）</li>
+          <li><strong>散点</strong>：每个点 = 某一次提议出的候选 harness 在 search-set 上的分数</li>
+          <li><strong>曲线</strong>：best-so-far——到当前评估次数为止，所有候选里最高分（阶梯式只会上升）</li>
+          <li><strong>面板</strong>：一个 aggregate（3 数据集平均）+ 3 个 per-dataset（USPTO / S2D / LawBench）</li>
+        </ul>
+        <strong>要看的模式：</strong>
+        <ol style="margin:6px 0 0 0;">
+          <li>Meta-Harness（橙线）曲线最<strong>陡峭</strong>——前 4 次评估就追平 OpenEvolve / TTT-Discover 的终点精度</li>
+          <li>Meta-Harness 终点比其他所有方法高 10+ pp，<strong>而且还没到 plateau</strong>（继续跑可能更高）</li>
+          <li>GEPA / Best-of-N 线几乎是平的——说明它们的优化信号根本没有效累积</li>
+        </ol>
+      </div>
+      <div class="box box-note" lang-en>
+        <strong>How to read this figure:</strong>
+        <ul style="margin:6px 0 0 0;">
+          <li><strong>X-axis:</strong> cumulative number of candidate harnesses evaluated (search budget spent)</li>
+          <li><strong>Y-axis:</strong> search-set accuracy (%)</li>
+          <li><strong>Dots:</strong> each dot = one candidate's score on the search set</li>
+          <li><strong>Lines:</strong> best-so-far — highest score achieved up to that evaluation count (monotonically non-decreasing)</li>
+          <li><strong>Panels:</strong> one aggregate (3-dataset avg) + three per-dataset (USPTO / S2D / LawBench)</li>
+        </ul>
+        <strong>Key patterns to spot:</strong>
+        <ol style="margin:6px 0 0 0;">
+          <li>Meta-Harness (orange) is the <strong>steepest</strong> — matches OpenEvolve / TTT-Discover's <em>final</em> accuracy within the first 4 evaluations</li>
+          <li>Meta-Harness's endpoint is 10+ pp above everything else <strong>and hasn't plateaued yet</strong> (could go higher with more budget)</li>
+          <li>GEPA / Best-of-N lines are nearly flat — their optimization signal isn't accumulating effectively</li>
+        </ol>
+      </div>
+
+      <div class="img-placeholder" id="ph-fig4">
+        <div class="icon">📉</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 4: 各 optimizer 的 search-set learning curve</span>
+          <span lang-en>Figure 4: Search-set learning curves per optimizer</span>
+        </div>
+        <div class="ph-caption" lang-zh>X = evaluations（候选数）；Y = search-set accuracy。散点 = 单个候选，曲线 = best-so-far。面板：aggregate + USPTO / S2D / LawBench 分图。</div>
+        <div class="ph-caption" lang-en>X = evaluations (candidate count); Y = search-set accuracy. Dots = individual candidates, lines = best-so-far. Panels: aggregate + per-dataset (USPTO / S2D / LawBench).</div>
+        <div class="ph-filename">figures/fig4_learning_curves_full.png</div>
+      </div>
+
+      <!-- =========== Figure 5 =========== -->
+      <h4 lang-zh>Figure 5：Search 精度 vs Test 精度——过拟合诊断散点图</h4>
+      <h4 lang-en>Figure 5: Search-set vs test accuracy — overfit diagnostic scatter</h4>
+
+      <div class="box box-note" lang-zh>
+        <strong>怎么读这张图：</strong>
+        <ul style="margin:6px 0 0 0;">
+          <li><strong>X 轴</strong>：某个 harness 在 <em>search set</em> 上的精度（搜索期间用来选它的分数）</li>
+          <li><strong>Y 轴</strong>：同一个 harness 在 <em>test set</em> 上的精度（最终用户关心的分数）</li>
+          <li><strong>粉点</strong>：每个点 = Meta-Harness 发现的一个候选 harness</li>
+          <li><strong>带 label 的点</strong>：zero-shot / few-shot / ACE 等 baseline</li>
+          <li><strong>虚线 y = x</strong>：如果 harness 的 search-set 分数完美预测 test-set 分数，所有点都会落在这条线上</li>
+        </ul>
+        <strong>怎么判断有没有过拟合 search set：</strong>
+        <ol style="margin:6px 0 0 0;">
+          <li>点<strong>沿对角线分布</strong>（y ≈ x）→ search 分数是 test 分数的无偏估计 = <strong>没过拟合</strong> ✓</li>
+          <li>点<strong>系统性落在对角线下方</strong>（y &lt; x）→ harness 的 search 分数虚高（过拟合到 search set，test 上缩水）= <strong>有过拟合</strong> ✗</li>
+          <li>点<strong>落在对角线上方</strong>（y &gt; x）→ harness 在 test 上比 search 还好（罕见；可能 search set 比 test set 更难）</li>
+        </ol>
+        论文观察到粉点大致分布在对角线附近，说明<strong>搜索期间最挑出来的 harness 在 test 上依然有效</strong>——没有明显过拟合。
+      </div>
+      <div class="box box-note" lang-en>
+        <strong>How to read this figure:</strong>
+        <ul style="margin:6px 0 0 0;">
+          <li><strong>X-axis:</strong> a harness's accuracy on the <em>search set</em> (the number used to select it during search)</li>
+          <li><strong>Y-axis:</strong> the same harness's accuracy on the <em>test set</em> (the number end-users care about)</li>
+          <li><strong>Pink dots:</strong> each dot = one harness discovered by Meta-Harness</li>
+          <li><strong>Labeled dots:</strong> baselines like zero-shot / few-shot / ACE</li>
+          <li><strong>Dashed y = x:</strong> if the search score perfectly predicted the test score, all dots would land on this line</li>
+        </ul>
+        <strong>How to diagnose overfit to the search set:</strong>
+        <ol style="margin:6px 0 0 0;">
+          <li>Dots <strong>cluster along the diagonal</strong> (y ≈ x) → search is an unbiased estimator of test → <strong>no overfit</strong> ✓</li>
+          <li>Dots <strong>systematically sit below the diagonal</strong> (y &lt; x) → search-set scores are inflated (overfit; test performance drops) → <strong>overfit</strong> ✗</li>
+          <li>Dots <strong>above the diagonal</strong> (y &gt; x) → harness does better on test than search (rare; possibly search set is harder)</li>
+        </ol>
+        The paper reports pink dots cluster near the diagonal — meaning <strong>the harnesses selected by search still work on test</strong>, no visible overfit.
+      </div>
+
+      <div class="img-placeholder" id="ph-fig5">
+        <div class="icon">🔍</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 5: Search accuracy vs test accuracy（per-dataset）</span>
+          <span lang-en>Figure 5: Search accuracy vs test accuracy (per-dataset)</span>
+        </div>
+        <div class="ph-caption" lang-zh>X = search-set accuracy, Y = test accuracy. 粉点 = 发现的 harness，虚线 = y=x。点沿对角线 → 无过拟合。</div>
+        <div class="ph-caption" lang-en>X = search-set accuracy, Y = test accuracy. Pink dots = discovered harnesses, dashed line = y=x. Dots along the diagonal → no overfit.</div>
+        <div class="ph-filename">figures/fig5_val_vs_test.png</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== 6. DISCUSSION ======================== -->
+  <section id="discussion" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">6</span>
+      <h2 lang-zh>讨论与思考</h2>
+      <h2 lang-en>Discussion & Reflections</h2>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>6.1 值得肯定的设计</h3>
+      <h3 lang-en>6.1 What's well-designed</h3>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>"把反馈做大"本身是非平凡贡献</summary>
+        <summary lang-en>Making feedback <em>bigger</em> is itself a nontrivial contribution</summary>
+        <div class="detail-body">
+          <p lang-zh>很多 text optimizer 把"feedback size 小"当 feature（"我们只需要 scalar score"）；Meta-Harness 反其道把反馈做到 10M token，然后用 ablation 证明 raw trace 不可压缩。这个方向在 coding agent 足够强之前甚至不可执行——工程和科学同时成立。</p>
+          <p lang-en>Many text optimizers treat "small feedback" as a feature ("we only need scalar scores"). Meta-Harness runs the opposite direction to 10M tokens and proves via ablation that raw traces are incompressible. This direction isn't even executable until coding agents are strong enough — engineering and science align.</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>对齐 bitter lesson：刻意不加结构</summary>
+        <summary lang-en>Aligned with the bitter lesson: deliberately minimal structure</summary>
+        <div class="detail-body">
+          <p lang-zh>（"Bitter lesson" 是 Rich Sutton 2019 年的论文，核心观点：<strong>算力增长时，通用搜索 / 学习方法总是赢过人手工结构</strong>。所以作者故意不加 mutation、parent-selection、persistent memory 等人工规则，<strong>把决策完全交给 coding agent</strong>。作者明确说 "as coding agents become more capable, the method improves automatically"。在 2026 年看，这种"把能力增长留给 agent"的系统设计越发正确。）</p>
+          <p lang-en>("Bitter lesson" is Rich Sutton's 2019 essay whose thesis is: <strong>as compute grows, general search/learning methods always beat hand-engineered structure</strong>. So the authors deliberately omit mutation, parent-selection, persistent memory, and other hand rules — <strong>all decisions go to the coding agent</strong>. They explicitly state "as coding agents become more capable, the method improves automatically." Viewed from 2026, leaving capability growth to the agent is increasingly right.)</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>Ablation 设计干净</summary>
+        <summary lang-en>Clean ablation design</summary>
+        <div class="detail-body">
+          <p lang-zh>scores-only / scores+summary / full-trace 把 "summary 是否足够" 这个自然反驳打得很实。summary 反而在 Best 上掉点（41.3 → 38.7），提示压缩本身是 negative information carrier。</p>
+          <p lang-en>scores-only / scores+summary / full-trace cleanly knocks down the natural counter-argument. Summary even hurts Best (41.3 → 38.7), hinting compression itself is a negative information carrier.</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>Qualitative trace 作为论据比纯 benchmark 更有说服力</summary>
+        <summary lang-en>Qualitative traces are more persuasive than benchmark numbers alone</summary>
+        <div class="detail-body">
+          <p lang-zh>§4 的 iter-by-iter 推理（"prompt 改动是 confound → 隔离变量 → pivot 到 additive 修改"）是 "filesystem 给了真诊断能力" 最硬的存在性证据。没有这段 log，ablation 数字只是相关性。</p>
+          <p lang-en>The iter-by-iter reasoning in §4 ("prompt edits are a confound → isolate variables → pivot to additive change") is the hardest existence proof for "filesystem enables real diagnosis". Without these logs, ablation numbers are only correlational.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>6.2 可深入讨论的问题</h3>
+      <h3 lang-en>6.2 Open questions</h3>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>Cost 讨论完全缺失</summary>
+        <summary lang-en>Cost discussion is entirely missing</summary>
+        <div class="detail-body">
+          <p lang-zh>没有列出单次搜索 run 的成本（LLM API 费用 / wall clock / Claude Code 调用次数）。60 个 candidate × 每个 10M token proposer context + 每个评估的 base model cost，在 Opus-4.6 上粗估数千到上万美元一次 run。没有 USD/accuracy 曲线就无法判断"比手工贵多少"。</p>
+          <p lang-en>The paper never reports per-run cost (API USD, wall clock, Claude Code call count). 60 candidates × 10M-token proposer context + base-model eval cost on Opus-4.6 plausibly runs into the thousands-to-tens-of-thousands of USD per run. Without a USD/accuracy curve, "how much more expensive than hand-design" is unknowable.</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>Test set = Search set（TerminalBench-2）的严重性没被充分处理</summary>
+        <summary lang-en>Test-set = search-set (TerminalBench-2) is only lightly addressed</summary>
+        <div class="detail-body">
+          <p lang-zh>Discovery problem 的 framing 是公开实践没错，但"发现的 harness 过拟合到具体 89 任务的哪些 regex pattern"这个问题，靠人工 + 正则审计能真正挡住吗？作者自己承认 "resulting harness is specialized to TerminalBench-2 regime"——应该有一个独立的 held-out 测试。</p>
+          <p lang-en>The "discovery problem" framing is accepted community practice, but can manual + regex audits really catch all task-specific regex patterns that a harness might latch onto? The authors themselves admit "resulting harness is specialized to TerminalBench-2 regime" — an independent held-out test would be stronger evidence.</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>对 proposer 本身的依赖没有消融</summary>
+        <summary lang-en>No ablation over proposer capability</summary>
+        <div class="detail-body">
+          <p lang-zh>换成 GPT-5 或 Sonnet 4.6 还 work 吗？论文只说"依赖特定强 coding agent"，但没给出"proposer capability 到什么阈值这个 workflow 就破产"的曲线。</p>
+          <p lang-en>Would it work if we swapped in GPT-5 or Sonnet 4.6? The paper states "depends on a strong coding agent" but never plots "below what capability threshold does the workflow break".</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>反馈的 marginal value 递减曲线</summary>
+        <summary lang-en>Diminishing-returns curve for feedback size</summary>
+        <div class="detail-body">
+          <p lang-zh>从 scores → traces 有大跳（34.6 → 50.0），但从 5M → 10M tokens 呢？论文 claim "3 个数量级以上"，但没有 scaling 实验证明"越多越好"——只证了"比 100k 多得多"。</p>
+          <p lang-en>scores → traces is a large jump (34.6 → 50.0), but what about 5M → 10M tokens? The paper claims "3 orders of magnitude more" but shows no scaling experiment proving "more is strictly better" — only that it is "much more than 100k".</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>Harness = stateful program，但评估是跨 task 平均</summary>
+        <summary lang-en>Harnesses are stateful but evaluation averages over tasks</summary>
+        <div class="detail-body">
+          <p lang-zh>对于 online classification 这种真正 stateful 的 setting（memory 跨 task 累积），Pareto 结果是否对 task 顺序敏感？论文没讨论。</p>
+          <p lang-en>For truly stateful settings like online classification (memory accumulates across tasks), is the Pareto result sensitive to task ordering? Unaddressed.</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>安全与对齐问题</summary>
+        <summary lang-en>Safety and alignment concerns</summary>
+        <div class="detail-body">
+          <p lang-zh>一个 coding agent 自由读写 filesystem、跑任意 shell 命令（env bootstrap 本身就是例子）——在生产级 pipeline 里这是大 attack surface / 稳定性风险。文中只字未提。</p>
+          <p lang-en>A coding agent with free filesystem read/write and arbitrary shell (env bootstrap is itself an example) is a large attack surface in a production pipeline. Not discussed.</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>递归问题：Meta-Harness 能否优化自身？</summary>
+        <summary lang-en>Recursive question: can Meta-Harness optimize itself?</summary>
+        <div class="detail-body">
+          <p lang-zh>Meta-Harness 本身也是 harness（决定 proposer 看什么）。能不能用 Meta-Harness 优化 Meta-Harness？脚注里暗示这是更高阶的问题但没做实验。</p>
+          <p lang-en>Meta-Harness is itself a harness (it determines what the proposer sees). Could Meta-Harness optimize Meta-Harness? Hinted in a footnote but never experimentally tested.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>6.3 与相关工作的对比</h3>
+      <h3 lang-en>6.3 Comparison with related work</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>系统</th><th lang-en>System</th>
+              <th lang-zh>搜索空间</th><th lang-en>Search space</th>
+              <th lang-zh>反馈形式</th><th lang-en>Feedback form</th>
+              <th lang-zh>反馈规模</th><th lang-en>Feedback size</th>
+              <th lang-zh>核心创新</th><th lang-en>Core novelty</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td lang-zh>GEPA</td><td lang-en>GEPA</td>
+              <td lang-zh>prompt</td><td lang-en>prompt</td>
+              <td lang-zh>rollout summary</td><td lang-en>rollout summary</td>
+              <td lang-zh>2–8k tok/step</td><td lang-en>2–8k tok/step</td>
+              <td lang-zh>per-candidate reflection</td><td lang-en>per-candidate reflection</td>
+            </tr>
+            <tr>
+              <td lang-zh>OpenEvolve / AlphaEvolve</td><td lang-en>OpenEvolve / AlphaEvolve</td>
+              <td lang-zh>代码（单函数）</td><td lang-en>code (single function)</td>
+              <td lang-zh>program database + score</td><td lang-en>program database + score</td>
+              <td lang-zh>4–22k tok/step</td><td lang-en>4–22k tok/step</td>
+              <td lang-zh>fixed mutation + tournament</td><td lang-en>fixed mutation + tournament</td>
+            </tr>
+            <tr>
+              <td lang-zh>TextGrad</td><td lang-en>TextGrad</td>
+              <td lang-zh>text artifact</td><td lang-en>text artifact</td>
+              <td lang-zh>textual feedback on current</td><td lang-en>textual feedback on current</td>
+              <td lang-zh>15k tok/step</td><td lang-en>15k tok/step</td>
+              <td lang-zh>"text as differentiable"</td><td lang-en>"text as differentiable"</td>
+            </tr>
+            <tr>
+              <td lang-zh>TTT-Discover</td><td lang-en>TTT-Discover</td>
+              <td lang-zh>solution fragments</td><td lang-en>solution fragments</td>
+              <td lang-zh>prev fragment</td><td lang-en>prev fragment</td>
+              <td lang-zh>26k tok/step</td><td lang-en>26k tok/step</td>
+              <td lang-zh>PUCT search over text</td><td lang-en>PUCT search over text</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>Meta-Harness</strong></td><td lang-en><strong>Meta-Harness</strong></td>
+              <td lang-zh><strong>完整可执行 harness</strong></td><td lang-en><strong>full executable harness</strong></td>
+              <td lang-zh><strong>filesystem (code + trace + score)</strong></td><td lang-en><strong>filesystem (code + trace + score)</strong></td>
+              <td lang-zh><strong>10M tok/step</strong></td><td lang-en><strong>10M tok/step</strong></td>
+              <td lang-zh><strong>coding agent 自选读什么</strong></td><td lang-en><strong>coding agent decides what to read</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>6.4 作者列出的实践 tips（§A.8）</h3>
+      <h3 lang-en>6.4 Authors' practical tips (§A.8)</h3>
+      <ul>
+        <li lang-zh><strong>写好 skill 文档</strong>：比调 iteration 数更重要。约束输出格式、安全行为，不约束诊断流程。准备 3–5 次 3–5 iteration 的调试 run 专门打磨 skill。</li>
+        <li lang-en><strong>Write a good skill.</strong> Matters more than iteration count. Constrain output format and safety — not diagnosis flow. Budget 3–5 short (3–5-iter) debug runs just to polish the skill.</li>
+        <li lang-zh><strong>起点要低、search set 要硬</strong>：对 baseline "易"的任务搜索无物可优化。50–100 样本足矣。</li>
+        <li lang-en><strong>Start with a hard-for-baseline search set.</strong> If the baseline saturates the eval, there is nothing to search for. 50–100 examples is enough.</li>
+        <li lang-zh><strong>Log 机器可查询</strong>：JSON、层级、可读文件名、regex-friendly。</li>
+        <li lang-en><strong>Make logs machine-queryable.</strong> JSON, hierarchical, readable filenames, regex-friendly.</li>
+        <li lang-zh><strong>给 proposer 小 CLI</strong>（可选）：<code>list_pareto</code> / <code>top_k</code> / <code>diff_runs</code>。</li>
+        <li lang-en><strong>Give the proposer a small CLI</strong> (optional): <code>list_pareto</code> / <code>top_k</code> / <code>diff_runs</code>.</li>
+        <li lang-zh><strong>轻量 validation 先行</strong>：candidate 过 import + instantiate test 再跑完整 eval。</li>
+        <li lang-en><strong>Lightweight validation first.</strong> Candidates pass import + instantiate test before full eval.</li>
+        <li lang-zh><strong>Eval 别让 proposer 做</strong>：独立 harness 跑 eval 写回 filesystem。</li>
+        <li lang-en><strong>Don't let the proposer run evals.</strong> Separate harness scores and writes results back to the filesystem.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ======================== 7. QUICK REFERENCE ======================== -->
+  <section id="quickref" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">7</span>
+      <h2 lang-zh>技术细节速查</h2>
+      <h2 lang-en>Quick Reference</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th lang-zh>项目</th><th lang-en>Item</th>
+            <th lang-zh>值</th><th lang-en>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td lang-zh>Proposer</td><td lang-en>Proposer</td><td lang-zh>Claude Code + Opus-4.6 (max reasoning)</td><td lang-en>Claude Code + Opus-4.6 (max reasoning)</td></tr>
+          <tr><td lang-zh>每 run iterations</td><td lang-en>Iterations / run</td><td lang-zh>20（分类 / TerminalBench）; 40（math）</td><td lang-en>20 (classif. / TerminalBench); 40 (math)</td></tr>
+          <tr><td lang-zh>每 iter candidates</td><td lang-en>Candidates / iter</td><td lang-zh>~2–3</td><td lang-en>~2–3</td></tr>
+          <tr><td lang-zh>总候选（典型 run）</td><td lang-en>Total candidates / run</td><td lang-zh>40（分类）/ 109（math）/ ~60（TerminalBench）</td><td lang-en>40 (classif.) / 109 (math) / ~60 (TerminalBench)</td></tr>
+          <tr><td lang-zh>Proposer 每 iter 读文件（中位）</td><td lang-en>Files proposer reads / iter (median)</td><td lang-zh>82（范围 69–99）</td><td lang-en>82 (range 69–99)</td></tr>
+          <tr><td lang-zh>每 iter 反馈 tokens</td><td lang-en>Feedback tokens / iter</td><td lang-zh>~10 M</td><td lang-en>~10 M</td></tr>
+          <tr><td lang-zh>单 harness 规模</td><td lang-en>Harness size</td><td lang-zh>100–1000 行 Python</td><td lang-en>100–1000 lines of Python</td></tr>
+          <tr><td lang-zh>分类 base model</td><td lang-en>Classification base model</td><td lang-zh>GPT-OSS-120B（冻结）</td><td lang-en>GPT-OSS-120B (frozen)</td></tr>
+          <tr><td lang-zh>Math 搜索 base model</td><td lang-en>Math search base model</td><td lang-zh>GPT-OSS-20B</td><td lang-en>GPT-OSS-20B</td></tr>
+          <tr><td lang-zh>Math 测试 base models</td><td lang-en>Math test base models</td><td lang-zh>GPT-5.4-nano / GPT-5.4-mini / Gemini-3.1-Flash-Lite / Gemini-3-Flash / GPT-OSS-20B</td><td lang-en>GPT-5.4-nano / GPT-5.4-mini / Gemini-3.1-Flash-Lite / Gemini-3-Flash / GPT-OSS-20B</td></tr>
+          <tr><td lang-zh>TerminalBench base models</td><td lang-en>TerminalBench base models</td><td lang-zh>Claude Opus 4.6 / Claude Haiku 4.5</td><td lang-en>Claude Opus 4.6 / Claude Haiku 4.5</td></tr>
+          <tr><td lang-zh>Math 检索语料规模</td><td lang-en>Math retrieval corpus size</td><td lang-zh>535,356 problems</td><td lang-en>535,356 problems</td></tr>
+          <tr><td lang-zh>Math 测试集</td><td lang-en>Math test set</td><td lang-zh>200 IMO 级（IMO-AnswerBench 100 + IMO-ProofBench 60 + ArXivMath 40）</td><td lang-en>200 IMO-level (IMO-AnswerBench 100 + IMO-ProofBench 60 + ArXivMath 40)</td></tr>
+          <tr><td lang-zh>OOD 分类数据集</td><td lang-en>OOD classification datasets</td><td lang-zh>9（SciCite / FiNER / Amz5 / FPB / GoEmo / Bank77 / AGNews / SciTail / TwHate）</td><td lang-en>9 (SciCite / FiNER / Amz5 / FPB / GoEmo / Bank77 / AGNews / SciTail / TwHate)</td></tr>
+          <tr><td lang-zh>Math harness 路由</td><td lang-en>Math harness routes</td><td lang-zh>combinatorics / geometry / number theory / default</td><td lang-en>combinatorics / geometry / number theory / default</td></tr>
+          <tr><td lang-zh>TerminalBench 新增组件</td><td lang-en>TerminalBench addition</td><td lang-zh>env bootstrap (~80 行)</td><td lang-en>env bootstrap (~80 lines)</td></tr>
+          <tr><td lang-zh>最佳分类 harness</td><td lang-en>Best classification harness</td><td lang-zh>Label-Primed Query (primer + coverage + contrastive)</td><td lang-en>Label-Primed Query (primer + coverage + contrastive)</td></tr>
+          <tr><td lang-zh>项目主页</td><td lang-en>Project page</td><td lang-zh>yoonholee.com/meta-harness/</td><td lang-en>yoonholee.com/meta-harness/</td></tr>
+          <tr><td lang-zh>代码</td><td lang-en>Code</td><td lang-zh>github.com/stanford-iris-lab/meta-harness-tbench2-artifact</td><td lang-en>github.com/stanford-iris-lab/meta-harness-tbench2-artifact</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer style="text-align:center;padding:40px 0 20px;color:var(--text-secondary);font-size:13px;border-top:1px solid var(--border);margin-top:40px;">
+    <span lang-zh>Meta-Harness 论文学习笔记 · arXiv:2603.28052v1</span>
+    <span lang-en>Meta-Harness Paper Study Notes · arXiv:2603.28052v1</span>
+  </footer>
+
+</div><!-- end .main-content -->
+
+<script>
+const imageMap = {
+  'ph-fig1a': 'figures/fig1a_learning_curves_simple.png',
+  'ph-fig1b': 'figures/fig1b_tbench_leaderboard.png',
+  'ph-fig2':  'figures/fig2_method_pipeline.png',
+  'ph-fig3':  'figures/fig3_pareto_frontier.png',
+  'ph-fig4':  'figures/fig4_learning_curves_full.png',
+  'ph-fig5':  'figures/fig5_val_vs_test.png',
+};
+</script>
+
+<script>
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('paper-theme', isDark ? 'dark' : 'light');
+}
+const savedTheme = localStorage.getItem('paper-theme');
+if (savedTheme === 'dark') document.body.classList.add('dark');
+
+function setLang(lang) {
+  document.body.classList.toggle('en', lang === 'en');
+  document.getElementById('btn-zh').classList.toggle('active', lang === 'zh');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  localStorage.setItem('paper-lang', lang);
+}
+const savedLang = localStorage.getItem('paper-lang');
+if (savedLang === 'en') setLang('en');
+
+function toggleTOC() {
+  document.getElementById('toc').classList.toggle('open');
+}
+document.querySelectorAll('.toc-sidebar a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('toc').classList.remove('open');
+  });
+});
+
+const sections = document.querySelectorAll('section[id], .subsection[id]');
+const tocLinks = document.querySelectorAll('.toc-sidebar a');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      tocLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+
+if (typeof imageMap !== 'undefined') {
+  Object.entries(imageMap).forEach(([id, src]) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const img = new Image();
+      img.onload = () => {
+        const labelEl = el.querySelector('.ph-label');
+        const labelZhSpan = el.querySelector('.ph-label [lang-zh]');
+        const labelEnSpan = el.querySelector('.ph-label [lang-en]');
+        const fallbackLabel = labelEl ? labelEl.textContent.trim() : '';
+        const labelZh = labelZhSpan ? labelZhSpan.textContent.trim() : fallbackLabel;
+        const labelEn = labelEnSpan ? labelEnSpan.textContent.trim() : fallbackLabel;
+        const captionZh = el.querySelector('.ph-caption[lang-zh]');
+        const captionEn = el.querySelector('.ph-caption[lang-en]');
+        const zhText = captionZh ? captionZh.textContent : '';
+        const enText = captionEn ? captionEn.textContent : '';
+        el.outerHTML = `<figure style="margin:0;">
+          <img class="fig-img" src="${src}" alt="${labelEn || labelZh}" loading="lazy"
+               style="width:100%;border-radius:var(--radius);border:1px solid var(--border);">
+          <figcaption style="font-size:12.5px;color:var(--text-secondary);margin-top:8px;line-height:1.5;">
+            <strong><span lang-zh>${labelZh}</span><span lang-en>${labelEn}</span></strong><br>
+            <span lang-zh>${zhText}</span>
+            <span lang-en>${enText}</span>
+          </figcaption>
+        </figure>`;
+      };
+      img.src = src;
+    }
+  });
+}
+</script>
+
+</body>
+</html>

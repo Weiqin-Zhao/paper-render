@@ -1,0 +1,55 @@
+\vspace{-4pt}
+\section{Related Work}
+\vspace{-4pt}
+\label{sec:related-work}
+
+% We situate \benchmarkName{} within three research threads: agent benchmarks, procedural knowledge augmentation, and evaluation methodology.
+\benchmarkName{} connects to prior work on (1) benchmarking LLM agents, (2) augmenting agents with procedural knowledge and tools, and (3) evaluating improvements across heterogeneous systems.
+
+
+
+
+% \paragraph{Agent Benchmarks.}
+% Recent benchmarks evaluate end-to-end agent capability in increasingly realistic environments.
+% Terminal-Bench~\citep{merrill2026terminalbenchbenchmarkingagentshard} focuses on hard command-line tasks with containerized execution; we reuse its isolation infrastructure via Harbor~\citep{harborframeworkteam2026harborframework}.
+% SWE-bench~\citep{jimenez2024swebench} tests software issue resolution on GitHub, with follow-on work including SWE-agent~\citep{yang2024sweagent} and data scaling via SWE-smith~\citep{yang2025swesmith}.
+% Beyond software engineering, AgentBench~\citep{liu2023agentbench} spans multiple environments, while WebArena~\citep{zhou2024webarena}, VisualWebArena~\citep{koh2024visualwebarena}, and OSWorld~\citep{xie2024osworld} target web and GUI-based interaction.
+% Other task suites emphasize tool-mediated workflows and specialized domains, such as $\tau$-Bench~\citep{yao2025taubench} and AppWorld~\citep{trivedi2024appworld}, or interactive execution feedback for coding tasks (InterCode~\citep{yang2023intercode}).
+% Domain-specific benchmarks further probe agent competence in machine learning engineering (MLE-bench~\citep{chan2025mlebench}), cybersecurity (Cybench~\citep{zhang2025cybench}), code generation (BigCodeBench~\citep{zhuo2025bigcodebench}, MBPP~\citep{austin2021programsynthesis}), and replicating results from published, scientific papers (ReplicationBench ~\citep{ye2025replicationbenchaiagentsreplicate}.
+% In contrast to these benchmarks, which primarily report absolute task success for a fixed system, \benchmarkName{}targets augmentation efficacy---the marginal benefit of Skills---using paired evaluations under a controlled protocol (\S\ref{sec:protocol}).
+
+\textbf{Agent benchmarks.}
+\looseness=-1
+Recent evaluate end-to-end agent capability across realistic environments, including Terminal-Bench~\citep{merrill2026terminalbenchbenchmarkingagentshard}, SWE-bench and follow-ons~\citep{jimenez2024swebench,yang2024sweagent,yang2025swesmith}.
+Broader environment coverage appears in AgentBench and interactive/web/GUI settings~\citep{liu2023agentbench,zhou2024webarena,koh2024visualwebarena,xie2024osworld}.
+Other suites emphasize tool-mediated workflows, interactive execution feedback, or domain specialization~\citep{yao2025taubench,trivedi2024appworld,yang2023intercode,chan2025mlebench,zhang2025cybench,zhuo2025bigcodebench,austin2021programsynthesis,ye2025replicationbenchaiagentsreplicate}.
+These benchmarks measure how well a fixed agent completes tasks. \benchmarkName{} instead measures \emph{augmentation efficacy} via paired evaluation.
+
+
+% \paragraph{Procedural Augmentation and Tool Use.}
+% A parallel line of work improves agent performance by injecting structure, memory, or external knowledge.
+% CoALA~\citep{sumers2024cognitive} motivates procedural memory and modular architectures, and Voyager~\citep{wang2023voyager} builds an executable skill library in an embodied domain.
+% Prompting and planning methods such as chain-of-thought~\citep{wei2022chainofthought}, Tree of Thoughts~\citep{yao2023tree}, ReAct~\citep{yao2023reactsynergizingreasoningacting}, Reflexion~\citep{shinn2023reflexion}, Self-Refine~\citep{madaan2023selfrefine}, Least-to-Most~\citep{zhou2023leasttomost}, and LATS~\citep{zhou2024lats} provide general mechanisms to scaffold multi-step reasoning and iteration.
+% Retrieval and tool-use approaches instead supply external information or actions: RAG~\citep{lewis2021retrievalaugmentedgenerationknowledgeintensivenlp} and DocPrompting~\citep{zhou2023docprompting} retrieve supporting documents (including technical documentation), while Toolformer and ToolLLM~\citep{schick2023toolformerlanguagemodelsteach,qin2024toolllm} train or prompt models to invoke tools.
+% DSPy~\citep{khattab2023dspycompilingdeclarativelanguage} provides a declarative programming model for LM pipelines.
+% Skills in our setting combine concise procedural guidance with optional executable resources (\S\ref{sec:skill_spec}); \benchmarkName{} complements the above by providing a benchmark methodology for comparing \emph{how much} different Skills designs and injection strategies help across tasks and systems.
+
+\textbf{Procedural augmentation and tool use.}
+\looseness=-1
+Prior work augments agents with structured reasoning or external knowledge, e.g., CoALA and Voyager~\citep{sumers2024cognitive,wang2023voyager}, chain-of-thought and ReAct for multi-step problem solving~\citep{wei2022chainofthought,yao2023tree,yao2023reactsynergizingreasoningacting,shinn2023reflexion,madaan2023selfrefine,zhou2023leasttomost,zhou2024lats}, and retrieval/tool use~\citep{lewis2021retrievalaugmentedgenerationknowledgeintensivenlp,zhou2023docprompting,schick2023toolformerlanguagemodelsteach,qin2024toolllm}, and declarative optimization frameworks~\citep{khattab2023dspycompilingdeclarativelanguage}.
+Skills combine procedural guidance with executable resources (\S\ref{sec:skill_spec}). Despite many augmentation methods, benchmarks rarely quantify their actual impact.
+
+
+% \paragraph{Skills Ecosystems, Harnesses, and Evaluation Methodology.}
+% Anthropic's Agent Skills specification~\citep{anthropic2025agentskills} and MCP~\citep{anthropic2024mcp} formalize interoperable packaging and connectivity for agent augmentations, and we analyze their growing ecosystem in Appendix~\ref{app:ecosystem}.
+% In practice, Skills are delivered through concrete harnesses such as Claude Code~\citep{anthropic2025claudecode}, Gemini CLI~\citep{google2025geminicli}, and Codex CLI~\citep{openai2025codexcli}, whose engineering choices can entangle model capability with orchestration logic.
+% \benchmarkName{}therefore evaluates multiple commercial harnesses alongside a model-agnostic harness derived from Terminal-Bench~\citep{merrill2026terminalbenchbenchmarkingagentshard}, enabling controlled comparisons.
+% Finally, while most benchmarks report pass rates, broader evaluation work such as MLPerf~\citep{mattson2020mlperftrainingbenchmark}, Chatbot Arena~\citep{chiang2024chatbotarenaopenplatform}, and BIG-Bench~\citep{srivastava2023bigbench} motivates careful reporting practices.
+% We report both absolute gains and normalized gain~\citep{hake1998interactive} to compare improvements across different baselines (\S\ref{sec:metrics}).
+
+\textbf{Skills ecosystems and evaluation methodology.}
+\looseness=-1
+Anthropic's Agent Skills and MCP specifications~\citep{anthropic2025agentskills,anthropic2024mcp} formalized skill packages and tool connectivity, while agent CLIs (Claude Code, Gemini CLI, and Codex) provide real-world harnesses~\citep{anthropic2025claudecode,google2025geminicli,openai2025codexcli}. \benchmarkName{} evaluates both commercial harnesses and a model-agnostic harness based on Terminal-Bench~\citep{merrill2026terminalbenchbenchmarkingagentshard} to separate model and harness effects.
+Finally, broader benchmarking motivates careful reporting and comparability~\citep{mattson2020mlperftrainingbenchmark,chiang2024chatbotarenaopenplatform,srivastava2023bigbench}; we report both absolute gains and normalized gain~\citep{hake1998interactive} to compare improvements across different baselines (\S\ref{sec:metrics}).
+
+

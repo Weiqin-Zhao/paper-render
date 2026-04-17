@@ -1,0 +1,64 @@
+\section{Introduction}
+\label{sec:intro}
+
+Large language models (LLMs) have evolved from text generators into autonomous agents capable of executing complex, multi-step tasks in real-world environments~\citep{brown2020languagemodelsfewshotlearners, chowdhery2022palmscalinglanguagemodeling, touvron2023llamaopenefficientfoundation, ouyang2022training, yao2023reactsynergizingreasoningacting}.
+This evolution is exemplified by agent-centric CLI tools: Claude Code~\citep{anthropic2025claudecode} from Anthropic, Gemini CLI~\citep{google2025geminicli} from Google, and Codex CLI~\citep{openai2025codexcli} from OpenAI enable developers to leverage frontier models as agentic assistants within terminal environments.
+However, a fundamental tension exists: foundation models provide broad capabilities but lack the procedural knowledge required for domain-specific workflows, while fine-tuning is expensive and sacrifices generality.
+
+\textbf{Agent Skills} offer an emerging solution.
+A Skill is a structured package comprising instructions, code templates, resources, and verification logic that augments agent behavior at inference time without model modification~\citep{anthropic2025agentskills}.
+Skills encode procedural knowledge: standard operating procedures, domain conventions, and task-specific heuristics that guide agent behavior.
+This modular approach builds on the options framework for temporal abstraction~\citep{sutton1999between} and cognitive architectures for language agents~\citep{sumers2024cognitive}, mirroring successful computing paradigms: foundation models provide base capabilities (analogous to CPUs), agent harnesses orchestrate context and tools (operating systems), and Skills extend competence to specialized domains (applications).
+%This modular approach builds on the options framework for temporal abstraction~\citep{sutton1999between} and cognitive architectures for language agents~\citep{sumers2024cognitive}.
+%This architecture mirrors successful computing paradigms: foundation models provide base capabilities (analogous to CPUs), agent harnesses orchestrate context and tools (operating systems), and Skills extend competence to specialized domains (applications).
+
+% Figure 1 moved to main.tex (page 1, full-width)
+
+% Skills ecosystems have grown rapidly, with community repositories now hosting thousands of user-contributed Skills spanning software engineering, data analysis, and enterprise workflows. Yet despite this proliferation, no benchmark systematically evaluates how and when Skills improve agent performance, what content drives gains, or what design principles distinguish effective Skills from ineffective ones. The question is not whether adding task-relevant context helps, but rather: How much do Skills help compared to baseline augmentation? Which Skills components (instructions vs.\ code vs.\ examples) contribute most? When do Skills fail despite being present?
+
+Skills ecosystems have grown rapidly, with community repositories now hosting thousands of user-contributed Skills spanning software engineering, data analysis, and enterprise workflows. Yet despite this proliferation, no benchmark systematically evaluates how and when Skills improve agent performance, what content drives gains, or what design principles distinguish effective Skills from ineffective ones. \autoref{fig:architecture} illustrates this layered architecture and previews our main result: curated Skills consistently improve resolution rates across all 7 model-harness configurations, while self-generated Skills provide negligible benefit. The question is not whether adding task-relevant context helps, but rather: \textit{How much do Skills help compared to baseline augmentation? Which Skills components (instructions vs.\ code vs.\ examples) contribute most? When do Skills fail despite being present?}
+
+%The growth of Skills ecosystems has been rapid---community repositories now host thousands of user-contributed Skills spanning software engineering, data analysis, and enterprise workflows (see Appendix~\ref{app:ecosystem} for ecosystem analysis).
+%Yet despite this proliferation, a critical gap exists: \emph{no benchmark systematically evaluates how and when Skills improve agent performance, what types of Skills content drive gains, or what design principles distinguish effective Skills from ineffective ones}.
+%The question is not \emph{whether} adding task-relevant context helps---that is nearly tautological---but rather: How much do Skills help compared to baseline augmentation? Which Skills components (instructions vs.\ code vs.\ examples) contribute most? When do Skills fail despite being present?
+
+Existing agent benchmarks~\citep{liu2023agentbench, merrill2026terminalbenchbenchmarkingagentshard, jimenez2024swebench, zhou2024webarena, xie2024osworld, koh2024visualwebarena, trivedi2024appworld, yang2023intercode, chan2025mlebench, zhuo2025bigcodebench} evaluate raw model capabilities in isolation, answering \textit{``How well can this model perform task X?''} but not \textit{``How much does Skills Y improve performance on task X?''} This gap has practical consequences: practitioners cannot make informed decisions about Skills adoption, and researchers lack empirical grounding for Skills design principles.
+%This methodological gap has practical consequences: practitioners cannot make informed decisions about which Skills to adopt, and researchers lack the empirical foundation to study Skills design principles.
+
+To address this, we introduce \benchmarkName{}, the first benchmark that treats Skills as first-class evaluation artifacts, with two core contributions:
+\begin{enumerate}[nosep,leftmargin=*]
+\item \textbf{A Skills-centric evaluation framework.} We curate 84 tasks across 11 domains, each executed under three conditions---no Skills, curated Skills, and self-generated Skills---with deterministic verifiers and full trajectory logging. We stratify tasks by difficulty and conduct leakage audits to ensure Skills provide guidance rather than solutions.
+
+\item \textbf{Large-scale empirical evaluation.} We evaluate 7 agent-model configurations across 7,308 trajectories, producing the first systematic evidence on Skills efficacy, variance, and failure modes.
+
+% \item \textbf{Actionable findings that challenge conventional wisdom.} Skills help on average (+14.4 points) but hurt on nearly a third of tasks. Compact Skills sets (2--3) outperform comprehensive libraries. Smaller models with Skills can surpass larger models without. These results establish design principles for Skills authors and deployment strategies for practitioners.
+
+\end{enumerate}
+%\textbf{(1) Paired Evaluation Protocol.}
+%Every task in SkillsBench is evaluated under multiple conditions: a \emph{vanilla} baseline (no Skills) and \emph{Skills-augmented} conditions with varying Skills content (L1: $\sim$6\%, L2: $\sim$10\%, L3: full, plus a BYOS condition).
+%This paired design enables direct measurement of Skills efficacy---the delta between conditions---controlling for model capability, task difficulty, and evaluation infrastructure.
+
+% \textbf{(2) Difficulty-Stratified Task Suite.}
+% We curate 85 tasks across 13 domains stratified by expected human completion time: Easy ($<$15 minutes, 6 tasks), Medium (1--4 hours, 52 tasks), and Hard ($>$4 hours, 27 tasks).
+% This stratification, validated with intrinsic difficulty metrics (dependency depth, tool invocations, state complexity), enables analysis of how Skills efficacy varies with task complexity.
+
+% \textbf{(3) Leakage Prevention and Skills Quality Control.}
+% To prevent Skills from encoding task-specific solutions, we establish authoring guidelines, conduct leakage audits measuring Skills-solution similarity (n-gram overlap, semantic similarity, command overlap), and document Skills quality variance.
+% Skills with similarity metrics $>$0.30 were revised or excluded.
+
+
+% Our evaluation comprises two experiments across \num{6970} valid trajectories. \textbf{Experiment 1} tests 6 LLMs across 5 agent harnesses (Claude Code, Gemini CLI, Codex, Terminus-2, Terminus-2-Skills) in 14 configurations on all 85 tasks, comparing with/without Skills. \textbf{Experiment 2} analyzes Skills design factors including quantity, complexity, and domain effects. Key findings:
+
+% \begin{itemize}[leftmargin=*,itemsep=2pt,topsep=2pt]
+%     \item \textbf{Variable Skills Benefit:} Skills yield +14.4pp average improvement but with high variance (+7.7pp to +26.9pp). Codex + GPT-5.2 achieves maximum performance (49.5\%).
+%     \item \textbf{Skills Can Hurt Performance:} Software Engineering shows --5.0pp delta; 24 of 85 tasks exhibit negative Skills effects, suggesting domain-specific deployment strategies are needed.
+%     \item \textbf{Optimal Skills Quantity:} 2--3 Skills provides +20.0pp improvement; 4+ Skills shows diminishing returns (+5.2pp). Compact Skills (+18.9pp) outperform comprehensive ones (+5.7pp).
+%     \item \textbf{Reliability Issues:} Skills-aware harness variants (Terminus-2-Skills) show 31.7--65.3\% exception rates, revealing that aggressive Skills prompting can destabilize execution.
+%     \item \textbf{Model Scale Effects:} Haiku + Skills (25.2\%) exceeds Opus without Skills (23.6\%) on procedural tasks, demonstrating Skills can partially compensate for model capacity.
+% \end{itemize}
+
+% \noindent\textbf{Scope and Limitations.}
+% SkillsBench focuses on terminal-based agentic tasks where Skills provide procedural guidance.
+% We do not claim to benchmark all forms of agent augmentation or all task domains.
+% Our contribution is methodological: demonstrating that paired evaluation reveals insights invisible to single-condition benchmarks.
+% We acknowledge that Skills injection adds tokens, and additional control baselines (random text of equivalent length, retrieved documentation) would strengthen causal claims---we discuss this limitation in \S\ref{sec:discussion}.

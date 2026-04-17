@@ -1,0 +1,565 @@
+%%%%%%%% ICML 2026 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs} % for professional tables
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2026} with \usepackage[nohyperref]{icml2026} above.
+\usepackage{hyperref}
+\usepackage[inline]{enumitem}
+\usepackage{listings}
+\usepackage{siunitx}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{multirow}
+
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+% \usepackage{icml2026}
+
+% For preprint / arXiv, use:
+\usepackage[preprint]{icml2026}
+
+% If accepted, instead use the following line for the camera-ready submission:
+% \usepackage[accepted]{icml2026}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{multirow}
+\usepackage{xurl}
+\usepackage{caption}
+% \usepackage{polski}
+% same purpose but keep format stable
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+
+% if you use cleveref..
+\usepackage[capitalize,noabbrev]{cleveref}
+\definecolor{posgreen}{rgb}{0.13,0.54,0.13}
+\definecolor{negred}{rgb}{0.80,0.20,0.15}
+\newcommand{\ppos}[1]{\textcolor{posgreen}{+#1}}
+\newcommand{\nneg}[1]{\textcolor{negred}{--#1}}
+\newcommand{\pzero}[1]{\textcolor{gray}{#1}}
+\usepackage{additional_macros}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THEOREMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\benchmarkName}{\textsc{SkillsBench}}
+
+
+% Todonotes is useful during development; simply uncomment the next line
+%    and comment out the line below the next line to turn off comments
+%\usepackage[disable,textsize=tiny]{todonotes}
+\usepackage[textsize=tiny]{todonotes}
+\newcommand{\sh}[1]{\textcolor{orange}{[shenghan: #1]}}
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{SkillsBench: Benchmarking How Well Agent Skills Work Across Diverse Tasks}
+
+% Redefine plain pagestyle to have no header/footer/rules (for first page)
+\fancypagestyle{plain}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}}
+
+\begin{document}
+
+\twocolumn[
+  % \icmltitle{Submission and Formatting Instructions for \\
+    % International Conference on Machine Learning (ICML 2026)}
+    \icmltitle{SkillsBench: Benchmarking How Well Agent Skills Work Across Diverse Tasks}
+  % It is OKAY to include author information, even for blind submissions: the
+  % style file will automatically remove it for you unless you've provided
+  % the [accepted] option to the icml2026 package.
+
+  % List of affiliations: The first argument should be a (short) identifier you
+  % will use later to specify author affiliations Academic affiliations
+  % should list Department, University, City, Region, Country Industry
+  % affiliations should list Company, City, Region, Country
+
+  % You can specify symbols, otherwise they are numbered in order. Ideally, you
+  % should not use this facility. Affiliations will be numbered in order of
+  % appearance and this is the preferred way.
+  \icmlsetsymbol{equal}{*}
+  \icmlsetsymbol{outsideamazon}{\dag}
+
+  \begin{icmlauthorlist}
+    % Lead
+    \icmlauthor{Xiangyi Li$^\ast$}{benchflow}
+    % ~30 points co-first-authors
+    \icmlauthor{Yimin Liu$^\ast$}{osu}
+    \icmlauthor{Wenbo Chen$^\ast$}{amazon,outsideamazon}
+    \icmlauthor{Shenghan Zheng$^\ast$}{dartmouth}
+    % ~24 points core authors
+    \icmlauthor{Xiaokun Chen$^\ddagger$}{stanford}
+    \icmlauthor{Yifeng He$^\ddagger$}{ucdavis}
+    \icmlauthor{Yubo Li$^\ddagger$}{cmu}
+    \icmlauthor{Bingran You$^\ddagger$}{ucberkeley}
+    % ~20 points core authors
+    % reviewed all bibs
+    \icmlauthor{Haotian Shen$^\ddagger$}{independent}
+    \icmlauthor{Jiankai Sun$^\ddagger$}{independent}
+    \icmlauthor{Shuyi Wang$^\ddagger$}{independent}
+    % 19 points
+    \icmlauthor{Binxu Li}{princeton}
+    \icmlauthor{Qunhong Zeng}{independent}
+    \icmlauthor{Di Wang}{foxconn}
+    % 18 points
+    \icmlauthor{Xuandong Zhao}{ucberkeley}
+    % 17 points
+    \icmlauthor{Yuanli Wang}{bu}
+    % 16 points
+    \icmlauthor{Roey Ben Chaim}{zenity}
+    % 12 points (alphabetical by last name)
+    \icmlauthor{Zonglin Di}{ucsc}
+    \icmlauthor{Yipeng Gao}{usc}
+    \icmlauthor{Junwei He}{bytedance}
+    \icmlauthor{Yizhuo He}{cmu}
+    \icmlauthor{Liqiang Jing}{utdallas}
+    \icmlauthor{Luyang Kong}{independent}
+    \icmlauthor{Xin Lan}{msu}
+    \icmlauthor{Jiachen Li}{utaustin}
+    \icmlauthor{Songlin Li}{stanford}
+    \icmlauthor{Yijiang Li}{ucsd}
+    \icmlauthor{Yueqian Lin}{duke}
+    \icmlauthor{Xinyi Liu}{independent}
+    \icmlauthor{Xuanqing Liu}{independent}
+    \icmlauthor{Haoran Lyu}{independent}
+    \icmlauthor{Ze Ma}{columbia}
+    \icmlauthor{Kaixin Li}{independent}
+    \icmlauthor{Runhui Wang}{independent}
+    \icmlauthor{Tianyu Wang}{independent}
+    \icmlauthor{Wengao Ye}{oxford}
+    \icmlauthor{Yue Zhang}{utdallas}
+    % Other contributions
+    \icmlauthor{Hanwen Xing}{independent}   \icmlauthor{Kaixin Li}{independent}
+    \icmlauthor{Yiqi Xue}{usc}
+    % Advising
+    \icmlauthor{Steven Dillmann}{stanford}
+    \icmlauthor{Han-chung Lee}{independent}
+  \end{icmlauthorlist}
+
+  \icmlaffiliation{benchflow}{BenchFlow}
+  \icmlaffiliation{amazon}{Amazon}
+  \icmlaffiliation{osu}{Ohio State University}
+  \icmlaffiliation{dartmouth}{Dartmouth College}
+  \icmlaffiliation{stanford}{Stanford University}
+  \icmlaffiliation{ucdavis}{UC Davis}
+  \icmlaffiliation{cmu}{Carnegie Mellon University}
+  \icmlaffiliation{ucberkeley}{UC Berkeley}
+  \icmlaffiliation{independent}{Independent}
+  \icmlaffiliation{princeton}{Princeton University}
+  \icmlaffiliation{foxconn}{Foxconn}
+  \icmlaffiliation{bu}{Boston University}
+  \icmlaffiliation{zenity}{Zenity}
+  \icmlaffiliation{ucsc}{UC Santa Cruz}
+  \icmlaffiliation{usc}{USC}
+  \icmlaffiliation{bytedance}{ByteDance}
+  \icmlaffiliation{utdallas}{UT Dallas}
+  \icmlaffiliation{msu}{Michigan State University}
+  \icmlaffiliation{utaustin}{UT Austin}
+  \icmlaffiliation{duke}{Duke University}
+  \icmlaffiliation{oxford}{University of Oxford}
+  \icmlaffiliation{ucsd}{UC San Diego}
+  \icmlaffiliation{columbia}{Columbia University}
+  \icmlcorrespondingauthor{Xiangyi Li}{xiangyi@benchflow.ai}
+
+  % You may provide any keywords that you find helpful for describing your
+  % paper; these are used to populate the "keywords" metadata in the PDF but
+  % will not be shown in the document
+  \icmlkeywords{Machine Learning, Agent Skills, Benchmarking}
+
+  \vskip 0.15in
+
+% Abstract centered in full-width area
+\begin{center}
+\begin{minipage}{0.92\textwidth}
+\centerline{\textbf{\large Abstract}}
+\vskip 0.1in
+\small
+Agent Skills are structured packages of procedural knowledge that augment LLM agents at inference time. Despite rapid adoption, there is no standard way to measure whether they actually help. We present \benchmarkName{}, a benchmark of 86 tasks across 11 domains paired with curated Skills and deterministic verifiers. Each task is evaluated under three conditions: no Skills, curated Skills, and self-generated Skills. We test 7 agent-model configurations over 7,308 trajectories. Curated Skills raise average pass rate by 16.2 percentage points (pp), but effects vary widely by domain (+4.5pp for Software Engineering to +51.9pp for Healthcare) and 16 of 84 tasks show negative deltas. Self-generated Skills provide no benefit on average, showing that models cannot reliably author the procedural knowledge they benefit from consuming. Focused Skills with 2--3 modules outperform comprehensive documentation, and smaller models with Skills can match larger models without them. We publish the dataset and evaluation harness to assist developers and researchers in future work at \href{https://www.skillsbench.ai/}{skillsbench.ai}.
+\end{minipage}
+\end{center}
+
+\vskip 0.2in
+
+% Figure in full-width area (side-by-side layout for single column)
+\centerline{\includegraphics[width=0.95\textwidth]{figs/stacked_sidebyside.pdf}}
+\vskip 0.08in
+\centerline{\small \textbf{Figure 1:} Agent architecture stack and resolution rates across 7 agent-model configurations on 84 tasks.}
+\centerline{\small Curated Skills (beige) improve performance by +16.2pp on average; self-generated Skills (amber) provide negligible or negative benefit.}
+\phantomsection\label{fig:architecture}
+
+\vskip 0.15in
+]
+
+% Set figure counter since we manually placed Figure 1 above
+\setcounter{figure}{1}
+
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column listing the
+% affiliations and the copyright notice. The command takes one argument, which
+% is text to display at the start of the footnote. The \icmlEqualContribution
+% command is standard text for equal contribution. Remove it (just {}) if you
+% do not need this facility.
+
+% Use ONE of the following lines. DO NOT remove the command.
+% If you have no special notice, KEEP empty braces:
+\printAffiliationsAndNotice{\textit{$^\ast$Equal contribution. $^\ddagger$Core contribution. \dag{}This work was conducted outside the author's role at Amazon.}}
+
+
+\input{sections/01-introduction}
+\input{sections/02-skillsbench}
+\input{sections/03-experimentation}
+\input{sections/04-results}
+\input{sections/05-limitations}
+\input{sections/06-related-work}
+\input{sections/07-conclusion}
+
+\paragraph*{Acknowledgements.}
+We thank Junxian He for guidance and advice; Terry Yue Zhuo for advice and for inviting collaborators; Yi R.\ (May) Fung for advice and paper writing guides; Gabriel Chua for providing last-minute API keys; Zachary Mueller for providing GPU resources through Lambda; and Ivan Burazin for providing Daytona credits.
+We also thank the following contributors for task and code contributions: Jianheng Hou, Jierun Chen, Jiahao Liu, Shutong Wu, Yulin Li, Zhenheng Tang, Benny Jiang, and Qingyang Ma.
+
+% \section*{Impact Statement}
+
+% This paper presents work whose goal is to advance the field of Machine Learning through improved evaluation methodology for AI agents. We see no immediate ethical concerns beyond those inherent to agent systems generally. By enabling better evaluation of agent augmentation strategies, our work may contribute to more reliable and capable AI assistants.
+
+% In the unusual situation where you want a paper to appear in the
+% references without citing it in the main text, use \nocite
+
+\clearpage
+\bibliography{references}
+\bibliographystyle{icml2026}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% APPENDIX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\input{sections/10-appendix}
+\end{document}
+
+% \section*{Impact Statement}
+
+% This paper presents work whose goal is to advance the field of Machine Learning through improved evaluation methodology for AI agents. We see no immediate ethical concerns beyond those inherent to agent systems generally. By enabling better evaluation of agent augmentation strategies, our work may contribute to more reliable and capable AI assistants.
+
+% % In the unusual situation where you want a paper to appear in the
+% % references without citing it in the main text, use \nocite
+
+% \bibliography{references}
+% \bibliographystyle{icml2026}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% % APPENDIX
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \newpage
+% \appendix
+% \onecolumn
+
+
+% \section{Benchmark Positioning Details}
+% \label{app:positioning}
+
+% Table~\ref{tab:positioning} compares SkillsBench with prior agent benchmarks across shared infrastructure and unique methodological contributions.
+% All benchmarks share containerized execution and deterministic verification; SkillsBench uniquely adds paired evaluation for measuring augmentation efficacy.
+
+% \begin{table}[t]
+% \centering
+%     % LEFT HALF: Contains both Caption and Table
+%     \begin{minipage}[t]{0.49\textwidth}
+%         \captionsetup{type=table} % Ensures caption is formatted correctly as a table caption
+%         \caption{Comparison with existing agent benchmarks. Shared features (\textcolor{gray}{gray}) vs.\ SkillsBench-specific contributions (\textbf{bold}).}
+%         \label{tab:positioning}
+        
+%         \vspace{5pt} % Optional: Adds a small gap between caption and table
+        
+%         \centering
+%         \footnotesize
+%         \setlength{\tabcolsep}{2pt}
+%         \begin{tabular}{lccc|cccc}
+%             \toprule
+%             & \multicolumn{3}{c|}{\textcolor{gray}{\textit{Shared}}} & \multicolumn{4}{c}{\textbf{Ours}} \\
+%             \textbf{Benchmark} & \rotatebox{70}{\textcolor{gray}{Container}} & \rotatebox{70}{\textcolor{gray}{Verifier}} & \rotatebox{70}{\textcolor{gray}{Multi-Dom.}} & \rotatebox{70}{\textbf{Paired}} & \rotatebox{70}{\textbf{Skills}} & \rotatebox{70}{\textbf{Leakage}} & \rotatebox{70}{\textbf{Ablation}} \\
+%             \midrule
+%             SWE-Bench & \checkmark & \checkmark & \texttimes & \texttimes & \texttimes & \texttimes & \texttimes \\
+%             Terminal-Bench & \checkmark & \checkmark & \checkmark & \texttimes & \texttimes & \texttimes & \texttimes \\
+%             AgentBench & \checkmark & \checkmark & \checkmark & \texttimes & \texttimes & \texttimes & \texttimes \\
+%             WebArena & \checkmark & \checkmark & \texttimes & \texttimes & \texttimes & \texttimes & \texttimes \\
+%             OSWorld & \checkmark & \checkmark & \checkmark & \texttimes & \texttimes & \texttimes & \texttimes \\
+%             $\tau$-Bench & \checkmark & \checkmark & \texttimes & \texttimes & \texttimes & \texttimes & \texttimes \\
+%             MLE-bench & \checkmark & \checkmark & \texttimes & \texttimes & \texttimes & \texttimes & \texttimes \\
+%             BigCodeBench & \checkmark & \checkmark & \texttimes & \texttimes & \texttimes & \texttimes & \texttimes \\
+%             \midrule
+%             SkillsBench & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+%             \bottomrule
+%         \end{tabular}
+%     \end{minipage}\hfill
+%     % RIGHT HALF: Empty placeholder (or place a figure/image here)
+%     \begin{minipage}[t]{0.49\textwidth}
+%         \vspace{0pt} 
+%         % Insert right-side content here
+%     \end{minipage}
+% \end{table}
+
+% \section{Skill Ecosystem Analysis}
+% \label{app:ecosystem}
+
+% To contextualize \benchmarkName{} within the broader landscape of agent augmentation, we analyze the existing ecosystem of publicly available Skills.
+
+% \subsection{Data Collection}
+
+% We collected Skills from three sources:
+% \begin{itemize}
+%     \item Public GitHub repositories tagged with ``claude-skills'' or ``agent-skills'' (N=\num{12847})
+%     \item Community marketplaces including Smithery.ai and skillmp.com (N=\num{28412})
+%     \item Corporate partner contributions (N=\num{5891})
+% \end{itemize}
+
+% After deduplication (based on SKILL.md content hash), we retained \num{47150} unique Skills from \num{6323} repositories.
+
+% \begin{figure}[ht]
+%   \vskip 0.1in
+%   \begin{center}
+%     \centerline{\includegraphics[width=0.8\columnwidth]{figs/timeline_visualization.png}}
+%     \caption{Temporal dynamics of Skill creation. Growth remained stable through late 2025, followed by a sharp surge in early 2026 with daily additions peaking at nearly 19k Skills. The cumulative curve shows rapid recent expansion rather than steady long-term growth.}
+%     \label{fig:timeline}
+%   \end{center}
+%   \vskip -0.1in
+% \end{figure}
+
+% \subsection{Skill Characteristics}
+
+% \paragraph{Size Distribution.}
+% Skill sizes follow a log-normal distribution with median 2.3 KB (IQR: 0.8--6.1 KB).
+% The largest Skills (top 1\%) exceed 50 KB and typically include extensive code resources.
+% Figure~\ref{fig:skill_md_length} shows the SKILL.md token distribution, and Figure~\ref{fig:total_length} shows total Skill size distribution.
+
+% \begin{figure}[ht]
+%   \vskip 0.1in
+%   \begin{center}
+%     %\centerline{\includegraphics[width=0.8\columnwidth]{figs/skill_md_length_distribution.png}}
+%     \centerline{\includegraphics[width=0.8\columnwidth]{figs/figure1_skillmd_distribution.pdf}}
+    
+%     \caption{Token distribution of SKILL.md files (n=\num{36338}, 99.5th percentile shown). Most Skills are lightweight with median $\sim$1.5k tokens.}
+%     \label{fig:skill_md_length}
+%   \end{center}
+%   \vskip -0.1in
+% \end{figure}
+
+% \begin{figure}[ht]
+%   \vskip 0.1in
+%   \begin{center}
+%     %\centerline{\includegraphics[width=0.8\columnwidth]{figs/total_char_length_distribution.png}}
+%     \centerline{\includegraphics[width=0.8\columnwidth]{figs/figure2_total_distribution.pdf}}
+%     \caption{Total Skill size distribution (excluding metadata.json, n=\num{37078}, 99.5th percentile shown). Median total size remains under 2.5k tokens, with distribution highly skewed toward concise artifacts.}
+%     \label{fig:total_length}
+%   \end{center}
+%   \vskip -0.1in
+% \end{figure}
+
+% \paragraph{Domain Coverage.}
+% Skills span diverse domains (Figure~\ref{fig:category}):
+% \begin{itemize}
+%     \item Software Development: 38\% (git workflows, code review, testing)
+%     \item Data Analysis: 22\% (pandas, SQL, visualization)
+%     \item DevOps/Infrastructure: 15\% (Docker, Kubernetes, CI/CD)
+%     \item Writing/Documentation: 12\% (technical writing, API docs)
+%     \item Other: 13\% (scientific computing, finance, etc.)
+% \end{itemize}
+
+% \begin{figure}[ht]
+%   \vskip 0.1in
+%   \begin{center}
+%     \centerline{\includegraphics[width=0.8\columnwidth]{figs/category.png}}
+%     \caption{Category distribution of Skills. No single category dominates; Skills are spread across documentation, version control, code quality, CLI tools, DevOps, APIs, and frontend tasks.}
+%     \label{fig:category}
+%   \end{center}
+%   \vskip -0.1in
+% \end{figure}
+
+% \paragraph{Structural Patterns.}
+% Most Skills (78\%) follow the standard structure with SKILL.md plus optional resources.
+% Figure~\ref{fig:file_count} shows that most Skills contain very few files (median of one, concentrated below five). Figure~\ref{fig:file_extension} confirms the ecosystem is documentation-heavy: markdown files dominate, followed by scripting and configuration code.
+
+% \begin{figure}[ht]
+%   \vskip 0.1in
+%   \begin{center}
+%     \centerline{\includegraphics[width=0.8\columnwidth]{figs/file_count_distribution.png}}
+%     \caption{File count distribution per Skill. Most Skills contain 1--5 files.}
+%     \label{fig:file_count}
+%   \end{center}
+%   \vskip -0.1in
+% \end{figure}
+
+% \begin{figure}[ht]
+%   \vskip 0.1in
+%   \begin{center}
+%     \centerline{\includegraphics[width=0.8\columnwidth]{figs/file_extension_distribution.png}}
+%     \caption{File extension distribution. Markdown files dominate, indicating Skills prioritize natural-language instructions over executable implementations.}
+%     \label{fig:file_extension}
+%   \end{center}
+%   \vskip -0.1in
+% \end{figure}
+
+% \subsection{Quality Indicators}
+
+% We developed a quality scoring rubric based on:
+% \begin{enumerate}
+%     \item \textbf{Completeness:} Presence of required components (0--3 points)
+%     \item \textbf{Clarity:} Readability and organization (0--3 points)
+%     \item \textbf{Specificity:} Actionable vs.\ vague guidance (0--3 points)
+%     \item \textbf{Examples:} Presence and quality of examples (0--3 points)
+% \end{enumerate}
+
+% Mean quality score across the ecosystem is 6.2/12 (SD=2.8), indicating substantial room for improvement in Skill authoring practices.
+
+% \subsection{Implications for Benchmark Design}
+
+% This ecosystem analysis directly informed \benchmarkName{} construction:
+% \begin{itemize}
+%     \item \textbf{Domain selection:} Task categories mirror ecosystem coverage, ensuring Skills exist for evaluation
+%     \item \textbf{Quality awareness:} Ecosystem mean quality of 6.2/12 motivated our leakage audit and authoring guidelines---low-quality Skills would confound efficacy measurement
+%     \item \textbf{Skill selection:} We selected benchmark Skills from the top quality quartile (score $\geq$ 9/12) to isolate the effect of procedural knowledge from Skill quality variance
+%     \item \textbf{Size constraints:} Median Skill size ($\sim$800 tokens) informed our 8K context budget allocation
+% \end{itemize}
+
+% \paragraph{Limitation: Benchmark vs.\ Ecosystem Gap.}
+% Our 85 curated tasks with high-quality Skills represent an optimistic scenario.
+% Real-world Skill usage involves lower-quality Skills (ecosystem mean: 6.2/12 vs.\ benchmark mean: 10.1/12) and imperfect Skill-task matching.
+% Future work should evaluate with ecosystem-representative Skill samples.
+
+
+% \section{Qualitative Case Studies}
+% \label{app:cases}
+
+% We present three case studies illustrating Skill efficacy patterns.
+
+% \subsection{Case 1: Successful Skill Application}
+
+% \textbf{Task:} Fix a failing CI pipeline in a Python repository (Medium difficulty, DevOps domain).
+
+% \textbf{Skill:} \texttt{ci-debugging} --- provides systematic debugging workflow: (1) check logs, (2) identify failing step, (3) reproduce locally, (4) trace dependencies.
+
+% \textbf{Vanilla trajectory (GPT-5.2):} Agent immediately attempts to modify \texttt{.github/workflows/main.yml} based on error message, introduces syntax error, enters retry loop, times out after 47 minutes.
+
+% \textbf{Skill-augmented trajectory:} Agent follows Skill procedure---reads full log, identifies dependency version conflict, checks \texttt{requirements.txt}, finds pinned version incompatibility, updates version constraint, verifies fix locally before committing. Completes in 12 minutes.
+
+% \textbf{Analysis:} Skill provided systematic procedure that prevented premature action. Key Skill component: explicit ``reproduce locally before modifying'' instruction.
+
+% \subsection{Case 2: Skill Present but Ignored}
+
+% \textbf{Task:} Implement OAuth authentication flow (Hard difficulty, Software Engineering domain).
+
+% \textbf{Skill:} \texttt{oauth-integration} --- provides flow diagram, common pitfalls, security checklist.
+
+% \textbf{Trajectory (Claude Haiku 4.5):} Agent acknowledges Skill in first response (``I'll follow the oauth-integration guidelines...'') but subsequently ignores security checklist, implements vulnerable token storage, fails verification.
+
+% \textbf{Analysis:} Skill was recognized but not operationalized. Smaller models may lack capacity to maintain Skill guidance across long trajectories. Suggests need for Skill-aware prompting strategies.
+
+% \subsection{Case 3: Skill Quality Impact}
+
+% \textbf{Task:} Configure Kubernetes deployment (Medium difficulty, DevOps domain).
+
+% \textbf{Skill A (high quality, score 11/12):} Step-by-step procedure with YAML examples, common errors, verification commands.
+
+% \textbf{Skill B (low quality, score 5/12):} High-level overview, no examples, vague guidance (``configure the deployment appropriately'').
+
+% \textbf{Results (Claude Sonnet 4.5):} Skill A: 87.5\% pass rate. Skill B: 54.2\% pass rate (below vanilla: 58.3\%).
+
+% \textbf{Analysis:} Low-quality Skills can hurt performance by consuming context budget without providing actionable guidance. Highlights importance of Skill quality control.
+
+
+% \section{Additional Experimental Details}
+% \label{app:details}
+
+% \subsection{Context Usage Analysis}
+
+% Table~\ref{tab:context_full} provides detailed context usage statistics by condition.
+
+% \begin{table}[ht]
+% \centering
+% \caption{Detailed context usage by Skill condition.}
+% \label{tab:context_full}
+% \begin{tabular}{lccccc}
+% \toprule
+% \textbf{Metric} & \textbf{L0} & \textbf{L1} & \textbf{L2} & \textbf{L3} & \textbf{BYOS} \\
+% \midrule
+% Mean tokens & \num{4821} & \num{5102} & \num{5487} & \num{6142} & \num{5891} \\
+% Std. dev. & \num{1203} & \num{1342} & \num{1518} & \num{1847} & \num{1723} \\
+% Truncation rate & 8.3\% & 9.7\% & 11.4\% & 14.2\% & 13.1\% \\
+% \bottomrule
+% \end{tabular}
+% \end{table}
+
+% \subsection{Skill Injection Format}
+
+% Skills are injected as system-level context with the following structure:
+
+% \begin{verbatim}
+% <skill name="[NAME]">
+%   <instructions>[SKILL.md content]</instructions>
+%   <resources>[file list]</resources>
+% </skill>
+
+% [Task instruction follows]
+% \end{verbatim}
+
+% \subsection{Confidence Interval Calculation}
+
+% We compute 95\% confidence intervals using the percentile bootstrap method with 1000 resamples.
+% For normalized gain, we compute CIs on the gain metric directly rather than on the component pass rates.
+
+% \subsection{10-Run Validation}
+
+% For a subset of configurations (GPT-5.2 and Claude Opus 4.5, all 27 hard tasks, L0 and L3 conditions), we conducted 10 runs instead of 3. Results show:
+% \begin{itemize}
+%     \item Mean $\Delta$ within 1.2pp of 3-run estimates
+%     \item Standard error reduced by $\sim$45\%
+%     \item All conclusions remain unchanged
+% \end{itemize}
+
+% This validates that 3 runs provides sufficient precision for our main findings.
+
+
+% \section{Reproducibility Checklist}
+% \label{app:reproducibility}
+
+% \begin{itemize}
+%     \item[$\square$] Code and evaluation scripts will be released
+%     \item[$\square$] Task specifications with Dockerfiles provided
+%     \item[$\square$] All Skills used in evaluation documented
+%     \item[$\square$] Model API versions and settings specified
+%     \item[$\square$] Random seeds and determinism settings documented
+%     \item[$\square$] Complete results tables in supplementary materials
+% \end{itemize}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% \end{document}

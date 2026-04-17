@@ -1,0 +1,45 @@
+\vspace{-4pt}
+\section{Conclusion}
+\vspace{-2pt}
+\label{sec:conclusion}
+
+% We introduced \textbf{SkillsBench}, the first benchmark treating Agent Skills as first-class evaluation artifacts. Through systematic measurement across 85 tasks, 13 domains, 14 agent-model configurations, and \num{2857} valid trajectories, we demonstrated that:
+
+% \begin{enumerate}[nosep,leftmargin=*]
+%     \item \textbf{Skills provide substantial but variable benefit}: Skills yield +14.4pp average improvement with high variance (+7.7pp to +26.9pp), contradicting assumptions of uniform Skills benefits and highlighting the importance of agent-model-specific evaluation.
+
+%     \item \textbf{Skills can hurt performance}: Software Engineering shows --5.0pp delta, and 24 of 85 tasks exhibit negative Skills effects. This critical finding suggests domain-specific deployment strategies are essential---blind Skills application is counterproductive.
+
+%     \item \textbf{Less is more for Skills design}: 2--3 Skills provides optimal benefit (+20.0pp); 4+ Skills shows diminishing returns (+5.2pp). Compact Skills (+18.9pp) substantially outperform comprehensive ones (+5.7pp), suggesting focused procedural guidance is more effective than exhaustive documentation.
+
+%     \item \textbf{Domain knowledge gaps drive largest gains}: Manufacturing (+32.6pp) and Document Processing (+30.9pp) show highest improvements, while domains with strong pretraining coverage show minimal or negative effects.
+
+%     \item \textbf{Skills-aware harnesses introduce reliability risks}: Terminus-2-Skills exhibits 49.5\% exception rate overall (up to 65.3\% for some configurations), revealing that aggressive Skills prompting can destabilize agent execution.
+% \end{enumerate}
+
+% These findings support a nuanced Skills Hypothesis: runtime-loaded procedural knowledge provides meaningful scaffolding for agent behavior, but efficacy depends on domain coverage gaps in model pretraining, Skills design choices, and harness implementation quality.
+
+We introduced \benchmarkName{}, the first benchmark to systematically evaluate Agent Skills as first-class artifacts. Across 84 tasks, 7 agent-model configurations, and 7,308 trajectories under three conditions (no Skills, curated Skills, self-generated Skills), our evaluation yields four key findings: (1) curated Skills provide substantial but variable benefit (+16.2 percentage points average, with high variance across domains and configurations); (2) self-generated Skills provide negligible or negative benefit (--1.3pp average), demonstrating that effective Skills require human-curated domain expertise; (3) less is more---focused Skills with 2--3 modules outperform comprehensive documentation; and (4) Skills can partially substitute for model scale, enabling smaller models to match larger ones on procedural tasks. These results establish that Skills efficacy is not universal but context-dependent, motivating paired evaluation as standard practice for agent augmentation research. \benchmarkName{} provides both the empirical foundation and open infrastructure for principled Skills design, selection, and deployment.
+% In conclusion, we introduced \textbf{SkillsBench}, a benchmark for evaluating Agent Skills as first-class artifacts.
+% Across 85 tasks and 14 agent--model configurations, we find that Skills often improve performance but the effect is highly system- and domain-dependent: gains can be large, negligible, or even negative.
+% We further show that skill design and harness integration matter---concise, targeted Skills tend to work better than exhaustive ones, and aggressive skill prompting can increase failure rates.
+% Together, these results motivate evaluating augmentation as a paired effect (with vs.\ without skills), rather than assuming Skills are universally beneficial, and provide a foundation for more rigorous comparisons of Skills ecosystems, injection strategies, and future multimodal extensions.
+
+% \paragraph{Limitations.}
+% We acknowledge several limitations: (1) our benchmark focuses on terminal-based tasks; GUI and multi-agent settings remain future work; (2) additional control baselines would strengthen causal claims; (3) three evaluation runs per configuration, while sufficient for our main findings, is minimal; (4) the benchmark uses high-quality curated Skills, which may not reflect real-world ecosystem quality (\S\ref{sec:discussion}).
+
+% \paragraph{Future Work.}
+% SkillsBench opens several directions for future research:
+
+% \begin{itemize}[nosep,leftmargin=*]
+%     \item \textbf{Automatic Skills synthesis}: Can LLMs generate effective Skills from task demonstrations or documentation?
+%     \item \textbf{Skills composition theory}: When do Skills compose effectively, and can we predict composite task performance from atomic Skills performance?
+%     \item \textbf{Multimodal Skills}: How should Skills be designed for vision-language agents operating in GUI environments?
+%     \item \textbf{Causality baselines}: Evaluation with random-text and retrieved-documentation controls to isolate procedural knowledge effects.
+%     \item \textbf{Ecosystem-representative evaluation}: Testing with lower-quality, automatically-selected Skills to match real-world deployment conditions.
+% \end{itemize}
+
+% SkillsBench and all evaluation code are open-sourced to enable reproducible research and foster community development of high-quality Skills.
+
+% \paragraph{Broader Impact.}
+% Skills represent a path toward more accessible AI capability. By demonstrating that domain-specific procedural knowledge can provide substantial improvement on specialized tasks, we suggest opportunities for modular AI augmentation that does not require expensive model retraining.

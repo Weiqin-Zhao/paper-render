@@ -91,10 +91,15 @@
     - .two-col                     : two-column grid layout
     - .loss-hierarchy > .loss-item : loss function visualization
 
-    Figure placeholder pattern:
+    Figure placeholder pattern (IMPORTANT: .ph-label MUST be bilingual with
+    two lang-zh / lang-en spans; otherwise the label text stays mixed in both
+    language modes after JS replaces the placeholder with a <figure>):
     <div class="img-placeholder" id="ph-figX">
       <div class="icon">📊</div>
-      <div class="ph-label">Figure X: Title</div>
+      <div class="ph-label">
+        <span lang-zh>Figure X: 中文标题</span>
+        <span lang-en>Figure X: English Title</span>
+      </div>
       <div class="ph-caption" lang-zh>中文说明</div>
       <div class="ph-caption" lang-en>English caption</div>
       <div class="ph-filename">figures/figX_name.png</div>
@@ -103,6 +108,19 @@
     Bilingual pattern:
     - Block level: use lang-zh / lang-en attributes
     - Inline level (TOC): use <span class="zh"> / <span class="en">
+
+    Table bilingual pattern:
+    Every <td> MUST have lang-zh or lang-en attribute, even if content is
+    identical in both languages. The number of <td>s must match <th>s exactly.
+    Example:
+      <tr>
+        <th lang-zh>方法</th><th lang-en>Method</th>
+        <th lang-zh>标记物</th><th lang-en>Markers</th>
+      </tr>
+      <tr>
+        <td lang-zh>ModelA</td><td lang-en>ModelA</td>
+        <td lang-zh>CD3, CD8</td><td lang-en>CD3, CD8</td>
+      </tr>
   -->
 
   <!-- ======================== FOOTER ======================== -->

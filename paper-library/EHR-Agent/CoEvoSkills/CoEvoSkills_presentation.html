@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoEvoSkills - Paper Notes</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fafbfc; --card-bg: #ffffff;
+    --text: #1a1a2e; --text-secondary: #5a5a7a;
+    --accent: #0d9488; --accent-light: #f0fdfa; --accent-dark: #134e4a;
+    --border: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.03);
+    --radius: 12px; --radius-sm: 8px;
+    --teal: #0d9488; --teal-light: #f0fdfa;
+    --amber: #d97706; --amber-light: #fffbeb;
+    --rose: #e11d48; --rose-light: #fff1f2;
+    --emerald: #059669; --emerald-light: #ecfdf5;
+    --blue: #2563eb; --blue-light: #eff6ff;
+    --purple: #7c3aed; --purple-light: #f5f3ff;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.7; font-size: 16px; -webkit-font-smoothing: antialiased;
+    transition: background 0.35s ease, color 0.35s ease;
+  }
+  body.dark {
+    --bg: #0d1017; --card-bg: #161b22;
+    --text: #e6edf3; --text-secondary: #8b949e;
+    --accent: #5eead4; --accent-light: #0f2a2a; --accent-dark: #99f6e4;
+    --border: #30363d;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.25);
+    --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.5), 0 4px 6px -2px rgba(0,0,0,0.3);
+    --teal: #5eead4; --teal-light: #0f2a2a;
+    --amber: #fbbf24; --amber-light: #2a2000;
+    --rose: #fb7185; --rose-light: #2a0f14;
+    --emerald: #34d399; --emerald-light: #0f2a1e;
+    --blue: #60a5fa; --blue-light: #0f1a2a;
+    --purple: #a78bfa; --purple-light: #1a0f2a;
+  }
+  body.dark .hero { background: linear-gradient(135deg, #064e3b 0%, #0d4f6e 50%, #0f766e 100%); }
+  body.dark .hero::before { background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%); }
+  body.dark .hero::after { background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%); }
+  body.dark .hero .tag { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.08); }
+  body.dark .toc-sidebar { box-shadow: 2px 0 12px rgba(0,0,0,0.3); }
+  body.dark .toc-sidebar a:hover { background: var(--accent-light); }
+  body.dark .toc-sidebar a.active { background: var(--accent-light); }
+  body.dark .menu-toggle { color: var(--text); }
+  body.dark .box-insight { background: #1a1840; border-color: #312e81; color: #c7d2fe; }
+  body.dark .box-warn { background: #2a2000; border-color: #854d0e; color: #fde68a; }
+  body.dark .box-note { background: #0f2a2a; border-color: #115e59; color: #99f6e4; }
+  body.dark .box-key { background: #2a0f14; border-color: #9f1239; color: #fecdd3; }
+  body.dark thead th { background: #1c2128; }
+  body.dark tbody td { border-bottom-color: #21262d; }
+  body.dark tbody tr:hover { background: #1c2128; }
+  body.dark .flow { background: #111820; }
+  body.dark .flow-box.highlight { background: #0f2a2a; border-color: #115e59; color: #99f6e4; }
+  body.dark .flow-box.green { background: #0f2a1e; border-color: #065f46; color: #6ee7b7; }
+  body.dark .flow-box.amber { background: #2a2000; border-color: #92400e; color: #fde68a; }
+  body.dark .flow-box.purple { background: #1a0f2a; border-color: #5b21b6; color: #c4b5fd; }
+  body.dark .bar-track { background: #1c2128; }
+  body.dark .img-placeholder { background: linear-gradient(135deg, #111820 0%, #1c2128 100%); border-color: #30363d; }
+  body.dark .img-placeholder:hover { border-color: var(--accent); background: linear-gradient(135deg, #0f2a2a 0%, #0f2a2a 100%); }
+  body.dark .img-placeholder .ph-caption { color: #6e7681; }
+  body.dark .img-placeholder .ph-filename { color: var(--accent); background: rgba(94,234,212,0.1); }
+  body.dark .formula { background: #111820; }
+  body.dark .discussion-card summary:hover { background: #1c2128; }
+  body.dark footer { border-top-color: var(--border); }
+  body.dark ::-webkit-scrollbar { width: 8px; }
+  body.dark ::-webkit-scrollbar-track { background: var(--bg); }
+  body.dark ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+  body.dark ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+
+  .top-controls { position: fixed; top: 20px; right: 24px; z-index: 1000; display: flex; align-items: center; gap: 10px; }
+  .ctrl-group { display: flex; background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 3px; box-shadow: var(--shadow-md); backdrop-filter: blur(12px); transition: background 0.35s ease, border-color 0.35s ease; }
+  .ctrl-btn { padding: 6px 18px; border: none; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 600; background: transparent; color: var(--text-secondary); transition: all 0.25s ease; letter-spacing: 0.5px; line-height: 1.4; }
+  .ctrl-btn.active { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(13,148,136,0.3); }
+  .theme-btn { padding: 6px 14px; border: none; border-radius: 20px; cursor: pointer; font-size: 16px; background: transparent; color: var(--text-secondary); transition: all 0.25s ease; line-height: 1; display: flex; align-items: center; justify-content: center; }
+  .theme-btn:hover { color: var(--accent); }
+  .theme-icon-light, .theme-icon-dark { transition: opacity 0.3s ease; }
+  .theme-icon-dark { display: none; }
+  body.dark .theme-icon-light { display: none; }
+  body.dark .theme-icon-dark { display: inline; }
+
+  .toc-sidebar { position: fixed; top: 0; left: 0; width: 280px; height: 100vh; background: var(--card-bg); border-right: 1px solid var(--border); overflow-y: auto; z-index: 900; padding: 24px 16px; box-shadow: 2px 0 8px rgba(0,0,0,0.03); transition: transform 0.3s ease, background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease; }
+  .toc-sidebar .toc-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 16px; padding-left: 8px; }
+  .toc-sidebar a { display: block; padding: 8px 12px; font-size: 13.5px; color: var(--text-secondary); text-decoration: none; border-radius: var(--radius-sm); transition: all 0.2s ease; line-height: 1.5; margin-bottom: 2px; }
+  .toc-sidebar a:hover { background: var(--accent-light); color: var(--accent); }
+  .toc-sidebar a.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+  .toc-sidebar a.sub { padding-left: 28px; font-size: 12.5px; }
+
+  .menu-toggle { display: none; position: fixed; top: 20px; left: 16px; z-index: 1001; background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; cursor: pointer; box-shadow: var(--shadow-md); font-size: 18px; line-height: 1; }
+
+  .main-content { margin-left: 280px; max-width: 900px; padding: 40px 48px 80px; }
+
+  .hero { background: linear-gradient(135deg, #0d4f6e 0%, #0d9488 50%, #14b8a6 100%); border-radius: var(--radius); padding: 48px 44px; margin-bottom: 40px; color: #fff; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -60%; right: -20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); border-radius: 50%; }
+  .hero::after { content: ''; position: absolute; bottom: -40%; left: -10%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); border-radius: 50%; }
+  .hero h1 { font-size: 32px; font-weight: 800; line-height: 1.3; margin-bottom: 16px; position: relative; z-index: 1; }
+  .hero .subtitle { font-size: 15px; opacity: 0.9; position: relative; z-index: 1; line-height: 1.7; }
+  .hero .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; position: relative; z-index: 1; }
+  .hero .tag { background: rgba(255,255,255,0.18); padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 500; backdrop-filter: blur(4px); border: 1px solid rgba(255,255,255,0.15); }
+
+  section { margin-bottom: 48px; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid var(--accent-light); }
+  .section-num { background: var(--accent); color: #fff; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+  .section-header h2 { font-size: 24px; font-weight: 700; color: var(--text); line-height: 1.3; }
+
+  .subsection h3 { font-size: 18px; font-weight: 700; color: var(--accent-dark); margin: 32px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .subsection h3::before { content: ''; width: 4px; height: 20px; background: var(--accent); border-radius: 2px; flex-shrink: 0; }
+  .subsection h4 { font-size: 15px; font-weight: 700; color: var(--text); margin: 24px 0 12px; }
+
+  p { margin-bottom: 14px; color: var(--text); }
+
+  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow); }
+  .card-accent { border-left: 4px solid var(--accent); }
+
+  .box { border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0; font-size: 14.5px; line-height: 1.7; }
+  .box-insight { background: var(--purple-light); border: 1px solid #ddd6fe; color: #5b21b6; }
+  .box-insight::before { content: '\01F4A1 '; }
+  .box-warn { background: var(--amber-light); border: 1px solid #fde68a; color: #92400e; }
+  .box-warn::before { content: '\026A0\0FE0F '; }
+  .box-note { background: var(--teal-light); border: 1px solid #99f6e4; color: #134e4a; }
+  .box-note::before { content: '\01F4CC '; }
+  .box-key { background: var(--rose-light); border: 1px solid #fecdd3; color: #9f1239; }
+  .box-key::before { content: '\01F511 '; }
+
+  .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead th { background: #f8fafc; font-weight: 700; text-align: left; padding: 12px 16px; border-bottom: 2px solid var(--border); color: var(--text); white-space: nowrap; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+  tbody td { padding: 10px 16px; border-bottom: 1px solid #f1f5f9; color: var(--text-secondary); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #f8fafc; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td strong { color: var(--text); }
+
+  .flow { display: flex; flex-direction: column; align-items: center; gap: 0; margin: 20px 0; padding: 24px; background: #f8fafc; border-radius: var(--radius); border: 1px solid var(--border); }
+  .flow-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .flow-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 18px; font-size: 13.5px; font-weight: 600; color: var(--text); box-shadow: var(--shadow); text-align: center; max-width: 300px; }
+  .flow-box.highlight { background: var(--accent-light); border-color: #99f6e4; color: var(--accent-dark); }
+  .flow-box.green { background: var(--emerald-light); border-color: #a7f3d0; color: #065f46; }
+  .flow-box.amber { background: var(--amber-light); border-color: #fde68a; color: #92400e; }
+  .flow-box.purple { background: var(--purple-light); border-color: #ddd6fe; color: #5b21b6; }
+  .flow-box small { display: block; font-weight: 400; font-size: 11.5px; margin-top: 4px; opacity: 0.8; }
+  .flow-arrow { color: var(--accent); font-size: 20px; font-weight: 700; line-height: 1; flex-shrink: 0; }
+  .flow-arrow-down { text-align: center; padding: 4px 0; }
+  .flow-label { font-size: 11.5px; color: var(--text-secondary); text-align: center; padding: 0 8px; font-style: italic; }
+
+  .chart-container { margin: 20px 0; padding: 24px; background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .chart-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .chart-source { font-size: 11.5px; color: var(--text-secondary); margin-bottom: 16px; font-style: italic; opacity: 0.8; }
+  .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row { display: flex; align-items: center; gap: 12px; }
+  .bar-label { width: 180px; font-size: 12.5px; color: var(--text-secondary); text-align: right; flex-shrink: 0; font-weight: 500; }
+  .bar-track { flex: 1; height: 28px; background: #f1f5f9; border-radius: 6px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 6px; transition: width 1s ease-out; display: flex; align-items: center; padding-left: 10px; }
+  .bar-value { font-size: 11.5px; font-weight: 700; color: #fff; white-space: nowrap; text-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+
+  .compare-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 16px 0; }
+  .compare-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; box-shadow: var(--shadow); }
+  .compare-card h5 { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: var(--accent); }
+  .compare-card p { font-size: 13.5px; color: var(--text-secondary); margin-bottom: 0; }
+
+  .metrics-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 16px 0; }
+  .metric-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; box-shadow: var(--shadow); }
+  .metric-value { font-size: 28px; font-weight: 800; color: var(--accent); line-height: 1.2; }
+  .metric-label { font-size: 12px; color: var(--text-secondary); margin-top: 6px; font-weight: 500; }
+  .metric-card.green .metric-value { color: var(--emerald); }
+  .metric-card.amber .metric-value { color: var(--amber); }
+  .metric-card.rose .metric-value { color: var(--rose); }
+
+  .img-placeholder { background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border: 2px dashed #cbd5e1; border-radius: var(--radius); padding: 40px 24px; text-align: center; margin: 20px 0; position: relative; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; }
+  .img-placeholder:hover { border-color: var(--accent); background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%); }
+  .img-placeholder .icon { font-size: 36px; opacity: 0.5; }
+  .img-placeholder .ph-label { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+  .img-placeholder .ph-caption { font-size: 12.5px; color: #94a3b8; max-width: 500px; line-height: 1.5; }
+  .img-placeholder .ph-filename { font-size: 11px; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--accent); background: rgba(13,148,136,0.08); padding: 3px 10px; border-radius: 4px; margin-top: 4px; }
+
+  .fig-img { width: 100%; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-md); margin: 20px 0 8px; }
+  .fig-caption { font-size: 13px; color: var(--text-secondary); text-align: center; font-style: italic; margin-bottom: 16px; }
+
+  ul, ol { margin: 12px 0; padding-left: 24px; }
+  li { margin-bottom: 8px; color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
+  li strong { color: var(--text); }
+
+  .formula { background: #f8fafc; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace; font-size: 14px; color: var(--text); overflow-x: auto; line-height: 2; }
+
+  .discussion-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; box-shadow: var(--shadow); }
+  .discussion-card summary { padding: 16px 20px; cursor: pointer; font-weight: 700; font-size: 15px; color: var(--text); display: flex; align-items: center; gap: 10px; transition: background 0.2s; list-style: none; }
+  .discussion-card summary::-webkit-details-marker { display: none; }
+  .discussion-card summary::before { content: '\25B8'; color: var(--accent); font-size: 14px; transition: transform 0.2s; flex-shrink: 0; }
+  .discussion-card[open] summary::before { transform: rotate(90deg); }
+  .discussion-card summary:hover { background: #f8fafc; }
+  .discussion-card .detail-body { padding: 0 20px 16px; font-size: 14.5px; color: var(--text-secondary); line-height: 1.7; }
+
+  .ref-table td:first-child { font-weight: 700; color: var(--accent-dark); white-space: nowrap; width: 160px; }
+
+  @media (max-width: 1024px) {
+    .toc-sidebar { transform: translateX(-100%); }
+    .toc-sidebar.open { transform: translateX(0); }
+    .menu-toggle { display: block; }
+    .main-content { margin-left: 0; padding: 24px 20px 60px; }
+    .hero { padding: 32px 24px; }
+    .hero h1 { font-size: 24px; }
+    .top-controls { top: 12px; right: 12px; gap: 6px; }
+    .ctrl-btn { padding: 5px 12px; font-size: 13px; }
+    .theme-btn { padding: 5px 10px; font-size: 14px; }
+  }
+
+  .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  .toc-sidebar .zh { display: inline; }
+  .toc-sidebar .en { display: none; }
+  body.en .toc-sidebar .zh { display: none; }
+  body.en .toc-sidebar .en { display: inline; }
+  [lang-en] { display: none; }
+  body.en [lang-zh] { display: none; }
+  body.en [lang-en] { display: revert; }
+  body.en .toc-sidebar a[lang-en] { display: block; }
+  body.en .section-header h2[lang-en] { display: block; }
+  body.en .subsection h3[lang-en] { display: flex; }
+
+  .katex { font-size: 1em !important; }
+  .math-block { overflow-x: auto; padding: 12px 0; text-align: center; }
+
+  code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 13px; color: var(--rose); }
+  body.dark code { background: #1c2128; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+  @media print {
+    .toc-sidebar, .top-controls, .menu-toggle { display: none !important; }
+    .main-content { margin-left: 0; max-width: 100%; padding: 20px; }
+    .hero { break-inside: avoid; }
+    section { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-controls">
+  <div class="ctrl-group">
+    <button class="theme-btn" id="btn-theme" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+      <span class="theme-icon-light">&#9790;</span>
+      <span class="theme-icon-dark">&#9788;</span>
+    </button>
+  </div>
+  <div class="ctrl-group">
+    <button class="ctrl-btn active" id="btn-zh" onclick="setLang('zh')">中文</button>
+    <button class="ctrl-btn" id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<button class="menu-toggle" onclick="toggleTOC()">☰</button>
+
+<nav class="toc-sidebar" id="toc">
+  <div class="toc-title"><span class="zh">目录</span><span class="en">Contents</span></div>
+  <a href="#tldr"><span class="zh">TL;DR</span><span class="en">TL;DR</span></a>
+  <a href="#motivation"><span class="zh">1. 动机与问题</span><span class="en">1. Motivation</span></a>
+  <a href="#sub-tool-skill" class="sub"><span class="zh">1.1 Tool → Skill 范式</span><span class="en">1.1 Tool → Skill</span></a>
+  <a href="#sub-limits" class="sub"><span class="zh">1.2 现有方法的局限</span><span class="en">1.2 Prior Limits</span></a>
+  <a href="#sub-misalign" class="sub"><span class="zh">1.3 Human–Machine 错位</span><span class="en">1.3 H–M Misalignment</span></a>
+  <a href="#method"><span class="zh">2. 方法：CoEvoSkills</span><span class="en">2. Method</span></a>
+  <a href="#sub-overview" class="sub"><span class="zh">2.1 整体架构</span><span class="en">2.1 Overview</span></a>
+  <a href="#sub-pomdp" class="sub"><span class="zh">2.2 POMDP 形式化</span><span class="en">2.2 POMDP Formulation</span></a>
+  <a href="#sub-surrogate" class="sub"><span class="zh">2.3 Surrogate Reward</span><span class="en">2.3 Surrogate Reward</span></a>
+  <a href="#sub-algo" class="sub"><span class="zh">2.4 Co-Evolution 算法</span><span class="en">2.4 Algorithm</span></a>
+  <a href="#data"><span class="zh">3. 数据：SkillsBench</span><span class="en">3. Data</span></a>
+  <a href="#experiments"><span class="zh">4. 实验</span><span class="en">4. Experiments</span></a>
+  <a href="#sub-main" class="sub"><span class="zh">4.1 主结果 (RQ1)</span><span class="en">4.1 Main (RQ1)</span></a>
+  <a href="#sub-transfer" class="sub"><span class="zh">4.2 跨模型 (RQ3)</span><span class="en">4.2 Transfer (RQ3)</span></a>
+  <a href="#sub-domain" class="sub"><span class="zh">4.3 领域分解 (RQ4)</span><span class="en">4.3 Domain (RQ4)</span></a>
+  <a href="#sub-dynamics" class="sub"><span class="zh">4.4 演化动态</span><span class="en">4.4 Dynamics</span></a>
+  <a href="#ablation"><span class="zh">5. 消融实验</span><span class="en">5. Ablation</span></a>
+  <a href="#casestudy"><span class="zh">6. Case Study</span><span class="en">6. Case Study</span></a>
+  <a href="#discussion"><span class="zh">7. 讨论与局限</span><span class="en">7. Discussion</span></a>
+  <a href="#quickref"><span class="zh">8. 技术速查</span><span class="en">8. Quick Ref</span></a>
+</nav>
+
+<div class="main-content">
+
+  <header class="hero fade-in">
+    <h1 lang-zh>CoEvoSkills：通过协同进化验证的自进化 Agent 技能</h1>
+    <h1 lang-en>CoEvoSkills: Self-Evolving Agent Skills via Co-Evolutionary Verification</h1>
+    <div class="subtitle" lang-zh>
+      Hanrong Zhang · Shicheng Fan · Henry Peng Zou · Yankai Chen · Zhenting Wang · Jiayu Zhou · Chengze Li · Wei-Chieh Huang · Yifei Yao · Kening Zheng · Xue (Steve) Liu · Xiaoxiao Li · Philip S. Yu<br>
+      UIC · MBZUAI · McGill · Columbia · Zhejiang · UBC &nbsp;|&nbsp; COLM 2026 (arXiv:2604.01687v2)<br>
+      <em>让 agent 通过两个信息隔离的 LLM session 协同进化，自主生成多文件 skill 包——在 SkillsBench 上比 no-skill 基线高 +40.5pp，比人类编写 skill 高 +17.6pp。</em>
+    </div>
+    <div class="subtitle" lang-en>
+      Hanrong Zhang · Shicheng Fan · Henry Peng Zou · Yankai Chen · Zhenting Wang · Jiayu Zhou · Chengze Li · Wei-Chieh Huang · Yifei Yao · Kening Zheng · Xue (Steve) Liu · Xiaoxiao Li · Philip S. Yu<br>
+      UIC · MBZUAI · McGill · Columbia · Zhejiang · UBC &nbsp;|&nbsp; COLM 2026 (arXiv:2604.01687v2)<br>
+      <em>Two information-isolated LLM sessions co-evolve to autonomously generate multi-file skill packages — +40.5pp over no-skill baseline and +17.6pp over human-curated skills on SkillsBench.</em>
+    </div>
+    <div class="tag-row">
+      <span class="tag">LLM Agent</span>
+      <span class="tag">Agent Skills</span>
+      <span class="tag">Self-Evolution</span>
+      <span class="tag">Surrogate Verifier</span>
+      <span class="tag">Claude Code</span>
+      <span class="tag">Codex</span>
+      <span class="tag">SkillsBench</span>
+    </div>
+  </header>
+
+  <!-- ======================== TL;DR ======================== -->
+  <section id="tldr" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">0</span>
+      <h2 lang-zh>TL;DR</h2>
+      <h2 lang-en>TL;DR</h2>
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric-card"><div class="metric-value">71.1%</div><div class="metric-label" lang-zh>主结果 pass rate</div><div class="metric-label" lang-en>Main pass rate</div></div>
+      <div class="metric-card green"><div class="metric-value">+40.5pp</div><div class="metric-label" lang-zh>vs. No-Skill 基线</div><div class="metric-label" lang-en>vs. No-Skill</div></div>
+      <div class="metric-card amber"><div class="metric-value">+17.6pp</div><div class="metric-label" lang-zh>vs. 人工 skill</div><div class="metric-label" lang-en>vs. Human-curated</div></div>
+      <div class="metric-card rose"><div class="metric-value">6/6</div><div class="metric-label" lang-zh>跨模型迁移全部 +36~+44pp</div><div class="metric-label" lang-en>models transferred +36~+44pp</div></div>
+    </div>
+
+    <div class="box box-key" lang-zh>
+      <strong>核心问题</strong>：Anthropic 的 agent <em>skill</em> 把 tool 扩展为多文件结构化工作流包，当前几乎全由人工编写——不仅昂贵，还常因 <em>human–machine cognitive misalignment</em> 降低 agent 性能（某些领域甚至负收益）。已有 self-evolving 方法只会造单文件函数，且普遍依赖 GT 测试内容。
+    </div>
+    <div class="box box-key" lang-en>
+      <strong>Core problem:</strong> Anthropic's agent <em>skills</em> extend tools to multi-file structured workflow packages, but current practice relies almost entirely on manual authoring — expensive, and prone to <em>human–machine cognitive misalignment</em> that degrades agent performance in some domains. Existing self-evolving methods produce only single-file tools and typically depend on ground-truth test content.
+    </div>
+
+    <div class="box box-insight" lang-zh>
+      <strong>核心贡献</strong>：提出 <code>CoEvoSkills</code> —— 两个信息隔离的 LLM session 协同进化：<strong>Skill Generator</strong> 在持久 context 里迭代改写 skill 包；<strong>Surrogate Verifier</strong> 在看不到 GT 测试内容的条件下合成 assertion 套件并提供结构化诊断；Ground-Truth Oracle 只返回 <strong>1-bit pass/fail</strong> 防止 overfit。
+    </div>
+    <div class="box box-insight" lang-en>
+      <strong>Key contribution:</strong> <code>CoEvoSkills</code> — two information-isolated LLM sessions that co-evolve: a <strong>Skill Generator</strong> iteratively refines skill bundles in a persistent context, while a <strong>Surrogate Verifier</strong> synthesizes assertion suites and structured diagnostics without access to GT test content. The ground-truth oracle returns only a <strong>1-bit pass/fail</strong> signal to prevent overfitting.
+    </div>
+  </section>
+
+  <!-- ======================== Motivation ======================== -->
+  <section id="motivation" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">1</span>
+      <h2 lang-zh>动机与问题</h2>
+      <h2 lang-en>Motivation &amp; Problem</h2>
+    </div>
+
+    <div class="subsection" id="sub-tool-skill">
+      <h3 lang-zh>1.1 Tool → Skill 的范式转变</h3>
+      <h3 lang-en>1.1 Tool → Skill Paradigm Shift</h3>
+      <p lang-zh>LLM agent 的最近进展大量依赖 tool/API 调用（ToolLLM、Gorilla、Toolformer），但真正的专业任务（复杂软件修复、多步科研分析、企业数据管道）不是一次 tool 调用能解决的：决策 long-horizon、指令与脚本紧耦合、环境反馈稀疏。</p>
+      <p lang-en>Recent LLM-agent progress leans heavily on tool/API invocation (ToolLLM, Gorilla, Toolformer). But real professional tasks — complex software repair, multi-step scientific analysis, enterprise pipelines — require far more than one-shot tool calls: long-horizon decisions, tightly coupled instructions and scripts, and sparse environmental feedback.</p>
+      <p lang-zh>Anthropic 提出 <strong>agent skill</strong>：一个 skill 不是单一函数，而是一个<strong>多文件结构化包</strong>（workflow 说明 + 可执行脚本 + 领域参考材料）——Figure 1 展示了 tool 和 skill 的结构差异。</p>
+      <p lang-en>Anthropic introduced <strong>agent skills</strong>: a skill is not a single function but a <strong>multi-file structured bundle</strong> (workflow instructions + executable scripts + domain references) — Figure 1 illustrates the structural difference.</p>
+
+      <div class="img-placeholder" id="ph-fig0">
+        <div class="icon">📦</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 1: Tool 与 Skill 的结构差异</span>
+          <span lang-en>Figure 1: Tool vs. Skill — Structural Difference</span>
+        </div>
+        <!-- paper Figure 1 (fig:tool_vs_skill_example) -->
+        <div class="ph-caption" lang-zh>单个 tool 是一个自包含函数；一个 skill 是 SKILL.md + scripts/ + 参考材料的结构化包，承载完整工作流。</div>
+        <div class="ph-caption" lang-en>A tool is a self-contained function; a skill is a structured bundle of SKILL.md + scripts/ + references that carries a full workflow.</div>
+        <div class="ph-filename">figures/fig0_tool_skill_diff.png</div>
+      </div>
+    </div>
+
+    <div class="subsection" id="sub-limits">
+      <h3 lang-zh>1.2 现有 Self-Evolving 方法的两大缺陷</h3>
+      <h3 lang-en>1.2 Two Limitations of Prior Self-Evolving Work</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>缺陷</th><th lang-en>Limitation</th>
+              <th lang-zh>相关工作</th><th lang-en>Related work</th>
+              <th lang-zh>问题</th><th lang-en>Issue</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td lang-zh><strong>Tool–skill gap</strong></td><td lang-en><strong>Tool–skill gap</strong></td>
+              <td lang-zh>Voyager, SkillCraft, Live-Learning, YunJue, SEAgent, EvoTest</td><td lang-en>Voyager, SkillCraft, Live-Learning, YunJue, SEAgent, EvoTest</td>
+              <td lang-zh>只能产出单文件函数，无法生成多文件 skill 包</td><td lang-en>Produce single-file functions only; cannot build multi-file skill packages</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>依赖 GT 监督</strong></td><td lang-en><strong>GT dependency</strong></td>
+              <td lang-zh>EvoSkill (Alzubi 2026), SEAgent</td><td lang-en>EvoSkill (Alzubi 2026), SEAgent</td>
+              <td lang-zh>需要 GT test content 做失败诊断 → 现实无法获得</td><td lang-en>Require GT test content for diagnosis — unavailable in the real world</td>
+            </tr>
+            <tr>
+              <td lang-zh><strong>prompt-level 启发式</strong></td><td lang-en><strong>Prompt-level heuristics</strong></td>
+              <td lang-zh>AutoSkill, AutoRefine, SAGE, SkillRL</td><td lang-en>AutoSkill, AutoRefine, SAGE, SkillRL</td>
+              <td lang-zh>产物是 prompt 或权重，非可执行 artifact</td><td lang-en>Output is prompt or weights, not an inspectable executable artifact</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection" id="sub-misalign">
+      <h3 lang-zh>1.3 Human–Machine Cognitive Misalignment（关键观察）</h3>
+      <h3 lang-en>1.3 Human–Machine Cognitive Misalignment (Key Observation)</h3>
+      <p lang-zh>SkillsBench 评估发现：人工 skill 收益极不均匀——某些领域（Natural Science）甚至 <strong>使 agent 性能下降</strong>。作者的假设：</p>
+      <p lang-en>The SkillsBench evaluation shows that gains from human-curated skills are highly uneven — in some domains (Natural Science) they <strong>actively degrade</strong> agent performance. The hypothesis:</p>
+      <div class="box box-warn" lang-zh>
+        人类专家设计的 workflow/抽象符合<em>人类</em>直觉，但不匹配 LLM agent 的上下文处理、推理模式和执行约束。
+      </div>
+      <div class="box box-warn" lang-en>
+        Workflows and abstractions designed to be intuitive for <em>human</em> experts do not match how LLM agents process context, reason, and act under execution constraints.
+      </div>
+
+      <div class="img-placeholder" id="ph-fig5">
+        <div class="icon">📊</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 6: SkillsBench 领域级 pass rate</span>
+          <span lang-en>Figure 6: Per-domain pass rates on SkillsBench</span>
+        </div>
+        <div class="ph-caption" lang-zh>No-skill / human-curated / CoEvoSkills 三条件在 11 个专业领域上的对比。箭头指向 Natural Science：human-curated 降低了性能，CoEvoSkills 反而大幅提升——直接支持 human–machine misalignment 假设。</div>
+        <div class="ph-caption" lang-en>No-skill vs. human-curated vs. CoEvoSkills across 11 professional domains. The arrow highlights Natural Science — human-curated skills degrade performance, whereas CoEvoSkills yields substantial gains, supporting the misalignment hypothesis.</div>
+        <div class="ph-filename">figures/fig5_domain_breakdown.png</div>
+      </div>
+
+      <p lang-zh><strong>Research Question</strong>：能否让 agent 在<strong>不访问 GT test 内容</strong>的前提下，自主生成、迭代、验证一个多文件 skill 包？</p>
+      <p lang-en><strong>Research Question:</strong> Can an agent autonomously generate, iterate, and verify a multi-file skill package <strong>without accessing GT test content</strong>?</p>
+    </div>
+  </section>
+
+  <!-- ======================== Method ======================== -->
+  <section id="method" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">2</span>
+      <h2 lang-zh>方法：CoEvoSkills</h2>
+      <h2 lang-en>Method: CoEvoSkills</h2>
+    </div>
+
+    <div class="subsection" id="sub-overview">
+      <h3 lang-zh>2.1 整体架构（三个信息隔离角色）</h3>
+      <h3 lang-en>2.1 Overall Architecture (Three Isolated Roles)</h3>
+
+      <div class="img-placeholder" id="ph-fig1">
+        <div class="icon">🔁</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 3: CoEvoSkills 协同进化框架</span>
+          <span lang-en>Figure 3: CoEvoSkills Co-Evolutionary Framework</span>
+        </div>
+        <div class="ph-caption" lang-zh>Skill Generator 和 Surrogate Verifier 通过 generate–verify–refine 迭代循环协同进化。Verifier 提供结构化失败诊断驱动 skill 改进；Ground-Truth Oracle 只返回不透明的 pass/fail 信号，触发 test escalation 并保持严格信息隔离。</div>
+        <div class="ph-caption" lang-en>Skill Generator and Surrogate Verifier co-evolve through iterative generate–verify–refine cycles. The verifier provides structured failure diagnostics; the ground-truth oracle returns only an opaque pass/fail signal, triggering test escalation and enforcing strict information isolation.</div>
+        <div class="ph-filename">figures/fig1_framework.png</div>
+      </div>
+
+      <div class="flow">
+        <div class="flow-row">
+          <div class="flow-box highlight" lang-zh>Skill Generator<br><small>$\pi_\theta$, 持久 context</small></div>
+          <div class="flow-box highlight" lang-en>Skill Generator<br><small>$\pi_\theta$, persistent context</small></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box green" lang-zh>Rollout $\Phi$<br><small>执行 skill，得到 output $x^{(i)}$</small></div>
+          <div class="flow-box green" lang-en>Rollout $\Phi$<br><small>Execute skill, get output $x^{(i)}$</small></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box purple" lang-zh>Surrogate Verifier<br><small>$\pi_\theta^V$, 独立 session</small></div>
+          <div class="flow-box purple" lang-en>Surrogate Verifier<br><small>$\pi_\theta^V$, isolated session</small></div>
+        </div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-row">
+          <div class="flow-box amber" lang-zh>surrogate fail → 回传结构化诊断 $\mathcal{F}$</div>
+          <div class="flow-box amber" lang-en>surrogate fail → structured diagnostic $\mathcal{F}$</div>
+          <div class="flow-arrow">|</div>
+          <div class="flow-box" lang-zh>surrogate pass → GT Oracle 干净环境重执行</div>
+          <div class="flow-box" lang-en>surrogate pass → GT Oracle re-execution in fresh env</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box green" lang-zh>oracle=1 返回 $\mathcal{S}^*$</div>
+          <div class="flow-box green" lang-en>oracle=1 return $\mathcal{S}^*$</div>
+        </div>
+        <div class="flow-arrow-down">↓</div>
+        <div class="flow-row">
+          <div class="flow-box amber" lang-zh>oracle=0 → 只追加 1-bit 到 context，Verifier 必须独立升级 test</div>
+          <div class="flow-box amber" lang-en>oracle=0 → append only 1-bit to context; verifier must independently escalate tests</div>
+        </div>
+      </div>
+
+      <div class="box box-insight" lang-zh><strong>关键设计</strong>：Oracle 只给 1-bit 意味着 Skill Generator 不可能"对着 held-out test 背答案"；Surrogate Verifier 必须独立推测出更严格的 assertion，保证 verifier 进化方向真正朝 GT 靠拢。</div>
+      <div class="box box-insight" lang-en><strong>Key design:</strong> the 1-bit oracle signal prevents the Skill Generator from memorizing held-out tests; the Surrogate Verifier must independently synthesize stricter assertions, ensuring verifier evolution truly tracks GT.</div>
+    </div>
+
+    <div class="subsection" id="sub-pomdp">
+      <h3 lang-zh>2.2 POMDP 形式化</h3>
+      <h3 lang-en>2.2 POMDP Formulation</h3>
+      <p lang-zh>任务环境建模为 POMDP $\mathcal{M} = \langle \mathcal{X}, \mathcal{A}, T, \mathcal{O}, \Omega, \mathcal{R} \rangle$：$\mathcal{X}$ 是文件系统+进程状态，$\mathcal{A}$ 是终端命令+文件编辑，$\mathcal{O}$ 是命令执行结果（部分可观测），$\mathcal{R}(x_T) \in [0,1]$ 是对最终输出的隐藏 GT 评分。Skill 作为策略条件：</p>
+      <p lang-en>Model the task environment as a POMDP $\mathcal{M} = \langle \mathcal{X}, \mathcal{A}, T, \mathcal{O}, \Omega, \mathcal{R} \rangle$: $\mathcal{X}$ is filesystem+processes, $\mathcal{A}$ is shell commands+file edits, $\mathcal{O}$ is partial observations (command outputs), and $\mathcal{R}(x_T) \in [0,1]$ is the hidden GT reward on the terminal state. The skill conditions the policy:</p>
+      <div class="formula">$$a_t \sim \pi_\theta(a_t \mid h_t,\, \mathcal{S})$$</div>
+      <p lang-zh>优化目标是找到最大化期望终局回报的 skill：</p>
+      <p lang-en>The objective is to find the skill that maximizes expected terminal reward:</p>
+      <div class="formula">$$\mathcal{S}^* = \arg\max_{\mathcal{S}}\; J(\mathcal{S}),\quad J(\mathcal{S}) \triangleq \mathbb{E}_{\tau}[\mathcal{R}(x_T)]$$</div>
+      <p lang-zh>直接优化 $J$ 不可行——oracle 只返回 1-bit，没有梯度也没有诊断。</p>
+      <p lang-en>Directly optimizing $J$ is intractable — the oracle returns only 1 bit, no gradient, no diagnostic.</p>
+    </div>
+
+    <div class="subsection" id="sub-surrogate">
+      <h3 lang-zh>2.3 Surrogate Reward 与交替优化</h3>
+      <h3 lang-en>2.3 Surrogate Reward &amp; Alternating Optimization</h3>
+      <p lang-zh>引入独立 verifier 合成的 assertion 套件 $\mathcal{V}=\{e_1,\dots,e_{|\mathcal{V}|}\}$，给出 surrogate reward：</p>
+      <p lang-en>Introduce a verifier-synthesized assertion suite $\mathcal{V}=\{e_1,\dots,e_{|\mathcal{V}|}\}$, yielding the surrogate reward:</p>
+      <div class="formula">$$\tilde{\mathcal{R}}(x, \mathcal{V}) \triangleq \frac{1}{|\mathcal{V}|}\sum_{k=1}^{|\mathcal{V}|}\mathbf{1}[e_k(x)] \in [0,1]$$</div>
+      <p lang-zh>然后交替优化：</p>
+      <p lang-en>Then alternate:</p>
+      <div class="formula">$$\textbf{Skill refinement:}\quad \mathcal{S}^{(i+1)} \leftarrow \arg\max_{\mathcal{S}}\; \tilde{\mathcal{R}}(\Phi(\mathcal{S},\mathcal{E}),\, \mathcal{V}^{(j)})$$</div>
+      <div class="formula">$$\textbf{Test escalation:}\quad \mathcal{V}^{(j+1)} \sim \pi_\theta^V(\cdot \mid I, x^{(i)}, \mathcal{V}^{(j)}),\; \text{if}\; \mathbf{1}[\tilde{\mathcal{R}}=1 \wedge \mathcal{R}&lt;1]$$</div>
+      <p lang-zh>Skill refinement 在固定 $\mathcal{V}^{(j)}$ 下改进 skill；test escalation 只在 surrogate 通过但 GT 失败时触发，<strong>只拿到 1-bit oracle 信号</strong>，没有 test content，因此 verifier 必须"独立"加强自己的 assertion（例如提高精度阈值、增加 assertion 数）。</p>
+      <p lang-en>Skill refinement improves the skill under a fixed $\mathcal{V}^{(j)}$; test escalation triggers only when surrogate passes but GT fails, <strong>seeing only the 1-bit oracle signal</strong> with no test content, so the verifier must independently strengthen its assertions (e.g. tighten precision thresholds, add assertions).</p>
+    </div>
+
+    <div class="subsection" id="sub-algo">
+      <h3 lang-zh>2.4 Co-Evolution Algorithm（Alg. 1）</h3>
+      <h3 lang-en>2.4 Co-Evolution Algorithm (Alg. 1)</h3>
+      <p lang-zh>关键超参：$N=5$ evolution iters、$M=15$ surrogate iters、$\beta=0.7$ context cap。</p>
+      <p lang-en>Key hyperparameters: $N=5$ evolution iters, $M=15$ surrogate iters, $\beta=0.7$ context cap.</p>
+
+      <div class="formula" style="text-align:left; white-space:pre; font-size:12.5px;">while n &lt; N and r &lt; M:
+  x = Φ(S, E)                  # rollout skill in env
+  if context_usage &gt; β: break  # prevent OOM
+  R̃ = surrogate_reward(x, V)
+  if R̃ &lt; 1:                    # Surrogate failed
+    F = verifier_diagnose(I, x, V)    # per-assertion + root cause
+    C = C ⊕ F
+    S = refine(S, C);  i++; r++; continue
+  # Surrogate passed → invoke Oracle
+  x̂ = Φ(S, E')                 # fresh env re-execution
+  R = oracle(x̂);  n++
+  if R == 1: return S
+  elif R &gt; R_best: save S as S*
+  C = C ⊕ 𝟙[R&lt;1]                # ONLY 1-bit, no content
+  V = escalate(I, x, V)         # verifier must independently escalate
+return S*</div>
+
+      <div class="card card-accent">
+        <h4 lang-zh>Skill Generator 细节</h4>
+        <h4 lang-en>Skill Generator Details</h4>
+        <p lang-zh>持久 context $C^{(0)}=(I, \mathcal{S}_{\text{meta}})$，其中 $\mathcal{S}_{\text{meta}}$ 是 Anthropic 官方的 <code>skill-creator</code> meta-skill。每次迭代</p>
+        <p lang-en>Persistent context $C^{(0)}=(I, \mathcal{S}_{\text{meta}})$, where $\mathcal{S}_{\text{meta}}$ is Anthropic's official <code>skill-creator</code> meta-skill. Each round:</p>
+        <div class="formula">$$\mathcal{S}^{(i+1)} \sim \pi_\theta(\cdot \mid \mathcal{S}^{(i)}, C^{(i+1)}),\quad C^{(i+1)} = C^{(i)} \oplus \mathcal{F}^{(i,j)}$$</div>
+        <p lang-zh>$\mathcal{F}^{(i,j)}$ 是 verifier 的结构化诊断：failed tests + root-cause + 修复建议；$\oplus$ 是 context 追加。</p>
+        <p lang-en>$\mathcal{F}^{(i,j)}$ is the verifier's structured diagnostic (failed tests + root-cause + revision suggestions); $\oplus$ is context append.</p>
+      </div>
+
+      <div class="card card-accent">
+        <h4 lang-zh>Surrogate Verifier 细节</h4>
+        <h4 lang-en>Surrogate Verifier Details</h4>
+        <ul lang-zh>
+          <li>独立 LLM session（不看 Generator 的 reasoning / code / skill 内容）</li>
+          <li>只观察 task instruction $I$ 和 output files $x^{(i)}$ → 避免 confirmation bias</li>
+          <li>输出：deterministic assertion 套件 + per-assertion 诊断（结果 / root cause / 修复建议）</li>
+        </ul>
+        <ul lang-en>
+          <li>Independent LLM session (blind to generator's reasoning/code/skill)</li>
+          <li>Observes only task instruction $I$ and output files $x^{(i)}$ → avoids confirmation bias</li>
+          <li>Output: deterministic assertion suite + per-assertion diagnostic (result / root cause / suggested fix)</li>
+        </ul>
+      </div>
+
+      <h4 lang-zh>与已有 self-evolving pipeline 的关键差异</h4>
+      <h4 lang-en>Key differences vs. prior self-evolving pipelines</h4>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>方面</th><th lang-en>Aspect</th>
+              <th lang-zh>已有方法</th><th lang-en>Prior methods</th>
+              <th lang-zh>CoEvoSkills</th><th lang-en>CoEvoSkills</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td lang-zh>产物形式</td><td lang-en>Artifact form</td>
+              <td lang-zh>单 tool / prompt / 权重</td><td lang-en>Single tool / prompt / weights</td>
+              <td lang-zh><strong>多文件 skill 包</strong>（SKILL.md + scripts/）</td><td lang-en><strong>Multi-file skill bundle</strong> (SKILL.md + scripts/)</td>
+            </tr>
+            <tr>
+              <td lang-zh>GT 依赖</td><td lang-en>GT dependency</td>
+              <td lang-zh>需 GT test content</td><td lang-en>Requires GT test content</td>
+              <td lang-zh><strong>仅需 1-bit GT 信号</strong></td><td lang-en><strong>Only 1-bit GT signal</strong></td>
+            </tr>
+            <tr>
+              <td lang-zh>Verifier 来源</td><td lang-en>Verifier source</td>
+              <td lang-zh>self-verify 或无</td><td lang-en>Self-verify or none</td>
+              <td lang-zh><strong>独立 LLM session</strong>，信息隔离</td><td lang-en><strong>Independent LLM session</strong>, information-isolated</td>
+            </tr>
+            <tr>
+              <td lang-zh>Feedback 形式</td><td lang-en>Feedback form</td>
+              <td lang-zh>1-bit 或 trajectory</td><td lang-en>1-bit or trajectory</td>
+              <td lang-zh><strong>per-assertion 诊断 + root cause + 建议</strong></td><td lang-en><strong>Per-assertion diagnostic + root cause + suggestions</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== Data ======================== -->
+  <section id="data" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">3</span>
+      <h2 lang-zh>数据：SkillsBench</h2>
+      <h2 lang-en>Data: SkillsBench</h2>
+    </div>
+    <div class="metrics-row">
+      <div class="metric-card"><div class="metric-value">87</div><div class="metric-label" lang-zh>任务数</div><div class="metric-label" lang-en>Tasks</div></div>
+      <div class="metric-card green"><div class="metric-value">11</div><div class="metric-label" lang-zh>专业领域大类</div><div class="metric-label" lang-en>Aggregated domains</div></div>
+      <div class="metric-card amber"><div class="metric-value">~20</div><div class="metric-label" lang-zh>细分 domain</div><div class="metric-label" lang-en>Fine-grained domains</div></div>
+      <div class="metric-card rose"><div class="metric-value">0/1</div><div class="metric-label" lang-zh>二值 pass rate 评分</div><div class="metric-label" lang-en>Binary pass rate</div></div>
+    </div>
+    <p lang-zh>每任务配 deterministic verifier，输出 binary pass (reward=1.0) / fail (0.0)。指标为 <strong>pass rate</strong> = 全通过任务比例。作者声称 SkillsBench 是目前<strong>唯一</strong>专为评估 agent skill 设计的 benchmark。</p>
+    <p lang-en>Each task is paired with a deterministic verifier producing binary pass (reward=1.0) / fail (0.0). The metric is <strong>pass rate</strong> = fraction of fully-passing tasks. The authors claim SkillsBench is the <strong>only</strong> benchmark purpose-built for evaluating agent skills.</p>
+  </section>
+
+  <!-- ======================== Experiments ======================== -->
+  <section id="experiments" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">4</span>
+      <h2 lang-zh>实验</h2>
+      <h2 lang-en>Experiments</h2>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>Shared 配置</h3>
+      <h3 lang-en>Shared Configuration</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>组件</th><th lang-en>Component</th>
+              <th lang-zh>设置</th><th lang-en>Setting</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td lang-zh>Backbones</td><td lang-en>Backbones</td><td lang-zh>Claude Opus 4.6, GPT-5.2</td><td lang-en>Claude Opus 4.6, GPT-5.2</td></tr>
+            <tr><td lang-zh>Surrogate verifier 模型</td><td lang-en>Surrogate verifier model</td><td lang-zh>同 backbone</td><td lang-en>Same as backbone</td></tr>
+            <tr><td lang-zh>GT oracle agent</td><td lang-en>GT oracle agent</td><td lang-zh>Claude-Code (Opus) / Codex (GPT-5.2)</td><td lang-en>Claude-Code (Opus) / Codex (GPT-5.2)</td></tr>
+            <tr><td lang-zh>Evolution 超参</td><td lang-en>Evolution hyperparams</td><td lang-zh>$K=5$ oracle rounds, $M=15$ surrogate retries</td><td lang-en>$K=5$ oracle rounds, $M=15$ surrogate retries</td></tr>
+            <tr><td lang-zh>Evolution runtime</td><td lang-en>Evolution runtime</td><td lang-zh>$5\times$ timeout (3000s/task), 4 workers</td><td lang-en>$5\times$ timeout (3000s/task), 4 workers</td></tr>
+            <tr><td lang-zh>Eval runtime</td><td lang-en>Eval runtime</td><td lang-zh>7200s/task, 10 parallel workers</td><td lang-en>7200s/task, 10 parallel workers</td></tr>
+            <tr><td lang-zh>Baseline runs / Transfer runs</td><td lang-en>Baseline / Transfer runs</td><td lang-zh>5 (mean±std) / 3</td><td lang-en>5 (mean±std) / 3</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection" id="sub-main">
+      <h3 lang-zh>4.1 RQ1 — 主结果 Pass Rate 对比</h3>
+      <h3 lang-en>4.1 RQ1 — Main Results: Pass Rate Comparison</h3>
+
+      <div class="img-placeholder" id="ph-fig3">
+        <div class="icon">📈</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 4: Claude Opus 4.6 + Claude-Code 主结果</span>
+          <span lang-en>Figure 4: Main results on Claude Opus 4.6 + Claude-Code</span>
+        </div>
+        <div class="ph-caption" lang-zh>与 SkillsBench 上五个 baseline 的 pass rate 对比。Error bar: ±1 std over 5 runs。CoEvoSkills 达 71.1%，所有 one-shot 生成方法几乎等于 no-skill 基线。</div>
+        <div class="ph-caption" lang-en>Pass rate vs. five baselines on SkillsBench. Error bars: ±1 std over 5 runs. CoEvoSkills reaches 71.1%; all one-shot generation methods stay near the no-skill baseline.</div>
+        <div class="ph-filename">figures/fig3_main_results.png</div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title" lang-zh>Claude Opus 4.6 + Claude-Code pass rate (%)</div>
+        <div class="chart-title" lang-en>Claude Opus 4.6 + Claude-Code pass rate (%)</div>
+        <div class="chart-source" lang-zh>来源：Figure 4 / Table A3</div>
+        <div class="chart-source" lang-en>Source: Figure 4 / Table A3</div>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label" lang-zh>No-Skill 基线</div><div class="bar-label" lang-en>No-Skill Baseline</div><div class="bar-track"><div class="bar-fill" style="width:30.6%;background:var(--rose);"><span class="bar-value">30.6%</span></div></div></div>
+          <div class="bar-row"><div class="bar-label" lang-zh>CoT Self-Gen</div><div class="bar-label" lang-en>CoT Self-Gen</div><div class="bar-track"><div class="bar-fill" style="width:30.7%;background:var(--rose);"><span class="bar-value">30.7%</span></div></div></div>
+          <div class="bar-row"><div class="bar-label" lang-zh>Self-Gen (Bench)</div><div class="bar-label" lang-en>Self-Gen (Bench)</div><div class="bar-track"><div class="bar-fill" style="width:32.0%;background:var(--amber);"><span class="bar-value">32.0%</span></div></div></div>
+          <div class="bar-row"><div class="bar-label" lang-zh>Skill-Creator (in-session)</div><div class="bar-label" lang-en>Skill-Creator (in-session)</div><div class="bar-track"><div class="bar-fill" style="width:32.4%;background:var(--amber);"><span class="bar-value">32.4%</span></div></div></div>
+          <div class="bar-row"><div class="bar-label" lang-zh>Skill-Creator (官方)</div><div class="bar-label" lang-en>Skill-Creator (official)</div><div class="bar-track"><div class="bar-fill" style="width:34.1%;background:var(--amber);"><span class="bar-value">34.1%</span></div></div></div>
+          <div class="bar-row"><div class="bar-label" lang-zh>Human-Curated</div><div class="bar-label" lang-en>Human-Curated</div><div class="bar-track"><div class="bar-fill" style="width:53.5%;background:var(--blue);"><span class="bar-value">53.5%</span></div></div></div>
+          <div class="bar-row"><div class="bar-label" lang-zh><strong>CoEvoSkills</strong></div><div class="bar-label" lang-en><strong>CoEvoSkills</strong></div><div class="bar-track"><div class="bar-fill" style="width:71.1%;background:var(--emerald);"><span class="bar-value">71.1%</span></div></div></div>
+        </div>
+      </div>
+
+      <div class="box box-key" lang-zh><strong>Takeaway 1</strong>：所有"一次性（无 co-evolution）"的 skill 生成策略 ≈ no-skill 基线。收益主要来自 <strong>iterative verification loop</strong>，不是 prompt 工程。</div>
+      <div class="box box-key" lang-en><strong>Takeaway 1:</strong> Every one-shot (non-co-evolving) skill-generation strategy ≈ no-skill baseline. The gains come primarily from the <strong>iterative verification loop</strong>, not from prompt engineering.</div>
+    </div>
+
+    <div class="subsection" id="sub-transfer">
+      <h3 lang-zh>4.2 RQ3 — 跨模型迁移</h3>
+      <h3 lang-en>4.2 RQ3 — Cross-Model Transferability</h3>
+
+      <div class="img-placeholder" id="ph-fig4">
+        <div class="icon">🌐</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 5: 跨模型 skill 迁移</span>
+          <span lang-en>Figure 5: Cross-model skill transferability</span>
+        </div>
+        <div class="ph-caption" lang-zh>Claude Opus 4.6 进化出的 skill 迁移给 6 个其它模型：每对柱是 no-skill 基线（红）和 with-skills（蓝），delta 标注改进幅度。所有模型 +36~+44pp。</div>
+        <div class="ph-caption" lang-en>Skills evolved by Claude Opus 4.6 transferred to 6 other models: each pair shows no-skill (red) vs. with-skills (blue), with delta annotations. All models improve by +36~+44pp.</div>
+        <div class="ph-filename">figures/fig4_cross_model.png</div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>模型</th><th lang-en>Model</th>
+              <th class="num" lang-zh>With skills</th><th class="num" lang-en>With skills</th>
+              <th class="num" lang-zh>No skill</th><th class="num" lang-en>No skill</th>
+              <th class="num" lang-zh>Δ</th><th class="num" lang-en>Δ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td lang-zh colspan="2"><strong>Self-Evolved Skills</strong></td><td lang-en colspan="2"><strong>Self-Evolved Skills</strong></td><td lang-zh></td><td lang-en></td><td lang-zh></td><td lang-en></td></tr>
+            <tr><td lang-zh>Claude Opus 4.6 (self-evolved)</td><td lang-en>Claude Opus 4.6 (self-evolved)</td><td class="num" lang-zh><strong>71.1</strong></td><td class="num" lang-en><strong>71.1</strong></td><td class="num" lang-zh>30.6</td><td class="num" lang-en>30.6</td><td class="num" lang-zh>+40.5</td><td class="num" lang-en>+40.5</td></tr>
+            <tr><td lang-zh>GPT-5.2 (self-evolved)</td><td lang-en>GPT-5.2 (self-evolved)</td><td class="num" lang-zh><strong>69.8</strong></td><td class="num" lang-en><strong>69.8</strong></td><td class="num" lang-zh>29.6</td><td class="num" lang-en>29.6</td><td class="num" lang-zh>+40.2</td><td class="num" lang-en>+40.2</td></tr>
+            <tr><td lang-zh colspan="2"><strong>跨模型迁移 (Opus-evolved skills)</strong></td><td lang-en colspan="2"><strong>Cross-Model Transfer (Opus-evolved)</strong></td><td lang-zh></td><td lang-en></td><td lang-zh></td><td lang-en></td></tr>
+            <tr><td lang-zh>GPT-5.2</td><td lang-en>GPT-5.2</td><td class="num" lang-zh>65.0</td><td class="num" lang-en>65.0</td><td class="num" lang-zh>29.6</td><td class="num" lang-en>29.6</td><td class="num" lang-zh>+35.4</td><td class="num" lang-en>+35.4</td></tr>
+            <tr><td lang-zh>Claude Sonnet 4.5</td><td lang-en>Claude Sonnet 4.5</td><td class="num" lang-zh>63.1</td><td class="num" lang-en>63.1</td><td class="num" lang-zh>20.0</td><td class="num" lang-en>20.0</td><td class="num" lang-zh>+43.1</td><td class="num" lang-en>+43.1</td></tr>
+            <tr><td lang-zh>Claude Haiku 4.5</td><td lang-en>Claude Haiku 4.5</td><td class="num" lang-zh>54.5</td><td class="num" lang-en>54.5</td><td class="num" lang-zh>10.4</td><td class="num" lang-en>10.4</td><td class="num" lang-zh><strong>+44.1</strong></td><td class="num" lang-en><strong>+44.1</strong></td></tr>
+            <tr><td lang-zh>Qwen3 Coder 480B</td><td lang-en>Qwen3 Coder 480B</td><td class="num" lang-zh>50.8</td><td class="num" lang-en>50.8</td><td class="num" lang-zh>8.4</td><td class="num" lang-en>8.4</td><td class="num" lang-zh>+42.4</td><td class="num" lang-en>+42.4</td></tr>
+            <tr><td lang-zh>DeepSeek V3 671B</td><td lang-en>DeepSeek V3 671B</td><td class="num" lang-zh>48.8</td><td class="num" lang-en>48.8</td><td class="num" lang-zh>13.0</td><td class="num" lang-en>13.0</td><td class="num" lang-zh>+35.8</td><td class="num" lang-en>+35.8</td></tr>
+            <tr><td lang-zh>Mistral Large 3 675B</td><td lang-en>Mistral Large 3 675B</td><td class="num" lang-zh>43.1</td><td class="num" lang-en>43.1</td><td class="num" lang-zh>4.9</td><td class="num" lang-en>4.9</td><td class="num" lang-zh>+38.2</td><td class="num" lang-en>+38.2</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box box-note" lang-zh>GPT-5.2 的自进化 skill (69.8%) 比迁移 Opus skill (65.0%) 高 4.8pp → 存在<strong>轻微但一致的 model-matched advantage</strong>。但迁移版本仍把 29.6% 抬到 65.0%，说明 skill 编码的是任务结构而非模型偏好。</div>
+      <div class="box box-note" lang-en>GPT-5.2's self-evolved skills (69.8%) beat the Opus-transferred version (65.0%) by 4.8pp → a small but consistent <strong>model-matched advantage</strong>. The transferred version still lifts 29.6% → 65.0%, indicating skills encode task structure rather than model-specific preferences.</div>
+      <div class="box box-key" lang-zh><strong>Takeaway 2</strong>：Skill 编码的是可复用的任务结构，不是模型特定的 artifact，因而广泛跨模型可迁移。</div>
+      <div class="box box-key" lang-en><strong>Takeaway 2:</strong> Skills encode reusable task structure rather than model-specific artifacts, enabling broad cross-model transferability.</div>
+    </div>
+
+    <div class="subsection" id="sub-domain">
+      <h3 lang-zh>4.3 RQ4 — 领域级分析</h3>
+      <h3 lang-en>4.3 RQ4 — Domain-Level Analysis</h3>
+      <p lang-zh>CoEvoSkills 在 9/11 个领域上超越 human-curated skills：</p>
+      <p lang-en>CoEvoSkills outperforms human-curated skills in 9/11 domains:</p>
+      <ul lang-zh>
+        <li>最大提升：<strong>Finance</strong> (+56.9pp 超人工)、<strong>Cybersecurity</strong> (+23.2pp)</li>
+        <li>饱和域：<strong>Energy</strong>, <strong>Robotics</strong>（人工已经很好，进化空间小）</li>
+        <li>关键反例：<strong>Natural Science</strong>——人工 skill 使性能下降，CoEvoSkills 反而大幅提升，直接印证 human–machine misalignment</li>
+      </ul>
+      <ul lang-en>
+        <li>Largest margins: <strong>Finance</strong> (+56.9pp over human), <strong>Cybersecurity</strong> (+23.2pp)</li>
+        <li>Saturated domains: <strong>Energy</strong>, <strong>Robotics</strong> (human skills already strong, less headroom)</li>
+        <li>Key inversion: <strong>Natural Science</strong> — human skills hurt, CoEvoSkills lifts significantly, directly supporting the misalignment hypothesis</li>
+      </ul>
+      <div class="box box-key" lang-zh><strong>Takeaway 3</strong>：人工 skill 在某些领域会<strong>主动降低</strong>性能；co-evolution 通过发现与 LLM 推理方式一致的流程来弥合这一 gap。</div>
+      <div class="box box-key" lang-en><strong>Takeaway 3:</strong> Human-curated skills can <strong>actively degrade</strong> performance in some domains; co-evolution bridges the gap by discovering procedures aligned with how LLMs actually reason.</div>
+    </div>
+
+    <div class="subsection" id="sub-dynamics">
+      <h3 lang-zh>4.4 Evolution Dynamics</h3>
+      <h3 lang-en>4.4 Evolution Dynamics</h3>
+
+      <div class="img-placeholder" id="ph-fig2">
+        <div class="icon">📈</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 2: 5 轮演化的 skill 质量轨迹</span>
+          <span lang-en>Figure 2: Skill quality across 5 evolution rounds</span>
+        </div>
+        <div class="ph-caption" lang-zh>Round 0（one-shot，无验证）≈ no-skill 基线 (30.6%)；round 2 达 44%；round 3 超过 human-curated (63%)；round 5 收敛到 75%。三条虚线为静态 baseline。</div>
+        <div class="ph-caption" lang-en>Round 0 (one-shot, no verification) ≈ no-skill baseline (30.6%); round 2 hits 44%; round 3 surpasses human-curated (63%); round 5 converges at 75%. The three dashed lines are static baselines.</div>
+        <div class="ph-filename">figures/fig2_evolution_trajectory.png</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== Ablation ======================== -->
+  <section id="ablation" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">5</span>
+      <h2 lang-zh>消融实验</h2>
+      <h2 lang-en>Ablation Studies</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th lang-zh>设置</th><th lang-en>Setting</th>
+            <th class="num" lang-zh>Pass rate (%)</th><th class="num" lang-en>Pass rate (%)</th>
+            <th class="num" lang-zh>Δ vs. Full</th><th class="num" lang-en>Δ vs. Full</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td lang-zh><strong>CoEvoSkills (Full)</strong></td><td lang-en><strong>CoEvoSkills (Full)</strong></td><td class="num" lang-zh><strong>71.1</strong></td><td class="num" lang-en><strong>71.1</strong></td><td class="num" lang-zh>—</td><td class="num" lang-en>—</td></tr>
+          <tr><td lang-zh>W/O surrogate verifier</td><td lang-en>W/O surrogate verifier</td><td class="num" lang-zh>41.1</td><td class="num" lang-en>41.1</td><td class="num" lang-zh>$-30.0$</td><td class="num" lang-en>$-30.0$</td></tr>
+          <tr><td lang-zh>W/O evolution（仅 background context）</td><td lang-en>W/O evolution (background only)</td><td class="num" lang-zh>48.6</td><td class="num" lang-en>48.6</td><td class="num" lang-zh>$-22.5$</td><td class="num" lang-en>$-22.5$</td></tr>
+          <tr><td lang-zh>No-Skill Baseline</td><td lang-en>No-Skill Baseline</td><td class="num" lang-zh>30.6</td><td class="num" lang-en>30.6</td><td class="num" lang-zh>$-40.5$</td><td class="num" lang-en>$-40.5$</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box box-insight" lang-zh><strong>诊断</strong>：去掉 surrogate verifier 掉 30pp（没有结构化诊断，1-bit 信号无法 targeted 修复）；仅给 background context 48.6%（非结构化知识≠结构化 skill 包）。两者合起来 = "structured packaging + iterative verification" 缺一不可。</div>
+    <div class="box box-insight" lang-en><strong>Diagnostic:</strong> removing the surrogate verifier drops 30pp (no structured diagnostics, just 1-bit signal); providing only background context gives 48.6% (unstructured knowledge ≠ structured skill bundle). Both results confirm that <em>structured packaging</em> and <em>iterative verification</em> are both essential.</div>
+
+    <div class="subsection">
+      <h3 lang-zh>Iteration 分布</h3>
+      <h3 lang-en>Iteration Distribution</h3>
+
+      <div class="img-placeholder" id="ph-fig6">
+        <div class="icon">📊</div>
+        <div class="ph-label">
+          <span lang-zh>Figure A1: 验证周期与 Oracle rounds 分布</span>
+          <span lang-en>Figure A1: Verification cycles &amp; oracle rounds distribution</span>
+        </div>
+        <div class="ph-caption" lang-zh>86 个进化任务上：(左) 总 verification cycles（含所有 host 干预）；(右) oracle rounds（仅 surrogate 通过后触发 oracle 的子集）。失败任务（红）集中在高迭代数。</div>
+        <div class="ph-caption" lang-en>Across 86 evolution tasks: (left) total verification cycles (all host interventions); (right) oracle rounds (subset where surrogate passed and oracle was invoked). Failed tasks (red) cluster at higher iteration counts.</div>
+        <div class="ph-filename">figures/fig6_iteration_distribution.png</div>
+      </div>
+
+      <div class="metrics-row">
+        <div class="metric-card"><div class="metric-value">4.1</div><div class="metric-label" lang-zh>平均 verification cycles / task</div><div class="metric-label" lang-en>Avg verification cycles / task</div></div>
+        <div class="metric-card green"><div class="metric-value">2.4</div><div class="metric-label" lang-zh>平均 oracle rounds / task</div><div class="metric-label" lang-en>Avg oracle rounds / task</div></div>
+        <div class="metric-card amber"><div class="metric-value">60%+</div><div class="metric-label" lang-zh>任务 ≤ 2 oracle rounds 收敛</div><div class="metric-label" lang-en>Tasks converge within 2 oracle rounds</div></div>
+        <div class="metric-card rose"><div class="metric-value">~40%</div><div class="metric-label" lang-zh>迭代被 surrogate 独立消化</div><div class="metric-label" lang-en>Iterations absorbed by surrogate alone</div></div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>Per-Task Heatmap</h3>
+      <h3 lang-en>Per-Task Heatmap</h3>
+      <div class="img-placeholder" id="ph-fig7">
+        <div class="icon">🗺️</div>
+        <div class="ph-label">
+          <span lang-zh>Figure A2: Per-task pass rate heatmap</span>
+          <span lang-en>Figure A2: Per-task pass rate heatmap</span>
+        </div>
+        <div class="ph-caption" lang-zh>任务按 no-skill 难度排序（top=最简单）；cell 越深越容易。CoEvoSkills 救回了许多 no-skill 和 human 都失败的任务，但极少数硬任务所有条件都失败。</div>
+        <div class="ph-caption" lang-en>Tasks sorted by no-skill difficulty (top = easiest); darker = higher pass rate. CoEvoSkills recovers many tasks that both no-skill and human-curated miss, while a few hard tasks remain unsolved under all conditions.</div>
+        <div class="ph-filename">figures/fig7_task_heatmap.png</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== Case Study ======================== -->
+  <section id="casestudy" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">6</span>
+      <h2 lang-zh>Case Study：系外行星凌星周期检测</h2>
+      <h2 lang-en>Case Study: Exoplanet Transit Period Detection</h2>
+    </div>
+
+    <p lang-zh>任务：从 TESS 光变曲线（含恒星自转调制）检测行星周期，精度到 5 位小数。GT 有 4 个 deterministic test 全通过才算 reward=1.0。</p>
+    <p lang-en>Task: detect exoplanet orbital periods from TESS lightcurves (with stellar rotational modulation), accurate to 5 decimals. The GT oracle has 4 deterministic tests; all must pass for reward = 1.0.</p>
+
+    <h4 lang-zh>演化轨迹</h4>
+    <h4 lang-en>Evolution Trace</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="num" lang-zh>Round</th><th class="num" lang-en>Round</th>
+            <th lang-zh>Exit condition</th><th lang-en>Exit condition</th>
+            <th lang-zh>Surrogate Verifier</th><th lang-en>Surrogate Verifier</th>
+            <th lang-zh>GT Oracle</th><th lang-en>GT Oracle</th>
+            <th lang-zh>Key event</th><th lang-en>Key event</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="num" lang-zh>1</td><td class="num" lang-en>1</td><td lang-zh>Verifier fail</td><td lang-en>Verifier fail</td><td lang-zh>0/15 (0%)</td><td lang-en>0/15 (0%)</td><td lang-zh>—</td><td lang-en>—</td><td lang-zh>初始 skill 有 bug</td><td lang-en>Initial skill has bugs</td></tr>
+          <tr><td class="num" lang-zh>2</td><td class="num" lang-en>2</td><td lang-zh>Checklist fail</td><td lang-en>Checklist fail</td><td lang-zh>15/15 (100%)</td><td lang-en>15/15 (100%)</td><td lang-zh>—</td><td lang-en>—</td><td lang-zh>Progress checklist 不完整</td><td lang-en>Progress checklist incomplete</td></tr>
+          <tr><td class="num" lang-zh>3</td><td class="num" lang-en>3</td><td lang-zh>Verifier pass</td><td lang-en>Verifier pass</td><td lang-zh>15/15 (100%)</td><td lang-en>15/15 (100%)</td><td lang-zh>3/4 (75%)</td><td lang-en>3/4 (75%)</td><td lang-zh>精度不足</td><td lang-en>Period precision insufficient</td></tr>
+          <tr><td class="num" lang-zh>4</td><td class="num" lang-en>4</td><td lang-zh>Verifier pass</td><td lang-en>Verifier pass</td><td lang-zh>20/20 (100%)</td><td lang-en>20/20 (100%)</td><td lang-zh>3/4 (75%)</td><td lang-en>3/4 (75%)</td><td lang-zh>精度修好，alias 挂</td><td lang-en>Precision fixed, alias check fails</td></tr>
+          <tr><td class="num" lang-zh>5</td><td class="num" lang-en>5</td><td lang-zh>Verifier fail</td><td lang-en>Verifier fail</td><td lang-zh>19/22 (86%)</td><td lang-en>19/22 (86%)</td><td lang-zh>—</td><td lang-en>—</td><td lang-zh>Surrogate 抓到回归</td><td lang-en>Surrogate caught regression</td></tr>
+          <tr><td class="num" lang-zh><strong>6</strong></td><td class="num" lang-en><strong>6</strong></td><td lang-zh><strong>Verifier pass</strong></td><td lang-en><strong>Verifier pass</strong></td><td lang-zh><strong>22/22 (100%)</strong></td><td lang-en><strong>22/22 (100%)</strong></td><td lang-zh><strong>4/4 (100%)</strong></td><td lang-en><strong>4/4 (100%)</strong></td><td lang-zh><strong>全部通过</strong></td><td lang-en><strong>All tests pass</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 lang-zh>四次 skill 版本对比</h4>
+    <h4 lang-en>Four skill versions</h4>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th lang-zh>版本</th><th lang-en>Ver.</th>
+            <th lang-zh>Detrending</th><th lang-en>Detrending</th>
+            <th lang-zh>Algorithm</th><th lang-en>Algorithm</th>
+            <th lang-zh>Precision strategy</th><th lang-en>Precision strategy</th>
+            <th lang-zh>Oracle</th><th lang-en>Oracle</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td lang-zh>V1</td><td lang-en>V1</td><td lang-zh>Biweight</td><td lang-en>Biweight</td><td lang-zh>BLS</td><td lang-en>BLS</td><td lang-zh>None</td><td lang-en>None</td><td lang-zh>—</td><td lang-en>—</td></tr>
+          <tr><td lang-zh>V2</td><td lang-en>V2</td><td lang-zh>Biweight (opt.)</td><td lang-en>Biweight (opt.)</td><td lang-zh>BLS</td><td lang-en>BLS</td><td lang-zh>None</td><td lang-en>None</td><td lang-zh>75%</td><td lang-en>75%</td></tr>
+          <tr><td lang-zh>V3</td><td lang-en>V3</td><td lang-zh>Median filter</td><td lang-en>Median filter</td><td lang-zh>BLS</td><td lang-en>BLS</td><td lang-zh>None</td><td lang-en>None</td><td lang-zh>75%</td><td lang-en>75%</td></tr>
+          <tr><td lang-zh><strong>V4</strong></td><td lang-en><strong>V4</strong></td><td lang-zh><strong>Savitzky-Golay</strong></td><td lang-en><strong>Savitzky-Golay</strong></td><td lang-zh><strong>TLS</strong></td><td lang-en><strong>TLS</strong></td><td lang-zh><strong>Two-stage + alias</strong></td><td lang-en><strong>Two-stage + alias</strong></td><td lang-zh><strong>100%</strong></td><td lang-en><strong>100%</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="box box-insight" lang-zh><strong>关键洞察</strong>：V2/V3 在 BLS 上死磕 75%，逼出 V4 的算法级切换——从 BLS 换到 TLS（用真正的 limb-darkened transit model）+ 两阶段周期搜索（broad 0.5–15 天 → 窄 ±2%）+ alias 检查（$P/2$, $2P$）。这种"替换算法而非调参"的决策只有在 oracle 连续两次 75% 反馈后才出现。</div>
+    <div class="box box-insight" lang-en><strong>Key insight:</strong> V2 and V3 hit a 75% ceiling on BLS, forcing V4 to switch <em>algorithms</em> — from BLS to TLS (a real limb-darkened transit model) + two-stage period search (broad 0.5–15 d → narrow ±2%) + alias check ($P/2$, $2P$). This "replace algorithm, don't tune parameters" decision only emerges after repeated 75% oracle feedback.</div>
+
+    <h4 lang-zh>Surrogate vs. GT 的固有 gap（极好的反例）</h4>
+    <h4 lang-en>Surrogate vs. GT gap (excellent counterexample)</h4>
+    <p lang-zh>Round 3：surrogate 15/15 全过，GT 却 3/4。<strong>Surrogate 用 1% tolerance 匹配周期，GT 要求 5-decimal 精确匹配</strong>——surrogate 无法从 task 描述推断出这个阈值。</p>
+    <p lang-en>Round 3: surrogate 15/15, but GT 3/4. <strong>Surrogate used a 1% tolerance while GT required 5-decimal exact match</strong> — the surrogate cannot infer this threshold from the task description alone.</p>
+    <p lang-zh>Round 5：Surrogate 升到 22 tests，自己的 BLS 算出 3.24158，agent 的 TLS 算出 3.24156。Surrogate 把 0.00002 天的差标成 fail——<strong>虽然 agent 的答案其实更准</strong>。</p>
+    <p lang-en>Round 5: the surrogate's own BLS produced 3.24158 while the agent's TLS produced 3.24156. The surrogate flagged the 0.00002-day discrepancy as failure — even though the agent's answer was in fact more accurate.</p>
+    <div class="box box-warn" lang-zh>这说明 surrogate 的两个结构性局限：(1) 无法复刻 GT 的精度要求；(2) 无法区分 "自己估计的误差" 与 "agent 的误差"。因此 GT Oracle 不可被 surrogate 取代——必须作为权威 arbiter。</div>
+    <div class="box box-warn" lang-en>This reveals two structural limitations: (1) the surrogate cannot replicate GT's exact precision; (2) it cannot distinguish its own estimation error from the agent's. The GT Oracle is irreplaceable as the authoritative arbiter.</div>
+
+    <h4 lang-zh>Human-curated vs. Self-evolved（结构性对比）</h4>
+    <h4 lang-en>Human-curated vs. Self-evolved (structural)</h4>
+    <div class="compare-grid">
+      <div class="compare-card">
+        <h5 lang-zh>Human (5 skills)</h5>
+        <h5 lang-en>Human (5 skills)</h5>
+        <p lang-zh>1,096 lines across 5 SKILL.md，<strong>无可执行代码</strong>；BLS/TLS/Lomb-Scargle 并列；"check for aliasing" 只出现一句；精度问题完全没提。</p>
+        <p lang-en>1,096 lines across 5 SKILL.md, <strong>no executable code</strong>; BLS/TLS/Lomb-Scargle presented as equals; "check for aliasing" appears once; precision not addressed.</p>
+      </div>
+      <div class="compare-card">
+        <h5 lang-zh>Self-evolved (1 skill)</h5>
+        <h5 lang-en>Self-evolved (1 skill)</h5>
+        <p lang-zh>64 lines SKILL.md + 142 lines Python，9 callable functions；<strong>明确处方 TLS</strong> 并给 justification；两阶段搜索；自动检测 $P, 2P, P/2$；强制 5-decimal 输出。</p>
+        <p lang-en>64-line SKILL.md + 142-line Python with 9 callable functions; <strong>prescribes TLS</strong> with justification; two-stage search; automatic $P, 2P, P/2$ alias detection; enforces 5-decimal output.</p>
+      </div>
+    </div>
+    <p lang-zh>装入 fresh Opus 4.6 后：evolved skill <strong>5/5 runs 100%</strong>；human-curated <strong>53.5%</strong>（agent 在三个算法间摇摆）；no-skill <strong>~75%</strong>（默认 Lomb-Scargle，错误模型）。</p>
+    <p lang-en>When loaded into a fresh Opus 4.6 agent: evolved skill scores <strong>5/5 runs 100%</strong>; human-curated <strong>53.5%</strong> (agent inconsistently picks among the three algorithms); no-skill <strong>~75%</strong> (defaults to Lomb-Scargle, the wrong model).</p>
+  </section>
+
+  <!-- ======================== Discussion ======================== -->
+  <section id="discussion" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">7</span>
+      <h2 lang-zh>讨论与局限</h2>
+      <h2 lang-en>Discussion &amp; Limitations</h2>
+    </div>
+
+    <details class="discussion-card" open>
+      <summary lang-zh>为什么 Surrogate Verifier 这么关键？</summary>
+      <summary lang-en>Why is the Surrogate Verifier so critical?</summary>
+      <div class="detail-body" lang-zh>消融显示 surrogate 贡献 30pp。本质上它的价值是：(1) 把 1-bit GT 信号扩展成 per-assertion 诊断 → targeted repair 成为可能；(2) 吸收 ~40% 的 oracle 预算 → 节省真实评测成本；(3) 信息隔离 → 避免 Generator 的 self-verification bias。</div>
+      <div class="detail-body" lang-en>Ablations show the surrogate contributes 30pp. Its value: (1) expands the 1-bit GT signal into per-assertion diagnostics → targeted repair becomes possible; (2) absorbs ~40% of the oracle budget → saves real-eval cost; (3) information isolation → avoids the generator's self-verification bias.</div>
+    </details>
+
+    <details class="discussion-card" open>
+      <summary lang-zh>信息隔离如何防止对 held-out test 过拟合？</summary>
+      <summary lang-en>How does information isolation prevent held-out overfitting?</summary>
+      <div class="detail-body" lang-zh>设计上 oracle 只返回 $\mathbf{1}[\mathcal{R}&lt;1]$，不返回失败内容；verifier 必须靠 task instruction 和 output 独立合成 test。Case study round 5 是一个正面验证——surrogate 甚至比 GT 更严格（把比 GT 更准的答案标成 fail），这不可能出现在"偷看 held-out test"的 setting 里。</div>
+      <div class="detail-body" lang-en>By design the oracle returns only $\mathbf{1}[\mathcal{R}&lt;1]$, no failure content; the verifier must synthesize tests from the task instruction and outputs alone. Round 5 of the case study is positive evidence — the surrogate flagged an answer even more accurate than GT as failure, impossible if it were peeking at held-out tests.</div>
+    </details>
+
+    <details class="discussion-card" open>
+      <summary lang-zh>Budget 选择与 sensitivity</summary>
+      <summary lang-en>Budget selection &amp; sensitivity</summary>
+      <div class="detail-body" lang-zh>$N=5$、$M=15$ 怎么选的？失败的 10 个任务集中在 budget 用光处，说明 budget 可能是性能瓶颈——论文没做 sensitivity 分析。如果把 $N$ 放到 10 会怎样？增益曲线形状如何？这是复现者首先会问的问题。</div>
+      <div class="detail-body" lang-en>How were $N=5$, $M=15$ chosen? The 10 failed tasks cluster at exhausted budget, suggesting budget may be a bottleneck — but no sensitivity study is given. What happens at $N=10$? What does the gain curve look like? This is the first question a re-implementer would ask.</div>
+    </details>
+
+    <details class="discussion-card" open>
+      <summary lang-zh>Surrogate overshoot 的代价</summary>
+      <summary lang-en>The cost of surrogate overshoot</summary>
+      <div class="detail-body" lang-zh>Round 5 那种"surrogate 比 GT 还严格"的情形在多少任务上发生？论文没定量。理论上 surrogate 误报会浪费 evolution 轮次、把好 skill 改坏。没有定量衡量意味着 verifier 是否始终"helpful"存疑。</div>
+      <div class="detail-body" lang-en>How often does "surrogate stricter than GT" happen across tasks? Not quantified. A too-strict surrogate burns evolution rounds and can regress a good skill — without this measurement we cannot claim the verifier is always helpful.</div>
+    </details>
+
+    <details class="discussion-card" open>
+      <summary lang-zh>单一 benchmark 与 ablation 单次 run</summary>
+      <summary lang-en>Single benchmark, single-run ablations</summary>
+      <div class="detail-body" lang-zh>作者承认 SkillsBench 是"唯一 skill-purpose benchmark"，但 87 tasks × 7 模型 × 多 baseline × 3-5 seeds 的矩阵统计力是否足够？ablation 都是单次 run（成本原因），置信区间缺失。只用一个 benchmark 的结论的外推性值得保留。</div>
+      <div class="detail-body" lang-en>The authors note SkillsBench is the "only skill-purpose benchmark," but is 87 tasks × 7 models × multiple baselines × 3-5 seeds enough statistical power? Ablations are single-run (cost reason) with no confidence intervals. Claims from a single benchmark should be held conservatively.</div>
+    </details>
+
+    <details class="discussion-card" open>
+      <summary lang-zh>Cost transparency 弱</summary>
+      <summary lang-en>Weak cost transparency</summary>
+      <div class="detail-body" lang-zh>3000s/task × 4 workers × 5 runs × 5 iters × 多模型 = 相当昂贵。论文未给 token cost 或 $ cost，对复现不友好；对读者判断"这个框架的 cost-benefit 是否值得"也不友好。</div>
+      <div class="detail-body" lang-en>3000s/task × 4 workers × 5 runs × 5 iters × multiple models = substantial cost. No token count or $ figure is given, hurting reproducibility and cost–benefit reasoning.</div>
+    </details>
+
+    <details class="discussion-card" open>
+      <summary lang-zh>"Agent 比人好" 结论的边界</summary>
+      <summary lang-en>Boundary of the "agents beat humans" claim</summary>
+      <div class="detail-body" lang-zh>人工 skill 是 SkillsBench 提供的那个版本——是<em>一组特定</em>人写的，不一定代表"人类能做的最好"。一个经验丰富的该领域专家花同样时间写是否能赶上？作者没对比。另外 <code>skill-creator</code> 本身是人写的 meta-skill，CoEvoSkills 依赖它 bootstrap——严格说仍是 <em>human-in-the-loop at meta-level</em>。</div>
+      <div class="detail-body" lang-en>The "human-curated" version is the one shipped with SkillsBench — a specific group's output, not necessarily "the best humans can do." Would a seasoned domain expert writing for comparable time match it? Not tested. Also, <code>skill-creator</code> is itself a human-authored meta-skill that bootstraps CoEvoSkills — strictly, this is still <em>human-in-the-loop at the meta-level</em>.</div>
+    </details>
+
+    <details class="discussion-card" open>
+      <summary lang-zh>Verifier 的脆弱性（Open-ended 任务）</summary>
+      <summary lang-en>Verifier fragility (open-ended tasks)</summary>
+      <div class="detail-body" lang-zh>如果 task 描述很模糊（现实常见），verifier 合成的 assertion 可能完全偏离 GT。论文挑的是 deterministic-verifier 任务；在 open-ended 任务（UI 设计、创作、研究写作）上 surrogate 会怎样？是这个框架最值得后续探索的方向。</div>
+      <div class="detail-body" lang-en>With vague task descriptions (common in the real world), the verifier's assertions may drift from GT. This paper only considers deterministic-verifier tasks. How does the surrogate behave on open-ended tasks (UI design, creative writing, research writing)? The most important direction for future work.</div>
+    </details>
+
+    <details class="discussion-card">
+      <summary lang-zh>可组合性（Skill Composability）</summary>
+      <summary lang-en>Skill composability</summary>
+      <div class="detail-body" lang-zh>如果一个任务需要多个进化过的 skill 组合，它们会不会互相矛盾？论文只评测了"一个任务一个 skill"。skill 之间的冲突检测和合并是未解决的开放问题。</div>
+      <div class="detail-body" lang-en>What if a task needs multiple evolved skills composed? Could they conflict? The paper only evaluates one-skill-per-task. Cross-skill conflict detection and merging is an open problem.</div>
+    </details>
+
+    <details class="discussion-card">
+      <summary lang-zh>Negative transfer 分析缺失</summary>
+      <summary lang-en>Missing negative-transfer analysis</summary>
+      <div class="detail-body" lang-zh>Opus 进化的 skill 给 Haiku 用比 no-skill 高 44pp，但真的没有"某个 skill 让某个模型变差"的案例吗？论文只报了 domain-level aggregate，per-task × per-model 粒度上是否仍有负迁移？值得一张热图。</div>
+      <div class="detail-body" lang-en>Opus-evolved skills lift Haiku by +44pp — but is there any (skill, model) pair with negative transfer? The paper reports domain-level aggregates; a per-task × per-model heatmap would be valuable.</div>
+    </details>
+  </section>
+
+  <!-- ======================== Quick Ref ======================== -->
+  <section id="quickref" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">8</span>
+      <h2 lang-zh>技术细节速查</h2>
+      <h2 lang-en>Quick Reference</h2>
+    </div>
+
+    <h4 lang-zh>Evolution / Eval 参数</h4>
+    <h4 lang-en>Evolution / Eval parameters</h4>
+    <div class="table-wrap">
+      <table class="ref-table">
+        <thead>
+          <tr><th lang-zh>项</th><th lang-en>Item</th><th lang-zh>值</th><th lang-en>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td lang-zh>$N$ (oracle rounds 上限)</td><td lang-en>$N$ (oracle rounds cap)</td><td lang-zh>5</td><td lang-en>5</td></tr>
+          <tr><td lang-zh>$M$ (surrogate retries 上限)</td><td lang-en>$M$ (surrogate retries cap)</td><td lang-zh>15</td><td lang-en>15</td></tr>
+          <tr><td lang-zh>$\beta$ (context usage cap)</td><td lang-en>$\beta$ (context usage cap)</td><td lang-zh>0.7</td><td lang-en>0.7</td></tr>
+          <tr><td lang-zh>Evolution timeout</td><td lang-en>Evolution timeout</td><td lang-zh>3000s/task (5× 基础)</td><td lang-en>3000s/task (5× base)</td></tr>
+          <tr><td lang-zh>Eval timeout</td><td lang-en>Eval timeout</td><td lang-zh>7200s/task</td><td lang-en>7200s/task</td></tr>
+          <tr><td lang-zh>Eval parallel workers</td><td lang-en>Eval parallel workers</td><td lang-zh>10</td><td lang-en>10</td></tr>
+          <tr><td lang-zh>Baseline / Transfer runs</td><td lang-en>Baseline / Transfer runs</td><td lang-zh>5 (mean±std) / 3</td><td lang-en>5 (mean±std) / 3</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 lang-zh>关键数字</h4>
+    <h4 lang-en>Key numbers</h4>
+    <div class="table-wrap">
+      <table class="ref-table">
+        <thead>
+          <tr><th lang-zh>数字</th><th lang-en>Number</th><th lang-zh>含义</th><th lang-en>Meaning</th></tr>
+        </thead>
+        <tbody>
+          <tr><td lang-zh><strong>71.1%</strong></td><td lang-en><strong>71.1%</strong></td><td lang-zh>Opus 4.6 + Claude-Code 主结果</td><td lang-en>Opus 4.6 + Claude-Code main result</td></tr>
+          <tr><td lang-zh>+40.5pp</td><td lang-en>+40.5pp</td><td lang-zh>对 no-skill 基线绝对提升</td><td lang-en>vs. no-skill baseline</td></tr>
+          <tr><td lang-zh>+17.6pp</td><td lang-en>+17.6pp</td><td lang-zh>对 human-curated 绝对提升</td><td lang-en>vs. human-curated</td></tr>
+          <tr><td lang-zh>69.8%</td><td lang-en>69.8%</td><td lang-zh>GPT-5.2 self-evolved</td><td lang-en>GPT-5.2 self-evolved</td></tr>
+          <tr><td lang-zh>65.0%</td><td lang-en>65.0%</td><td lang-zh>GPT-5.2 用 Opus 迁移 skill</td><td lang-en>GPT-5.2 with Opus-transferred skills</td></tr>
+          <tr><td lang-zh>+44.1pp</td><td lang-en>+44.1pp</td><td lang-zh>Haiku 4.5 受益最大</td><td lang-en>Largest gain: Haiku 4.5</td></tr>
+          <tr><td lang-zh>4.1 / 2.4</td><td lang-en>4.1 / 2.4</td><td lang-zh>平均 verification cycles / oracle rounds</td><td lang-en>Avg verification cycles / oracle rounds</td></tr>
+          <tr><td lang-zh>63% / 75%</td><td lang-en>63% / 75%</td><td lang-zh>Round 3 超过 human / Round 5 收敛值</td><td lang-en>Round 3 surpasses human / Round 5 converged</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 lang-zh>使用到的 LLM × Agent harness</h4>
+    <h4 lang-en>LLMs × agent harnesses</h4>
+    <div class="table-wrap">
+      <table class="ref-table">
+        <thead>
+          <tr><th lang-zh>模型</th><th lang-en>Model</th><th lang-zh>Harness</th><th lang-en>Harness</th></tr>
+        </thead>
+        <tbody>
+          <tr><td lang-zh>Claude Opus 4.6</td><td lang-en>Claude Opus 4.6</td><td lang-zh>Claude-Code</td><td lang-en>Claude-Code</td></tr>
+          <tr><td lang-zh>GPT-5.2</td><td lang-en>GPT-5.2</td><td lang-zh>Codex</td><td lang-en>Codex</td></tr>
+          <tr><td lang-zh>Claude Sonnet 4.5</td><td lang-en>Claude Sonnet 4.5</td><td lang-zh>Claude-Code</td><td lang-en>Claude-Code</td></tr>
+          <tr><td lang-zh>Claude Haiku 4.5</td><td lang-en>Claude Haiku 4.5</td><td lang-zh>Terminus-2</td><td lang-en>Terminus-2</td></tr>
+          <tr><td lang-zh>Qwen3 Coder 480B</td><td lang-en>Qwen3 Coder 480B</td><td lang-zh>Terminus-2</td><td lang-en>Terminus-2</td></tr>
+          <tr><td lang-zh>DeepSeek V3 671B</td><td lang-en>DeepSeek V3 671B</td><td lang-zh>Terminus-2</td><td lang-en>Terminus-2</td></tr>
+          <tr><td lang-zh>Mistral Large 3 675B</td><td lang-en>Mistral Large 3 675B</td><td lang-zh>Terminus-2</td><td lang-en>Terminus-2</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4 lang-zh>关键公式速查</h4>
+    <h4 lang-en>Formula quick ref</h4>
+    <div class="formula">$$\tilde{\mathcal{R}}(x, \mathcal{V}) = \frac{1}{|\mathcal{V}|}\sum_{k=1}^{|\mathcal{V}|}\mathbf{1}[e_k(x)]$$</div>
+    <div class="formula">$$\mathcal{S}^{(i+1)} \sim \pi_\theta(\cdot \mid \mathcal{S}^{(i)}, C^{(i+1)}),\quad C^{(i+1)} = C^{(i)} \oplus \mathcal{F}^{(i,j)}$$</div>
+    <div class="formula">$$\mathcal{V}^{(j+1)} \sim \pi_\theta^V(\cdot \mid I, x^{(i)}, \mathcal{V}^{(j)}),\; \text{if}\; \mathbf{1}[\tilde{\mathcal{R}}=1 \wedge \mathcal{R}&lt;1]$$</div>
+
+    <h4 lang-zh>Skill Generator 系统 Prompt 关键约束</h4>
+    <h4 lang-en>Skill Generator system-prompt key constraints</h4>
+    <ul lang-zh>
+      <li>三阶段：Evolve → Execute → Summarize</li>
+      <li>强制 <code>/root/progress.md</code> 清单 P1–P6，全部 <code>[x]</code> 才可 <code>task_complete</code></li>
+      <li>所有 task 输出必须通过 <strong>import skill scripts/</strong> 产生，禁止把函数代码复制到 main script</li>
+      <li>"Write back all runtime fixes"：execute 阶段任何修补必须写回 skill 的 scripts/，保证对 fresh agent 自包含</li>
+      <li>Computational budget：空间 &gt;1000 组合必须用近似算法</li>
+    </ul>
+    <ul lang-en>
+      <li>Three phases: Evolve → Execute → Summarize</li>
+      <li>Mandatory <code>/root/progress.md</code> checklist P1–P6 — all must be <code>[x]</code> before <code>task_complete</code></li>
+      <li>All task outputs must come from <strong>importing skill scripts/</strong> — copying code into the main script is forbidden</li>
+      <li>"Write back all runtime fixes": any execute-phase patch must be written back into the skill's scripts/ for fresh-agent portability</li>
+      <li>Computational budget: &gt;1000-combination spaces must use approximate algorithms</li>
+    </ul>
+  </section>
+
+  <footer style="text-align:center;padding:40px 0 20px;color:var(--text-secondary);font-size:13px;border-top:1px solid var(--border);margin-top:40px;">
+    <span lang-zh>CoEvoSkills 论文学习笔记 · Paper-to-HTML (tex-based)</span>
+    <span lang-en>CoEvoSkills Paper Study Notes · Paper-to-HTML (tex-based)</span>
+  </footer>
+
+</div><!-- end .main-content -->
+
+<script>
+const imageMap = {
+  'ph-fig0': 'figures/fig0_tool_skill_diff.png',
+  'ph-fig1': 'figures/fig1_framework.png',
+  'ph-fig2': 'figures/fig2_evolution_trajectory.png',
+  'ph-fig3': 'figures/fig3_main_results.png',
+  'ph-fig4': 'figures/fig4_cross_model.png',
+  'ph-fig5': 'figures/fig5_domain_breakdown.png',
+  'ph-fig6': 'figures/fig6_iteration_distribution.png',
+  'ph-fig7': 'figures/fig7_task_heatmap.png',
+};
+</script>
+<script>
+// ===== Theme Toggle =====
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('paper-theme', isDark ? 'dark' : 'light');
+}
+const savedTheme = localStorage.getItem('paper-theme');
+if (savedTheme === 'dark') document.body.classList.add('dark');
+
+// ===== Language Toggle =====
+function setLang(lang) {
+  document.body.classList.toggle('en', lang === 'en');
+  document.getElementById('btn-zh').classList.toggle('active', lang === 'zh');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  localStorage.setItem('paper-lang', lang);
+}
+const savedLang = localStorage.getItem('paper-lang');
+if (savedLang === 'en') setLang('en');
+
+// ===== TOC Toggle (Mobile) =====
+function toggleTOC() {
+  document.getElementById('toc').classList.toggle('open');
+}
+document.querySelectorAll('.toc-sidebar a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('toc').classList.remove('open');
+  });
+});
+
+// ===== Active TOC Highlight =====
+const sections = document.querySelectorAll('section[id], .subsection[id]');
+const tocLinks = document.querySelectorAll('.toc-sidebar a');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      tocLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+
+// ===== Fade-in on Scroll =====
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+
+// ===== Image Placeholder -> Real Image Replacement =====
+if (typeof imageMap !== 'undefined') {
+  Object.entries(imageMap).forEach(([id, src]) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const img = new Image();
+      img.onload = () => {
+        const labelEl = el.querySelector('.ph-label');
+        const labelZhSpan = el.querySelector('.ph-label [lang-zh]');
+        const labelEnSpan = el.querySelector('.ph-label [lang-en]');
+        const fallbackLabel = labelEl ? labelEl.textContent.trim() : '';
+        const labelZh = labelZhSpan ? labelZhSpan.textContent.trim() : fallbackLabel;
+        const labelEn = labelEnSpan ? labelEnSpan.textContent.trim() : fallbackLabel;
+        const captionZh = el.querySelector('.ph-caption[lang-zh]');
+        const captionEn = el.querySelector('.ph-caption[lang-en]');
+        const zhText = captionZh ? captionZh.textContent : '';
+        const enText = captionEn ? captionEn.textContent : '';
+        el.outerHTML = `<figure style="margin:0;">
+          <img class="fig-img" src="${src}" alt="${labelEn || labelZh}" loading="lazy"
+               style="width:100%;border-radius:var(--radius);border:1px solid var(--border);">
+          <figcaption style="font-size:12.5px;color:var(--text-secondary);margin-top:8px;line-height:1.5;">
+            <strong><span lang-zh>${labelZh}</span><span lang-en>${labelEn}</span></strong><br>
+            <span lang-zh>${zhText}</span>
+            <span lang-en>${enText}</span>
+          </figcaption>
+        </figure>`;
+      };
+      img.src = src;
+    }
+  });
+}
+</script>
+
+</body>
+</html>

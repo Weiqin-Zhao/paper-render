@@ -1,0 +1,16 @@
+% \usepackage{newpxtext}
+% \makeatletter
+% \newcommand{\ie}{\emph{i.e.}\@ifnextchar.{\!\@gobble}{}\xspace}
+% \newcommand{\eg}{\emph{e.g.}\@ifnextchar.{\!\@gobble}{}\xspace}
+% \newcommand{\etc}{etc\@ifnextchar.{}{.\@}}
+% \makeatother
+
+\newcommand{\appautoref}[1]{%
+  \begingroup
+  \renewcommand*{\subsectionautorefname}{Appendix}%
+  \renewcommand*{\subsubsectionautorefname}{Appendix}%
+  \renewcommand*{\figureautorefname}{Appendix Figure}%
+  \renewcommand*{\tableautorefname}{Appendix Table}%
+  \autoref{#1}%
+  \endgroup
+}

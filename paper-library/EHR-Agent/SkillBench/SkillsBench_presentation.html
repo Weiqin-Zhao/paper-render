@@ -1,0 +1,1993 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillsBench - Paper Notes (tex-based)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fafbfc; --card-bg: #ffffff;
+    --text: #1a1a2e; --text-secondary: #5a5a7a;
+    --accent: #0d9488; --accent-light: #f0fdfa; --accent-dark: #134e4a;
+    --border: #e2e8f0;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.03);
+    --radius: 12px; --radius-sm: 8px;
+    --teal: #0d9488; --teal-light: #f0fdfa;
+    --amber: #d97706; --amber-light: #fffbeb;
+    --rose: #e11d48; --rose-light: #fff1f2;
+    --emerald: #059669; --emerald-light: #ecfdf5;
+    --blue: #2563eb; --blue-light: #eff6ff;
+    --purple: #7c3aed; --purple-light: #f5f3ff;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.7; font-size: 16px; -webkit-font-smoothing: antialiased;
+    transition: background 0.35s ease, color 0.35s ease;
+  }
+
+  body.dark {
+    --bg: #0d1017; --card-bg: #161b22;
+    --text: #e6edf3; --text-secondary: #8b949e;
+    --accent: #5eead4; --accent-light: #0f2a2a; --accent-dark: #99f6e4;
+    --border: #30363d;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.25);
+    --shadow-lg: 0 10px 25px -3px rgba(0,0,0,0.5), 0 4px 6px -2px rgba(0,0,0,0.3);
+    --teal: #5eead4; --teal-light: #0f2a2a;
+    --amber: #fbbf24; --amber-light: #2a2000;
+    --rose: #fb7185; --rose-light: #2a0f14;
+    --emerald: #34d399; --emerald-light: #0f2a1e;
+    --blue: #60a5fa; --blue-light: #0f1a2a;
+    --purple: #a78bfa; --purple-light: #1a0f2a;
+  }
+  body.dark .hero { background: linear-gradient(135deg, #064e3b 0%, #0d4f6e 50%, #0f766e 100%); }
+  body.dark .hero::before { background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%); }
+  body.dark .hero::after { background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%); }
+  body.dark .hero .tag { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.08); }
+  body.dark .toc-sidebar { box-shadow: 2px 0 12px rgba(0,0,0,0.3); }
+  body.dark .toc-sidebar a:hover { background: var(--accent-light); }
+  body.dark .toc-sidebar a.active { background: var(--accent-light); }
+  body.dark .menu-toggle { color: var(--text); }
+  body.dark .box-insight { background: #1a1840; border-color: #312e81; color: #c7d2fe; }
+  body.dark .box-warn { background: #2a2000; border-color: #854d0e; color: #fde68a; }
+  body.dark .box-note { background: #0f2a2a; border-color: #115e59; color: #99f6e4; }
+  body.dark .box-key { background: #2a0f14; border-color: #9f1239; color: #fecdd3; }
+  body.dark thead th { background: #1c2128; }
+  body.dark tbody td { border-bottom-color: #21262d; }
+  body.dark tbody tr:hover { background: #1c2128; }
+  body.dark .flow { background: #111820; }
+  body.dark .flow-box.highlight { background: #0f2a2a; border-color: #115e59; color: #99f6e4; }
+  body.dark .flow-box.green { background: #0f2a1e; border-color: #065f46; color: #6ee7b7; }
+  body.dark .flow-box.amber { background: #2a2000; border-color: #92400e; color: #fde68a; }
+  body.dark .flow-box.purple { background: #1a0f2a; border-color: #5b21b6; color: #c4b5fd; }
+  body.dark .bar-track { background: #1c2128; }
+  body.dark .img-placeholder { background: linear-gradient(135deg, #111820 0%, #1c2128 100%); border-color: #30363d; }
+  body.dark .img-placeholder:hover { border-color: var(--accent); background: linear-gradient(135deg, #0f2a2a 0%, #0f2a2a 100%); }
+  body.dark .img-placeholder .ph-caption { color: #6e7681; }
+  body.dark .img-placeholder .ph-filename { color: var(--accent); background: rgba(94,234,212,0.1); }
+  body.dark .formula { background: #111820; }
+  body.dark .discussion-card summary:hover { background: #1c2128; }
+  body.dark footer { border-top-color: var(--border); }
+  body.dark ::-webkit-scrollbar { width: 8px; }
+  body.dark ::-webkit-scrollbar-track { background: var(--bg); }
+  body.dark ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+  body.dark ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+
+  .top-controls { position: fixed; top: 20px; right: 24px; z-index: 1000; display: flex; align-items: center; gap: 10px; }
+  .ctrl-group {
+    display: flex; background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 24px; padding: 3px; box-shadow: var(--shadow-md);
+    backdrop-filter: blur(12px); transition: background 0.35s ease, border-color 0.35s ease;
+  }
+  .ctrl-btn {
+    padding: 6px 18px; border: none; border-radius: 20px; cursor: pointer;
+    font-size: 14px; font-weight: 600; background: transparent;
+    color: var(--text-secondary); transition: all 0.25s ease; letter-spacing: 0.5px; line-height: 1.4;
+  }
+  .ctrl-btn.active { background: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(13,148,136,0.3); }
+  .theme-btn {
+    padding: 6px 14px; border: none; border-radius: 20px; cursor: pointer;
+    font-size: 16px; background: transparent; color: var(--text-secondary);
+    transition: all 0.25s ease; line-height: 1; display: flex; align-items: center; justify-content: center;
+  }
+  .theme-btn:hover { color: var(--accent); }
+  .theme-icon-light, .theme-icon-dark { transition: opacity 0.3s ease; }
+  .theme-icon-dark { display: none; }
+  body.dark .theme-icon-light { display: none; }
+  body.dark .theme-icon-dark { display: inline; }
+
+  .toc-sidebar {
+    position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
+    background: var(--card-bg); border-right: 1px solid var(--border);
+    overflow-y: auto; z-index: 900; padding: 24px 16px;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.03);
+    transition: transform 0.3s ease, background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  }
+  .toc-sidebar .toc-title {
+    font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--accent); margin-bottom: 16px; padding-left: 8px;
+  }
+  .toc-sidebar a {
+    display: block; padding: 8px 12px; font-size: 13.5px; color: var(--text-secondary);
+    text-decoration: none; border-radius: var(--radius-sm);
+    transition: all 0.2s ease; line-height: 1.5; margin-bottom: 2px;
+  }
+  .toc-sidebar a:hover { background: var(--accent-light); color: var(--accent); }
+  .toc-sidebar a.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+  .toc-sidebar a.sub { padding-left: 28px; font-size: 12.5px; }
+
+  .menu-toggle {
+    display: none; position: fixed; top: 20px; left: 16px; z-index: 1001;
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 8px 12px; cursor: pointer;
+    box-shadow: var(--shadow-md); font-size: 18px; line-height: 1;
+  }
+
+  .main-content { margin-left: 280px; max-width: 900px; padding: 40px 48px 80px; }
+
+  .hero {
+    background: linear-gradient(135deg, #0d4f6e 0%, #0d9488 50%, #14b8a6 100%);
+    border-radius: var(--radius); padding: 48px 44px; margin-bottom: 40px;
+    color: #fff; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60%; right: -20%; width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%); border-radius: 50%;
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -40%; left: -10%; width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); border-radius: 50%;
+  }
+  .hero h1 { font-size: 32px; font-weight: 800; line-height: 1.3; margin-bottom: 16px; position: relative; z-index: 1; }
+  .hero .subtitle { font-size: 15px; opacity: 0.9; position: relative; z-index: 1; line-height: 1.7; }
+  .hero .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; position: relative; z-index: 1; }
+  .hero .tag {
+    background: rgba(255,255,255,0.18); padding: 4px 14px; border-radius: 20px;
+    font-size: 13px; font-weight: 500; backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .hero .source-badge {
+    display: inline-block; margin-top: 16px; padding: 6px 14px;
+    background: rgba(255, 215, 0, 0.2); border: 1px solid rgba(255, 215, 0, 0.4);
+    border-radius: 8px; font-size: 13px; font-weight: 600; position: relative; z-index: 1;
+  }
+
+  section { margin-bottom: 48px; }
+  .section-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+    padding-bottom: 12px; border-bottom: 2px solid var(--accent-light);
+  }
+  .section-num {
+    background: var(--accent); color: #fff; width: 36px; height: 36px;
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; flex-shrink: 0;
+  }
+  .section-header h2 { font-size: 24px; font-weight: 700; color: var(--text); line-height: 1.3; }
+
+  .subsection h3 {
+    font-size: 18px; font-weight: 700; color: var(--accent-dark);
+    margin: 32px 0 16px; display: flex; align-items: center; gap: 8px;
+  }
+  .subsection h3::before {
+    content: ''; width: 4px; height: 20px; background: var(--accent);
+    border-radius: 2px; flex-shrink: 0;
+  }
+  .subsection h4 { font-size: 15px; font-weight: 700; color: var(--text); margin: 24px 0 12px; }
+  p { margin-bottom: 14px; color: var(--text); }
+
+  .card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .card-accent { border-left: 4px solid var(--accent); }
+
+  .box { border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0; font-size: 14.5px; line-height: 1.7; }
+  .box-insight { background: var(--purple-light); border: 1px solid #ddd6fe; color: #5b21b6; }
+  .box-insight::before { content: '\01F4A1 '; }
+  .box-warn { background: var(--amber-light); border: 1px solid #fde68a; color: #92400e; }
+  .box-warn::before { content: '\026A0\0FE0F '; }
+  .box-note { background: var(--teal-light); border: 1px solid #99f6e4; color: #134e4a; }
+  .box-note::before { content: '\01F4CC '; }
+  .box-key { background: var(--rose-light); border: 1px solid #fecdd3; color: #9f1239; }
+  .box-key::before { content: '\01F511 '; }
+  .box-tex { background: #fef3c7; border: 1px solid #fbbf24; color: #92400e; }
+  .box-tex::before { content: '\01F50D '; }
+  body.dark .box-tex { background: #2a2000; border-color: #92400e; color: #fde68a; }
+
+  .table-wrap { overflow-x: auto; margin: 16px 0; border-radius: var(--radius-sm); border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead th {
+    background: #f8fafc; font-weight: 700; text-align: left; padding: 12px 16px;
+    border-bottom: 2px solid var(--border); color: var(--text);
+    white-space: nowrap; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  tbody td { padding: 10px 16px; border-bottom: 1px solid #f1f5f9; color: var(--text-secondary); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #f8fafc; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td strong { color: var(--text); }
+
+  .flow {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0; margin: 20px 0; padding: 24px;
+    background: #f8fafc; border-radius: var(--radius); border: 1px solid var(--border);
+  }
+  .flow-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .flow-box {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 18px;
+    font-size: 13.5px; font-weight: 600; color: var(--text);
+    box-shadow: var(--shadow); text-align: center; max-width: 300px;
+  }
+  .flow-box.highlight { background: var(--accent-light); border-color: #99f6e4; color: var(--accent-dark); }
+  .flow-box.green { background: var(--emerald-light); border-color: #a7f3d0; color: #065f46; }
+  .flow-box.amber { background: var(--amber-light); border-color: #fde68a; color: #92400e; }
+  .flow-box.purple { background: var(--purple-light); border-color: #ddd6fe; color: #5b21b6; }
+  .flow-box small { display: block; font-weight: 400; font-size: 11.5px; margin-top: 4px; opacity: 0.8; }
+  .flow-arrow { color: var(--accent); font-size: 20px; font-weight: 700; line-height: 1; flex-shrink: 0; }
+  .flow-arrow-down { text-align: center; padding: 4px 0; }
+  .flow-label { font-size: 11.5px; color: var(--text-secondary); text-align: center; padding: 0 8px; font-style: italic; }
+
+  .chart-container {
+    margin: 20px 0; padding: 24px; background: var(--card-bg);
+    border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+  }
+  .chart-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .chart-source { font-size: 11.5px; color: var(--text-secondary); margin-bottom: 16px; font-style: italic; opacity: 0.8; }
+  .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row { display: flex; align-items: center; gap: 12px; }
+  .bar-label { width: 140px; font-size: 12.5px; color: var(--text-secondary); text-align: right; flex-shrink: 0; font-weight: 500; }
+  .bar-track { flex: 1; height: 28px; background: #f1f5f9; border-radius: 6px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 6px; transition: width 1s ease-out; display: flex; align-items: center; padding-left: 10px; }
+  .bar-value { font-size: 11.5px; font-weight: 700; color: #fff; white-space: nowrap; text-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+
+  .compare-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px; margin: 16px 0;
+  }
+  .compare-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 20px; box-shadow: var(--shadow);
+  }
+  .compare-card h5 { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: var(--accent); }
+  .compare-card p { font-size: 13.5px; color: var(--text-secondary); margin-bottom: 0; }
+
+  .metrics-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px; margin: 16px 0;
+  }
+  .metric-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 16px; text-align: center; box-shadow: var(--shadow);
+  }
+  .metric-value { font-size: 28px; font-weight: 800; color: var(--accent); line-height: 1.2; }
+  .metric-label { font-size: 12px; color: var(--text-secondary); margin-top: 6px; font-weight: 500; }
+  .metric-card.green .metric-value { color: var(--emerald); }
+  .metric-card.amber .metric-value { color: var(--amber); }
+  .metric-card.rose .metric-value { color: var(--rose); }
+  .metric-card.purple .metric-value { color: var(--purple); }
+  .metric-card.blue .metric-value { color: var(--blue); }
+
+  .img-placeholder {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    border: 2px dashed #cbd5e1; border-radius: var(--radius);
+    padding: 40px 24px; text-align: center; margin: 20px 0;
+    position: relative; min-height: 200px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; transition: all 0.3s ease;
+  }
+  .img-placeholder:hover { border-color: var(--accent); background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%); }
+  .img-placeholder .icon { font-size: 36px; opacity: 0.5; }
+  .img-placeholder .ph-label { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+  .img-placeholder .ph-caption { font-size: 12.5px; color: #94a3b8; max-width: 500px; line-height: 1.5; }
+  .img-placeholder .ph-filename {
+    font-size: 11px; font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--accent); background: rgba(13,148,136,0.08);
+    padding: 3px 10px; border-radius: 4px; margin-top: 4px;
+  }
+
+  .fig-img { width: 100%; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow-md); margin: 20px 0 8px; }
+  .fig-caption { font-size: 13px; color: var(--text-secondary); text-align: center; font-style: italic; margin-bottom: 16px; }
+
+  ul, ol { margin: 12px 0; padding-left: 24px; }
+  li { margin-bottom: 8px; color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
+  li strong { color: var(--text); }
+
+  .formula {
+    background: #f8fafc; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 16px 20px; margin: 16px 0;
+    font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 14px; color: var(--text); overflow-x: auto; text-align: center; line-height: 2;
+  }
+
+  .discussion-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 16px; overflow: hidden; box-shadow: var(--shadow);
+  }
+  .discussion-card summary {
+    padding: 16px 20px; cursor: pointer; font-weight: 700; font-size: 15px;
+    color: var(--text); display: flex; align-items: center; gap: 10px;
+    transition: background 0.2s; list-style: none;
+  }
+  .discussion-card summary::-webkit-details-marker { display: none; }
+  .discussion-card summary::before {
+    content: '\25B8'; color: var(--accent); font-size: 14px;
+    transition: transform 0.2s; flex-shrink: 0;
+  }
+  .discussion-card[open] summary::before { transform: rotate(90deg); }
+  .discussion-card summary:hover { background: #f8fafc; }
+  .discussion-card .detail-body { padding: 0 20px 16px; font-size: 14.5px; color: var(--text-secondary); line-height: 1.7; }
+
+  .ref-table td:first-child { font-weight: 700; color: var(--accent-dark); white-space: nowrap; width: 200px; }
+
+  @media (max-width: 1024px) {
+    .toc-sidebar { transform: translateX(-100%); }
+    .toc-sidebar.open { transform: translateX(0); }
+    .menu-toggle { display: block; }
+    .main-content { margin-left: 0; padding: 24px 20px 60px; }
+    .hero { padding: 32px 24px; }
+    .hero h1 { font-size: 24px; }
+    .top-controls { top: 12px; right: 12px; gap: 6px; }
+    .ctrl-btn { padding: 5px 12px; font-size: 13px; }
+    .theme-btn { padding: 5px 10px; font-size: 14px; }
+  }
+
+  .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  .toc-sidebar .zh { display: inline; }
+  .toc-sidebar .en { display: none; }
+  body.en .toc-sidebar .zh { display: none; }
+  body.en .toc-sidebar .en { display: inline; }
+  [lang-en] { display: none; }
+  body.en [lang-zh] { display: none; }
+  body.en [lang-en] { display: revert; }
+  body.en .toc-sidebar a[lang-en] { display: block; }
+  body.en .section-header h2[lang-en] { display: block; }
+  body.en .subsection h3[lang-en] { display: flex; }
+
+  .katex { font-size: 1em !important; }
+  .math-block { overflow-x: auto; padding: 12px 0; text-align: center; }
+  code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 13px; color: var(--rose); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+  @media print {
+    .toc-sidebar, .top-controls, .menu-toggle { display: none !important; }
+    .main-content { margin-left: 0; max-width: 100%; padding: 20px; }
+    .hero { break-inside: avoid; }
+    section { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-controls">
+  <div class="ctrl-group">
+    <button class="theme-btn" id="btn-theme" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+      <span class="theme-icon-light">&#9790;</span>
+      <span class="theme-icon-dark">&#9788;</span>
+    </button>
+  </div>
+  <div class="ctrl-group">
+    <button class="ctrl-btn active" id="btn-zh" onclick="setLang('zh')">中文</button>
+    <button class="ctrl-btn" id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<button class="menu-toggle" onclick="toggleTOC()">☰</button>
+
+<nav class="toc-sidebar" id="toc">
+  <div class="toc-title"><span class="zh">目录</span><span class="en">Contents</span></div>
+  <a href="#primer"><span class="zh">📚 0. 预备知识</span><span class="en">📚 0. Primer</span></a>
+  <a href="#motivation"><span class="zh">1. 动机与定位</span><span class="en">1. Motivation</span></a>
+  <a href="#method"><span class="zh">2. Benchmark 构造</span><span class="en">2. Benchmark Design</span></a>
+  <a href="#setup"><span class="zh">3. 实验设置</span><span class="en">3. Experimental Setup</span></a>
+  <a href="#results"><span class="zh">4. 主结果</span><span class="en">4. Main Results</span></a>
+  <a href="#design"><span class="zh">5. Skill 设计因素</span><span class="en">5. Design Factors</span></a>
+  <a href="#failure"><span class="zh">6. 失败模式分析</span><span class="en">6. Failure Analysis</span></a>
+  <a href="#ecosystem"><span class="zh">7. Skill 生态</span><span class="en">7. Skill Ecosystem</span></a>
+  <a href="#discussion"><span class="zh">8. 讨论与思考</span><span class="en">8. Discussion</span></a>
+  <a href="#quickref"><span class="zh">9. 技术速查</span><span class="en">9. Quick Ref</span></a>
+  <a href="#tex-findings"><span class="zh">⭐ 10. tex 源专属发现</span><span class="en">⭐ 10. Tex-only Findings</span></a>
+</nav>
+
+<div class="main-content">
+
+  <header class="hero fade-in">
+    <h1 lang-zh>SkillsBench：系统性测量 Agent Skill 到底起多大作用</h1>
+    <h1 lang-en>SkillsBench: Benchmarking How Well Agent Skills Work Across Diverse Tasks</h1>
+    <div class="subtitle" lang-zh>
+      Xiangyi Li, Yimin Liu, Wenbo Chen, Shenghan Zheng 等（23 机构，105 贡献者）· 2026-03-16 · arXiv:2602.12670v3<br>
+      第一个把 Agent Skill 当成一等评测对象的 benchmark：84 任务 × 11 领域 × 3 Skill 条件 × 7 agent-model 配置 × 7,308 条轨迹。人工策划的 Skill 平均带来 +16.2pp，而模型自生成的 Skill 几乎无效甚至有害（–1.3pp）。
+    </div>
+    <div class="subtitle" lang-en>
+      Xiangyi Li, Yimin Liu, Wenbo Chen, Shenghan Zheng et al. (23 institutions, 105 contributors) · March 16, 2026 · arXiv:2602.12670v3<br>
+      The first benchmark that treats Agent Skills as first-class artifacts: 84 tasks × 11 domains × 3 Skill conditions × 7 agent-model configs × 7,308 trajectories. Curated Skills yield +16.2pp; self-generated Skills provide negligible or negative benefit (–1.3pp).
+    </div>
+    <div class="source-badge" lang-zh>📄 生成自 arXiv LaTeX 源码（paper-read L1 tex 流程）· figure 为矢量原件高 DPI 渲染 · 含 PDF 看不到的草稿发现（§10）</div>
+    <div class="source-badge" lang-en>📄 Generated from arXiv LaTeX source (paper-read L1 tex pipeline) · figures rendered from vector originals · includes draft-only findings invisible in PDF (§10)</div>
+    <div class="tag-row">
+      <span class="tag">Agent Skills</span>
+      <span class="tag">Benchmark</span>
+      <span class="tag">Procedural Knowledge</span>
+      <span class="tag">Claude Code</span>
+      <span class="tag">Gemini CLI</span>
+      <span class="tag">Codex CLI</span>
+    </div>
+  </header>
+
+  <!-- ========== 0. PRIMER ========== -->
+  <section id="primer" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">0</span>
+      <h2 lang-zh>📚 预备知识：Prompt / Skill / Harness</h2>
+      <h2 lang-en>📚 Primer: Prompt / Skill / Harness</h2>
+    </div>
+
+    <div class="box box-insight">
+      <strong lang-zh>读这篇论文前，先对齐三个经常被混淆的概念。</strong>
+      <strong lang-en>Before reading the paper, align three frequently-confused concepts.</strong>
+      <span lang-zh>它们<strong>不是并列关系</strong>，而是一层套一层的<strong>嵌套</strong>。</span>
+      <span lang-en>They're <strong>not siblings</strong> — they form a <strong>nested</strong> hierarchy.</span>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>0.1 一张图理解</h3>
+      <h3 lang-en>0.1 The One-Picture View</h3>
+
+      <div class="card card-accent">
+        <p lang-zh><strong>CPU / OS / 应用 类比</strong>：原始 LLM 像一颗没 RAM、没硬盘、没 I/O 的 CPU。上下文窗口是 <strong>RAM</strong>（快但小），外部数据库是 <strong>硬盘</strong>（大但慢），工具集成是 <strong>设备驱动</strong>，而 <strong>harness 就是操作系统</strong>。</p>
+        <p lang-en><strong>CPU / OS / App analogy</strong>: a raw LLM is a CPU with no RAM, no disk, no I/O. Context window = <strong>RAM</strong> (fast, small), external DB = <strong>disk</strong> (large, slow), tool integrations = <strong>device drivers</strong>, and <strong>harness = the operating system</strong>.</p>
+        <p lang-zh>围绕模型有三层同心的工程：<strong>Prompt engineering</strong>（起草给模型的指令）⊂ <strong>Context engineering</strong>（管理模型看到什么、何时看到）⊂ <strong>Harness engineering</strong>（前两者 + 工具编排、状态持久化、错误恢复、验证循环、安全执行、生命周期管理）。</p>
+        <p lang-en>Three concentric layers of engineering around the model: <strong>Prompt engineering</strong> (drafts instructions) ⊂ <strong>Context engineering</strong> (manages what the model sees and when) ⊂ <strong>Harness engineering</strong> (the above + tool orchestration, state persistence, error recovery, verification loops, safe execution, lifecycle management).</p>
+      </div>
+
+      <h4 lang-zh>一句话概括</h4>
+      <h4 lang-en>One-Liner Summary</h4>
+      <div class="compare-grid">
+        <div class="compare-card"><h5>Prompt</h5><p lang-zh>你这一次对话里写给模型的话。</p><p lang-en>What you type to the model in this one conversation.</p></div>
+        <div class="compare-card"><h5>Skill</h5><p lang-zh>打包好的、模型按需自动调用的"专家手册"。</p><p lang-en>A packaged "expert handbook" the model auto-invokes when relevant.</p></div>
+        <div class="compare-card"><h5>Harness</h5><p lang-zh>整个包裹模型的运行时系统，让它能真正"做事"。</p><p lang-en>The entire runtime system around the model that lets it actually "do things".</p></div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>0.2 速记卡</h3>
+      <h3 lang-en>0.2 Quick-Reference Card</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>概念</th><th lang-en>Concept</th>
+              <th lang-zh>回答的问题</th><th lang-en>Question It Answers</th>
+              <th lang-zh>生命周期</th><th lang-en>Lifecycle</th>
+              <th lang-zh>典型载体</th><th lang-en>Typical Vehicle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td lang-zh><strong>Prompt</strong></td><td lang-en><strong>Prompt</strong></td><td lang-zh>这一次我要模型做什么？</td><td lang-en>What do I want the model to do <em>this time</em>?</td><td lang-zh>一次对话</td><td lang-en>One conversation</td><td lang-zh>你打的字</td><td lang-en>The text you type</td></tr>
+            <tr><td lang-zh><strong>Skill</strong></td><td lang-en><strong>Skill</strong></td><td lang-zh>这类任务我要它怎么做？</td><td lang-en>How should it handle <em>this class of tasks</em>?</td><td lang-zh>跨会话复用</td><td lang-en>Reusable across sessions</td><td lang-zh><code>SKILL.md</code> 文件夹</td><td lang-en><code>SKILL.md</code> folder</td></tr>
+            <tr><td lang-zh><strong>Harness</strong></td><td lang-en><strong>Harness</strong></td><td lang-zh>整个系统如何让 agent 真正动起来？</td><td lang-en>How does the whole system let an agent actually <em>act</em>?</td><td lang-zh>持久基础设施</td><td lang-en>Persistent infrastructure</td><td lang-zh>Claude Code / Agent SDK / LangGraph</td><td lang-en>Claude Code / Agent SDK / LangGraph</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>0.3 Prompt（提示词）</h3>
+      <h3 lang-en>0.3 Prompt</h3>
+      <ul>
+        <li lang-zh>对话里<strong>一次性的自然语言指令</strong></li>
+        <li lang-en>A <strong>one-shot natural-language instruction</strong> in conversation</li>
+        <li lang-zh><strong>灵活、快速，但不跨会话保留</strong>，重复劳动多</li>
+        <li lang-en><strong>Flexible and fast, but doesn't persist</strong> — repetitive work</li>
+        <li lang-zh>适用：临时任务、头脑风暴、原型探索、一次性调整</li>
+        <li lang-en>Use for: one-off tasks, brainstorming, prototyping, ad-hoc tweaks</li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>0.4 Skill（技能）</h3>
+      <h3 lang-en>0.4 Skill</h3>
+      <ul>
+        <li lang-zh>Anthropic 2025-10 推出，解决"同一个 prompt 反反复复写"的痛点</li>
+        <li lang-en>Announced by Anthropic Oct 2025 to solve the "typing the same prompt over and over" pain</li>
+        <li lang-zh>一个<strong>可复用指令集</strong>：<code>SKILL.md</code> + 元数据 + 可选资源（脚本/模板/参考文档），丢到 <code>.claude/skills/</code> 即可</li>
+        <li lang-en>A <strong>reusable instruction package</strong>: <code>SKILL.md</code> + metadata + optional resources (scripts/templates/docs), dropped into <code>.claude/skills/</code></li>
+      </ul>
+
+      <div class="box box-key">
+        <strong lang-zh>关键机制：渐进式披露（progressive disclosure）</strong>
+        <strong lang-en>Key mechanism: progressive disclosure</strong>
+        <span lang-zh>Claude 启动时只看到 skill 的<strong>名字和描述</strong>，真正需要时才加载完整内容。<strong>这是 skill 和"把 prompt 存文本文件里"最大的区别——它不占 context 预算。</strong></span>
+        <span lang-en>At startup Claude only sees each skill's <strong>name and description</strong>; full contents load only when needed. <strong>This is what separates skills from "just put your prompt in a file" — they don't eat your context budget.</strong></span>
+      </div>
+
+      <div class="box box-insight">
+        <strong lang-zh>Skill vs Prompt 决策原则（Anthropic 官方）：</strong>
+        <strong lang-en>Skill vs Prompt decision rule (from Anthropic):</strong>
+        <span lang-zh>"如果你发现自己在多个对话里一遍遍敲同一段 prompt，那就该做一个 skill 了。"</span>
+        <span lang-en>"If you find yourself typing the same prompt across conversations, it's time to make a skill."</span>
+      </div>
+
+      <h4 lang-zh>MCP vs Skill（经常被搞混）</h4>
+      <h4 lang-en>MCP vs Skill (often conflated)</h4>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>&nbsp;</th><th lang-en>&nbsp;</th>
+              <th lang-zh>给 agent 的是</th><th lang-en>Provides to Agent</th>
+              <th lang-zh>例子（接 GitHub MCP）</th><th lang-en>Example (GitHub MCP)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td lang-zh><strong>MCP</strong></td><td lang-en><strong>MCP</strong></td><td lang-zh><strong>能力</strong>（"能做什么"）</td><td lang-en><strong>Capability</strong> ("what it can do")</td><td lang-zh>让 agent 能创建 PR、列 issue、搜仓库</td><td lang-en>Enables agent to create PRs, list issues, search repos</td></tr>
+            <tr><td lang-zh><strong>Skill</strong></td><td lang-en><strong>Skill</strong></td><td lang-zh><strong>专业度</strong>（"怎么做"）</td><td lang-en><strong>Expertise</strong> ("how to do it")</td><td lang-zh>告诉 agent 你们团队 PR 怎么组织、必含测试章节、按变更类型打 tag、标题引用 Linear ticket</td><td lang-en>Tells agent your team's PR conventions, required test sections, tag-by-change-type rule, Linear-ticket-in-title format</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p lang-zh><strong>两者互补，不替代。</strong></p>
+      <p lang-en><strong>Complementary, not a replacement.</strong></p>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>0.5 Harness（脚手架 / 载具）</h3>
+      <h3 lang-en>0.5 Harness</h3>
+      <ul>
+        <li lang-zh>2026 年初才被"正式命名"，但概念早就存在</li>
+        <li lang-en>Formally named only in early 2026, but the concept has been around</li>
+        <li lang-zh>包裹 LLM 的<strong>完整软件基础设施</strong>：编排循环、工具、记忆、上下文管理、状态持久化、错误处理、护栏</li>
+        <li lang-en>The <strong>complete software infra</strong> wrapping an LLM: orchestration loop, tools, memory, context management, state persistence, error handling, guardrails</li>
+        <li lang-zh>Anthropic 官方："Claude Code SDK <strong>就是</strong>驱动 Claude Code 的 agent harness。"</li>
+        <li lang-en>Anthropic: "The Claude Code SDK <strong>is</strong> the agent harness that powers Claude Code."</li>
+        <li lang-zh>LangChain 经典公式：<strong>"如果你不是那个模型，那你就是 harness。"</strong></li>
+        <li lang-en>LangChain's axiom: <strong>"If you're not the model, you're the harness."</strong></li>
+      </ul>
+
+      <div class="box box-note">
+        <strong lang-zh>为什么需要 harness？</strong>
+        <strong lang-en>Why do we need a harness?</strong>
+        <span lang-zh>因为 LLM 本质<strong>无状态</strong>：每个新会话都从零开始。Harness 管理上下文压缩、工具分发、会话持久化、进度追踪、验证循环、错误恢复、安全执行。</span>
+        <span lang-en>Because LLMs are fundamentally <strong>stateless</strong>: every session starts from scratch. The harness manages compaction, tool dispatch, session persistence, progress tracking, verification loops, error recovery, and safe execution.</span>
+      </div>
+
+      <div class="box box-warn">
+        <strong lang-zh>反直觉但重要的洞察：Harness 会被"削薄"</strong>
+        <strong lang-en>Counter-intuitive but important: harnesses get <em>thinner</em> over time</strong>
+        <span lang-zh>建筑脚手架是临时设施，让工人搭建本来够不到的楼层，但它自己不是楼——楼建完就拆。随着模型变强，<strong>harness 的复杂度应该下降</strong>。Manus 在 6 个月里被重写 5 次，每次都在<strong>移除</strong>复杂度——复杂的工具定义变成了通用 shell 执行。</span>
+        <span lang-en>Scaffolding is temporary — it lets workers reach floors they couldn't otherwise, but it isn't the building, and it comes down when the building is done. As models get stronger, <strong>harness complexity should decrease</strong>. Manus was rewritten 5 times in 6 months, each time <strong>removing</strong> complexity — bespoke tool definitions became a generic shell exec.</span>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>0.6 本论文在这个三层框架中的位置</h3>
+      <h3 lang-en>0.6 Where This Paper Sits in the Three-Layer Frame</h3>
+      <p lang-zh>论文 Figure 1 提出了对应的类比：<strong>CPUs（模型）+ OS（agent harness）+ Applications（Skills）</strong>。</p>
+      <p lang-en>Paper's Figure 1 proposes the matching analogy: <strong>CPUs (models) + OS (agent harness) + Applications (Skills)</strong>.</p>
+
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5 lang-zh>🎯 研究对象</h5><h5 lang-en>🎯 Research Target</h5>
+          <p lang-zh>"applications" 层的 <strong>Skill</strong>。</p>
+          <p lang-en>The <strong>Skill</strong> layer — "applications".</p>
+        </div>
+        <div class="compare-card">
+          <h5 lang-zh>🔀 必须跨 harness 评测</h5><h5 lang-en>🔀 Must Test Across Harnesses</h5>
+          <p lang-zh>同 Skill 在 Claude Code / Gemini CLI / Codex CLI 下效果不同（§4.1.2）——<strong>"With Skill" 不能当单一条件</strong>。</p>
+          <p lang-en>Same Skill performs differently across Claude Code / Gemini CLI / Codex CLI (§4.1.2) — <strong>"With Skill" is NOT a single condition</strong>.</p>
+        </div>
+        <div class="compare-card">
+          <h5 lang-zh>❌ 让模型"自己回忆"做法 = 不行</h5><h5 lang-en>❌ Asking the Model to "Recall" Doesn't Work</h5>
+          <p lang-zh>Self-Gen 做法 = 用 prompt 让模型<strong>自问自答</strong>，先写出"这类任务该怎么做"的 Skill，再解题。结果：<strong>吐不出来</strong>（–1.3pp）。模型隐约知道"要用 pandas"这种方向性知识，但<strong>具体 API、参数、边界条件全写不出</strong>。结论：<strong>"怎么做"的 know-how 不能靠问 prompt 挤出来，必须人工写。</strong></p>
+          <p lang-en>Self-Gen = prompting the model to <strong>ask itself</strong> how to do this task class, write a Skill, then solve. Result: <strong>nothing usable comes out</strong> (–1.3pp). The model vaguely knows "use pandas" but can't produce <strong>specific APIs, parameters, or edge cases</strong>. Takeaway: <strong>procedural know-how can't be squeezed out by prompting — it has to be human-written.</strong></p>
+        </div>
+        <div class="compare-card">
+          <h5 lang-zh>🏗️ Harness-aware 的重要性</h5><h5 lang-en>🏗️ Harness-Awareness Matters</h5>
+          <p lang-zh>Claude Code 原生支持 Skill → 效果最好；Codex "acknowledge but ignore" → Skill 被浪费。</p>
+          <p lang-en>Claude Code has native Skill integration → best efficacy; Codex "acknowledges but ignores" → Skills wasted.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 1. MOTIVATION ========== -->
+  <section id="motivation" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">1</span>
+      <h2 lang-zh>动机与定位</h2>
+      <h2 lang-en>Motivation & Positioning</h2>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>1.1 Skill 生态在爆炸，但无人量化</h3>
+      <h3 lang-en>1.1 The Skill Ecosystem Is Booming — But Unmeasured</h3>
+      <p lang-zh>LLM 从"文本生成器"进化为 autonomous agent，代表是 Claude Code / Gemini CLI / Codex CLI 等 agent-CLI。基础模型 <strong>通用但缺 procedural knowledge</strong>；fine-tuning 代价高、伤通用性。<strong>Agent Skill</strong> 是一个结构化 package（<code>SKILL.md</code> + 脚本 + 模板 + 参考资料 + 验证逻辑），在 inference 时挂载生效。生态发展极快：作者去重后得到 <strong>47,150 条 Skill</strong>（另一口径 136 天累计 84,192 条，峰值日增 18,904）。</p>
+      <p lang-en>LLMs have evolved into agents — exemplified by Claude Code, Gemini CLI, Codex CLI. Foundation models have broad capability but lack <strong>procedural knowledge</strong>; fine-tuning is expensive. <strong>Agent Skills</strong> are structured packages (<code>SKILL.md</code> + scripts + templates) that augment behavior at inference time. The ecosystem is exploding: <strong>47,150 unique Skills</strong> after dedup (84,192 cumulative in 136 days, peak daily 18,904).</p>
+
+      <div class="metrics-row">
+        <div class="metric-card"><div class="metric-value">47,150</div><div class="metric-label" lang-zh>去重 Skill 总数</div><div class="metric-label" lang-en>Unique Skills</div></div>
+        <div class="metric-card green"><div class="metric-value">84,192</div><div class="metric-label" lang-zh>136 天累计</div><div class="metric-label" lang-en>Cumulative (136d)</div></div>
+        <div class="metric-card amber"><div class="metric-value">18,904</div><div class="metric-label" lang-zh>峰值日增</div><div class="metric-label" lang-en>Peak Daily</div></div>
+        <div class="metric-card rose"><div class="metric-value">6.2/12</div><div class="metric-label" lang-zh>生态质量均值</div><div class="metric-label" lang-en>Ecosystem Quality</div></div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>1.2 现有 benchmark 不量化增强</h3>
+      <h3 lang-en>1.2 Existing Benchmarks Don't Quantify Augmentation</h3>
+      <p lang-zh>AgentBench、SWE-bench、OSWorld、WebArena、τ-bench 等 agent benchmark 问的是 <strong>"模型 X 在任务 T 上能做到多好"</strong>，从不问 <strong>"Skill Y 能带来多少增益？什么情况下反而拖累？"</strong>。这是核心空白。</p>
+      <p lang-en>Existing agent benchmarks answer <strong>"How well can model X do task T?"</strong> but never <strong>"How much does Skill Y improve task T? When does Y hurt?"</strong> This is the core gap.</p>
+
+      <div class="box box-key">
+        <strong lang-zh>作者的原问：</strong><strong lang-en>Authors' core questions:</strong>
+        <span lang-zh>(1) Skill 相比 baseline 能带来多少增益？(2) Skill 的哪些成分贡献最大？(3) Skill 什么时候会失效？</span>
+        <span lang-en>(1) How much do Skills help over baseline? (2) Which components drive gains? (3) When do Skills fail?</span>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>1.3 本文贡献：Skill 作为一等评测对象</h3>
+      <h3 lang-en>1.3 Contribution: Skills as First-Class Artifacts</h3>
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5 lang-zh>① Skill-centric 评测框架</h5><h5 lang-en>① Skill-centric Framework</h5>
+          <p lang-zh>84 任务 × 11 领域，三条件（No / With / Self-Gen）+ 确定性 pytest verifier + 全轨迹 log。</p>
+          <p lang-en>84 tasks × 11 domains, 3 conditions + deterministic pytest + full trajectory logging.</p>
+        </div>
+        <div class="compare-card">
+          <h5 lang-zh>② 7,308 轨迹大规模实证</h5><h5 lang-en>② 7,308-Trajectory Empirical Study</h5>
+          <p lang-zh>7 agent-model 配置（Claude Code ×4, Gemini CLI ×2, Codex ×1），首次给出系统性证据。</p>
+          <p lang-en>7 agent-model configs — first systematic evidence on Skill efficacy, variance, and failure modes.</p>
+        </div>
+      </div>
+
+      <div class="img-placeholder" id="ph-fig1">
+        <div class="icon">📊</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 1: Agent 架构栈 + 7 配置分辨率（label: fig:architecture）</span>
+          <span lang-en>Figure 1: Architecture stack + 7-config resolution rates (label: fig:architecture)</span>
+        </div>
+        <div class="ph-caption" lang-zh>Agent 系统三层栈："CPU（模型）+ OS（harness）+ Applications（Skills）"。柱图展示 7 配置在 3 条件下通过率：curated Skill（米色）一致提升，self-generated（琥珀色）几乎无效。</div>
+        <div class="ph-caption" lang-en>3-layer stack: "CPUs (models) + OS (harness) + apps (Skills)". Bars show 7 configs × 3 conditions: curated Skills (beige) consistently help; self-generated (amber) gives negligible benefit.</div>
+        <div class="ph-filename">figures/fig01_architecture.png</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 2. METHOD ========== -->
+  <section id="method" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">2</span>
+      <h2 lang-zh>Benchmark 构造</h2>
+      <h2 lang-en>Benchmark Design</h2>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>2.1 Skill 的四条形式化标准</h3>
+      <h3 lang-en>2.1 Four Criteria Defining a Skill</h3>
+
+      <div class="box box-note">
+        <strong lang-zh>澄清：这四条不是"文件格式要求"。</strong>
+        <strong lang-en>Clarification: these four criteria are NOT a file-format spec.</strong>
+        <span lang-zh>Skill 概念和文件格式（<code>SKILL.md</code> + YAML frontmatter + 可选 <code>scripts/</code>/<code>references/</code>）由 <strong>Anthropic 2025-10 的 Agent Skills spec</strong> 规定（见 §0.4）；而这四条是<strong>论文作者为 benchmark 写的 operational definition</strong> —— "什么对象才被我们认可为 Skill"。作者划这条线是为了<strong>排除伪 Skill</strong>（tool 文档 / few-shot prompt 模板 / RAG 素材），否则 benchmark 就测不到真东西。类似心理学研究者必须给"焦虑"写可测量的判定标准，不然实验做不了。</span>
+        <span lang-en>The Skill concept and file format (<code>SKILL.md</code> + YAML frontmatter + optional <code>scripts/</code>/<code>references/</code>) come from <strong>Anthropic's Oct-2025 Agent Skills spec</strong> (see §0.4). These four criteria are the <strong>authors' operational definition for the benchmark</strong> — "what qualifies as a Skill for us to evaluate". The line is drawn to <strong>exclude pseudo-Skills</strong> (tool docs / few-shot templates / RAG corpora), otherwise the benchmark can't measure the real thing. Analogous to how psychology researchers must give "anxiety" a measurable operational definition — otherwise no experiment is possible.</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>#</th><th lang-en>#</th>
+              <th lang-zh>标准</th><th lang-en>Criterion</th>
+              <th lang-zh>含义</th><th lang-en>Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td lang-zh>1</td><td lang-en>1</td><td lang-zh><strong>Procedural content</strong></td><td lang-en><strong>Procedural content</strong></td><td lang-zh>"How-to" 型（流程/SOP）</td><td lang-en>How-to guidance, not facts</td></tr>
+            <tr><td lang-zh>2</td><td lang-en>2</td><td lang-zh><strong>Task-class applicability</strong></td><td lang-en><strong>Task-class applicability</strong></td><td lang-zh>一类问题，不是单例</td><td lang-en>A class, not a single instance</td></tr>
+            <tr><td lang-zh>3</td><td lang-en>3</td><td lang-zh><strong>Structured components</strong></td><td lang-en><strong>Structured components</strong></td><td lang-zh><code>SKILL.md</code> + 脚本/模板</td><td lang-en><code>SKILL.md</code> + optional resources</td></tr>
+            <tr><td lang-zh>4</td><td lang-en>4</td><td lang-zh><strong>Portability</strong></td><td lang-en><strong>Portability</strong></td><td lang-zh>纯文件系统，跨 harness</td><td lang-en>Filesystem-based, portable</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p lang-zh><strong>显式排除</strong>：system prompt（无结构）、few-shot（描述性）、RAG（事实）、tool doc（能力描述）。Skill 是唯一同时具备"模块化 + 过程性 + 可执行资源 + 跨模型"四项的范式。</p>
+      <p lang-en><strong>Explicitly excludes</strong>: system prompts, few-shot (declarative), RAG (factual), tool docs. Skills uniquely combine modularity + procedural guidance + executable resources + cross-model portability.</p>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>2.2 Task 规范：4 组件</h3>
+      <h3 lang-en>2.2 Task Spec: 4 Components</h3>
+
+      <div class="box box-note">
+        <strong lang-zh>澄清：这 4 组件不是作者发明的，但其中一条约束才是论文真正的方法学贡献。</strong>
+        <strong lang-en>Clarification: the 4 components aren't invented here, but one constraint within them IS the paper's real methodological contribution.</strong>
+        <span lang-zh>这 4 组件（Instruction / Environment / Oracle / Verifier）沿用了 <strong>Harbor framework</strong> —— Terminal-Bench 的底层 containerized benchmark framework。SkillsBench 相对 Terminal-Bench 的<strong>方法学关键差异</strong>只多了一条小约束：<strong>Instruction 不能写明该用哪个 Skill</strong>（见 §2.4 "Skill Generality"）—— agent 必须自己从 <code>skills/</code> 目录里<strong>发现、判断是否调用、怎么调用</strong>。这条约束把"Skill 效果"从 instruction-following 变成了<strong>可测量的独立变量</strong>，是 paired 评测（with-Skill vs no-Skill）成立的基础。<br><br>题外话，<strong>Oracle</strong>（预言机）在这里是算法设计的术语，不是"神谕"—— 指"存在即可证明任务可解"的参考解，用来保证"至少有一条路径能 pass verifier"。</span>
+        <span lang-en>The 4 components (Instruction / Environment / Oracle / Verifier) are inherited from the <strong>Harbor framework</strong> — the containerized-benchmark framework underlying Terminal-Bench. SkillsBench's <strong>methodological delta</strong> over Terminal-Bench is just one extra constraint: <strong>the Instruction must NOT reference which Skill to use</strong> (§2.4 "Skill Generality") — the agent must <strong>discover, decide whether to invoke, and figure out how to use</strong> Skills from the <code>skills/</code> directory on its own. This constraint turns "Skill efficacy" from instruction-following into a <strong>measurable independent variable</strong>, which is what makes the paired evaluation (with-Skill vs. no-Skill) meaningful.<br><br>Side note: <strong>Oracle</strong> here is the algorithm-design term (not "divine pronouncement") — a reference solution whose existence proves the task is solvable, guaranteeing at least one path passes the verifier.</span>
+      </div>
+
+      <div class="compare-grid">
+        <div class="compare-card"><h5>Instruction</h5><p lang-zh>人类写的 NL 描述。<strong>不能写明该用哪个 Skill</strong>。</p><p lang-en>Human-written. <strong>Must NOT reference which Skill</strong>.</p></div>
+        <div class="compare-card"><h5>Environment</h5><p lang-zh>Docker + 数据 + <code>skills/</code> 子目录。</p><p lang-en>Docker + data + <code>skills/</code> subdir.</p></div>
+        <div class="compare-card"><h5>Solution (Oracle)</h5><p lang-zh>参考解，100% 通过 verifier。</p><p lang-en>Reference impl, 100% test pass.</p></div>
+        <div class="compare-card"><h5>Verifier</h5><p lang-zh>确定性 pytest + tolerance，<strong>无 LLM-as-judge</strong>。</p><p lang-en>Deterministic pytest + tolerances, <strong>no LLM-as-judge</strong>.</p></div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>2.3 三阶段 Pipeline</h3>
+      <h3 lang-en>2.3 Three-Phase Pipeline</h3>
+
+      <div class="img-placeholder" id="ph-fig2">
+        <div class="icon">🔧</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 2: SkillsBench 三阶段 pipeline（label: fig:pipeline）</span>
+          <span lang-en>Figure 2: SkillsBench three-phase pipeline (label: fig:pipeline)</span>
+        </div>
+        <div class="ph-caption" lang-zh>Phase 1 聚合 3 来源 Skill → 47,150 去重；Phase 2 自动 + 人工 5 项 review → 84 任务 × 11 领域；Phase 3 三条件 × 三 harness → 7,308 轨迹。</div>
+        <div class="ph-caption" lang-en>Phase 1: aggregate 3 sources → 47,150; Phase 2: automated + 5-criterion human review → 84 tasks × 11 domains; Phase 3: 3 conditions × 3 harnesses → 7,308 trajectories.</div>
+        <div class="ph-filename">figures/fig02_pipeline.png</div>
+      </div>
+
+      <div class="box box-tex">
+        <strong lang-zh>tex 源发现：</strong><strong lang-en>Tex-source finding:</strong>
+        <span lang-zh>pipeline.pdf 的 caption 里用的是 "+12.66pp average improvement"，但正文和 abstract 都说 "+16.2pp"。这是草稿残留的不一致，PDF 里能看到但不能反查。</span>
+        <span lang-en>Pipeline.pdf caption uses "+12.66pp", but prose/abstract consistently say "+16.2pp" — a draft-residue inconsistency invisible to pure PDF analysis.</span>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>2.4 领域与难度</h3>
+      <h3 lang-en>2.4 Domains & Difficulty</h3>
+
+      <div class="box box-note">
+        <strong lang-zh>澄清：task / trial / dataset 的区分（容易误读）</strong>
+        <strong lang-en>Clarification: task vs. trial vs. dataset (common confusion)</strong>
+        <ul>
+          <li lang-zh><strong>84 tasks 不是 dataset 大小</strong>——每个 task = <strong>一个具体、单一的任务实例</strong>（例：<code>mario-coin-counting</code> = "<strong>这一个</strong>视频里数金币"；<code>sec-financial-report</code> = "<strong>这一次</strong> Q2 vs Q3 2025 SEC 对比"）。不是 "给你 1000 张发票算平均"这种。</li>
+          <li lang-en><strong>84 tasks is NOT a dataset size</strong> — each task = <strong>one concrete, single-instance problem</strong> (e.g. <code>mario-coin-counting</code> = "count coins in <strong>this specific</strong> video"; <code>sec-financial-report</code> = "<strong>this specific</strong> Q2 vs. Q3 2025 SEC comparison"). Not "1000 invoices, report average accuracy".</li>
+          <li lang-zh>每个 task 下 agent 跑 <strong>5 次独立 trial</strong>，binary reward 取均值；总轨迹 84 × 5 × 3 条件 ≈ 每 config 1,092 runs（Table 7）。</li>
+          <li lang-en>Each task runs <strong>5 independent trials</strong>, mean of binary rewards is task score; total ≈ 84 × 5 × 3 conditions ≈ 1,092 runs per config (Table 7).</li>
+          <li lang-zh><strong>84 看起来少是刻意的</strong>：每个 task 是<strong>多步、domain-specific 的真实工作流</strong>（Extreme 级 26 个，人类 &gt;4h），构建成本极高。322 候选 → 86 通过（26.7% 接受率）。论文 trade-off = <strong>质量 / 现实性</strong>而非<strong>统计规模</strong>。</li>
+          <li lang-en><strong>84 looking small is intentional</strong>: each task is a <strong>multi-step, domain-specific real-world workflow</strong> (26 Extreme tasks need &gt;4h from a human expert); 322 submissions yielded only 86 accepted (26.7% rate). Trade-off = <strong>quality / realism</strong> over <strong>statistical scale</strong>.</li>
+          <li lang-zh><strong>规模对比</strong>：MMLU ~15k 题 / SWE-bench ~2.3k issue / BigCodeBench ~1.1k → SkillsBench 是"<strong>单元更重、数量更少</strong>"的类型。</li>
+          <li lang-en><strong>Scale comparison</strong>: MMLU ~15k questions / SWE-bench ~2.3k issues / BigCodeBench ~1.1k → SkillsBench is the "<strong>heavier units, fewer count</strong>" flavor.</li>
+        </ul>
+      </div>
+
+      <div class="img-placeholder" id="ph-fig3">
+        <div class="icon">📚</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 3: 11 领域任务分布（label: fig:category_distribuion）</span>
+          <span lang-en>Figure 3: Task distribution across 11 domains (label: fig:category_distribuion)</span>
+        </div>
+        <div class="ph-caption" lang-zh>SWE (16) / Office (14) / Natural Science (12) / Media (11) / Cyber (8) / Finance (8) / Robotics (5) / Mfg (3) / Energy (3) / Math (2) / Healthcare (2)。</div>
+        <div class="ph-caption" lang-en>SWE (16) / Office (14) / Natural Sci (12) / Media (11) / Cyber (8) / Finance (8) / Robotics (5) / Mfg (3) / Energy (3) / Math (2) / Healthcare (2).</div>
+        <div class="ph-filename">figures/fig03_category_distribution.png</div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>Difficulty</th><th lang-en>Difficulty</th>
+              <th lang-zh>任务数</th><th lang-en>Tasks</th>
+              <th lang-zh>人类耗时</th><th lang-en>Human Time</th>
+              <th lang-zh>Max rounds</th><th lang-en>Max rounds</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td lang-zh><strong>Core</strong></td><td lang-en><strong>Core</strong></td><td lang-zh>17 (19.8%)</td><td lang-en>17 (19.8%)</td><td lang-zh>&lt; 60 min</td><td lang-en>&lt; 60 min</td><td lang-zh>10</td><td lang-en>10</td></tr>
+            <tr><td lang-zh><strong>Extended</strong></td><td lang-en><strong>Extended</strong></td><td lang-zh>43 (50.0%)</td><td lang-en>43 (50.0%)</td><td lang-zh>1–4 h</td><td lang-en>1–4 h</td><td lang-zh>30</td><td lang-en>30</td></tr>
+            <tr><td lang-zh><strong>Extreme</strong></td><td lang-en><strong>Extreme</strong></td><td lang-zh>26 (30.2%)</td><td lang-en>26 (30.2%)</td><td lang-zh>&gt; 4 h</td><td lang-en>&gt; 4 h</td><td lang-zh>50</td><td lang-en>50</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 3. SETUP ========== -->
+  <section id="setup" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">3</span>
+      <h2 lang-zh>实验设置</h2>
+      <h2 lang-en>Experimental Setup</h2>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>3.1 7 agent-model 配置 & 3 种条件</h3>
+      <h3 lang-en>3.1 7 Configs × 3 Conditions</h3>
+
+      <div class="flow">
+        <div class="flow-row">
+          <div class="flow-box"><strong>No Skills</strong><small lang-zh>只 instruction</small><small lang-en>Instruction only</small></div>
+          <div class="flow-arrow">vs</div>
+          <div class="flow-box highlight"><strong>With Skills</strong><small lang-zh>完整 skills/ 挂载</small><small lang-en>Full skills/ dir</small></div>
+          <div class="flow-arrow">vs</div>
+          <div class="flow-box amber"><strong>Self-Generated</strong><small lang-zh>agent 自写 1–5 skill</small><small lang-en>Agent writes 1–5 skills first</small></div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>Harness</th><th lang-en>Harness</th>
+              <th lang-zh>Model</th><th lang-en>Model</th>
+              <th lang-zh>Runs</th><th lang-en>Runs</th>
+              <th lang-zh>Self-Gen</th><th lang-en>Self-Gen</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td lang-zh>Claude Code</td><td lang-en>Claude Code</td><td lang-zh>Opus 4.5</td><td lang-en>Opus 4.5</td><td lang-zh>1092</td><td lang-en>1092</td><td lang-zh>✓</td><td lang-en>✓</td></tr>
+            <tr><td lang-zh>Claude Code</td><td lang-en>Claude Code</td><td lang-zh>Opus 4.6</td><td lang-en>Opus 4.6</td><td lang-zh>1260</td><td lang-en>1260</td><td lang-zh>✓</td><td lang-en>✓</td></tr>
+            <tr><td lang-zh>Claude Code</td><td lang-en>Claude Code</td><td lang-zh>Sonnet 4.5</td><td lang-en>Sonnet 4.5</td><td lang-zh>1092</td><td lang-en>1092</td><td lang-zh>✓</td><td lang-en>✓</td></tr>
+            <tr><td lang-zh>Claude Code</td><td lang-en>Claude Code</td><td lang-zh>Haiku 4.5</td><td lang-en>Haiku 4.5</td><td lang-zh>1092</td><td lang-en>1092</td><td lang-zh>✓</td><td lang-en>✓</td></tr>
+            <tr><td lang-zh>Gemini CLI</td><td lang-en>Gemini CLI</td><td lang-zh>Gemini 3 Pro</td><td lang-en>Gemini 3 Pro</td><td lang-zh>840</td><td lang-en>840</td><td lang-zh>✗</td><td lang-en>✗</td></tr>
+            <tr><td lang-zh>Gemini CLI</td><td lang-en>Gemini CLI</td><td lang-zh>Gemini 3 Flash</td><td lang-en>Gemini 3 Flash</td><td lang-zh>840</td><td lang-en>840</td><td lang-zh>✗</td><td lang-en>✗</td></tr>
+            <tr><td lang-zh>Codex CLI</td><td lang-en>Codex CLI</td><td lang-zh>GPT-5.2</td><td lang-en>GPT-5.2</td><td lang-zh>1092</td><td lang-en>1092</td><td lang-zh>✓</td><td lang-en>✓</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>3.2 Metric: Pass Rate + Normalized Gain</h3>
+      <h3 lang-en>3.2 Metrics: Pass Rate + Normalized Gain</h3>
+      <div class="math-block">$$g = \frac{\text{pass}_\text{skill} - \text{pass}_\text{vanilla}}{1 - \text{pass}_\text{vanilla}}$$</div>
+      <div class="box box-warn">
+        <span lang-zh>$g$ 有 <strong>ceiling effect</strong>：90→95% 和 10→55% 都得 $g=0.5$，所以作者<strong>同时报 $\Delta_\text{abs}$ 和 $g$</strong>。</span>
+        <span lang-en>$g$ has a <strong>ceiling effect</strong>: 90→95% and 10→55% both give $g=0.5$. Authors report <strong>both $\Delta_\text{abs}$ and $g$</strong>.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 4. RESULTS ========== -->
+  <section id="results" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">4</span>
+      <h2 lang-zh>主结果</h2>
+      <h2 lang-en>Main Results</h2>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>4.1 Table 3：7 配置 × 3 条件</h3>
+      <h3 lang-en>4.1 Table 3: 7 configs × 3 conditions</h3>
+
+      <div class="box box-note">
+        <strong lang-zh>符号 Legend（Table 3 用到的三个指标）</strong>
+        <strong lang-en>Legend for the three metrics in Table 3</strong>
+        <ul>
+          <li lang-zh><strong>Δ<sub>S</sub></strong> (<strong>S</strong>kills improvement) = <code>With-Skill − No-Skill</code>，curated Skill 的<strong>绝对</strong>增益（pp）</li>
+          <li lang-en><strong>Δ<sub>S</sub></strong> (<strong>S</strong>kills improvement) = <code>With-Skill − No-Skill</code>, <strong>absolute</strong> gain of curated Skills (pp)</li>
+          <li lang-zh><strong>Δ<sub>G</sub></strong> (self-<strong>G</strong>enerated improvement) = <code>Self-Gen − No-Skill</code>，Self-Gen Skill 的<strong>绝对</strong>增益；<strong>负数 = 比不用 Skill 还差</strong></li>
+          <li lang-en><strong>Δ<sub>G</sub></strong> (self-<strong>G</strong>enerated improvement) = <code>Self-Gen − No-Skill</code>, <strong>absolute</strong> gain of self-generated Skills; <strong>negative = worse than no Skill</strong></li>
+          <li lang-zh><strong>g</strong> (normalized gain, Hake 1998) = <code>(With-Skill − No-Skill) / (1 − No-Skill)</code>，<strong>比例化</strong>增益（"距离 100% 走了多少"），用来中性化 baseline 差异</li>
+          <li lang-en><strong>g</strong> (normalized gain, Hake 1998) = <code>(With-Skill − No-Skill) / (1 − No-Skill)</code>, <strong>proportional</strong> gain ("how far toward 100%"), normalizes away baseline differences</li>
+        </ul>
+        <span lang-zh>💡 <strong>可读性小吐槽</strong>：论文把 Δ<sub>G</sub> 的定义藏在 <strong>Appendix G Table 10 caption</strong> 里，主表 Table 3 未定义 —— 这是 reviewer 可挑的一个小点（关键符号应该首次出现时就定义）。</span>
+        <span lang-en>💡 <strong>Minor nit</strong>: the paper defines Δ<sub>G</sub> only in <strong>Appendix G Table 10's caption</strong> — not here in Table 3 where it first appears. Key symbols should be defined on first use; a small readability point for reviewers.</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th lang-zh>Harness</th><th lang-en>Harness</th>
+              <th lang-zh>Model</th><th lang-en>Model</th>
+              <th lang-zh class="num">No Skill</th><th lang-en class="num">No Skill</th>
+              <th lang-zh class="num">With Skill</th><th lang-en class="num">With Skill</th>
+              <th lang-zh class="num">g (%)</th><th lang-en class="num">g (%)</th>
+              <th lang-zh class="num">Self-Gen</th><th lang-en class="num">Self-Gen</th>
+              <th lang-zh class="num">Δ<sub>G</sub></th><th lang-en class="num">Δ<sub>G</sub></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td lang-zh>Gemini CLI</td><td lang-en>Gemini CLI</td><td lang-zh>Gemini 3 Flash</td><td lang-en>Gemini 3 Flash</td><td lang-zh class="num">31.3</td><td lang-en class="num">31.3</td><td lang-zh class="num"><strong>48.7</strong></td><td lang-en class="num"><strong>48.7</strong></td><td lang-zh class="num">25.3</td><td lang-en class="num">25.3</td><td lang-zh class="num">–</td><td lang-en class="num">–</td><td lang-zh class="num">–</td><td lang-en class="num">–</td></tr>
+            <tr><td lang-zh>Claude Code</td><td lang-en>Claude Code</td><td lang-zh>Opus 4.5</td><td lang-en>Opus 4.5</td><td lang-zh class="num">22.0</td><td lang-en class="num">22.0</td><td lang-zh class="num">45.3</td><td lang-en class="num">45.3</td><td lang-zh class="num"><strong>29.9</strong></td><td lang-en class="num"><strong>29.9</strong></td><td lang-zh class="num">21.6</td><td lang-en class="num">21.6</td><td lang-zh class="num">–0.5</td><td lang-en class="num">–0.5</td></tr>
+            <tr><td lang-zh>Codex</td><td lang-en>Codex</td><td lang-zh>GPT-5.2</td><td lang-en>GPT-5.2</td><td lang-zh class="num">30.6</td><td lang-en class="num">30.6</td><td lang-zh class="num">44.7</td><td lang-en class="num">44.7</td><td lang-zh class="num">20.3</td><td lang-en class="num">20.3</td><td lang-zh class="num">25.0</td><td lang-en class="num">25.0</td><td lang-zh class="num"><strong>–8.1</strong></td><td lang-en class="num"><strong>–8.1</strong></td></tr>
+            <tr><td lang-zh>Claude Code</td><td lang-en>Claude Code</td><td lang-zh>Opus 4.6</td><td lang-en>Opus 4.6</td><td lang-zh class="num">30.6</td><td lang-en class="num">30.6</td><td lang-zh class="num">44.5</td><td lang-en class="num">44.5</td><td lang-zh class="num">20.0</td><td lang-en class="num">20.0</td><td lang-zh class="num">32.0</td><td lang-en class="num">32.0</td><td lang-zh class="num"><strong>+2.0</strong></td><td lang-en class="num"><strong>+2.0</strong></td></tr>
+            <tr><td lang-zh>Gemini CLI</td><td lang-en>Gemini CLI</td><td lang-zh>Gemini 3 Pro</td><td lang-en>Gemini 3 Pro</td><td lang-zh class="num">27.6</td><td lang-en class="num">27.6</td><td lang-zh class="num">41.2</td><td lang-en class="num">41.2</td><td lang-zh class="num">18.8</td><td lang-en class="num">18.8</td><td lang-zh class="num">–</td><td lang-en class="num">–</td><td lang-zh class="num">–</td><td lang-en class="num">–</td></tr>
+            <tr><td lang-zh>Claude Code</td><td lang-en>Claude Code</td><td lang-zh>Sonnet 4.5</td><td lang-en>Sonnet 4.5</td><td lang-zh class="num">17.3</td><td lang-en class="num">17.3</td><td lang-zh class="num">31.8</td><td lang-en class="num">31.8</td><td lang-zh class="num">17.5</td><td lang-en class="num">17.5</td><td lang-zh class="num">15.2</td><td lang-en class="num">15.2</td><td lang-zh class="num">–2.5</td><td lang-en class="num">–2.5</td></tr>
+            <tr><td lang-zh>Claude Code</td><td lang-en>Claude Code</td><td lang-zh>Haiku 4.5</td><td lang-en>Haiku 4.5</td><td lang-zh class="num">11.0</td><td lang-en class="num">11.0</td><td lang-zh class="num">27.7</td><td lang-en class="num">27.7</td><td lang-zh class="num">18.8</td><td lang-en class="num">18.8</td><td lang-zh class="num">11.0</td><td lang-en class="num">11.0</td><td lang-zh class="num">0.0</td><td lang-en class="num">0.0</td></tr>
+            <tr style="background:#f0fdfa;"><td lang-zh><strong>Mean</strong></td><td lang-en><strong>Mean</strong></td><td lang-zh></td><td lang-en></td><td lang-zh class="num"><strong>24.3</strong></td><td lang-en class="num"><strong>24.3</strong></td><td lang-zh class="num"><strong>40.6</strong></td><td lang-en class="num"><strong>40.6</strong></td><td lang-zh class="num"><strong>21.5</strong></td><td lang-en class="num"><strong>21.5</strong></td><td lang-zh class="num"><strong>21.0</strong></td><td lang-en class="num"><strong>21.0</strong></td><td lang-zh class="num"><strong>–1.8</strong> ⚠️</td><td lang-en class="num"><strong>–1.8</strong> ⚠️</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="box box-tex">
+        <span lang-zh><strong>tex 源发现：</strong>Table 3 Mean 行的 Δ<sub>G</sub> 在 tex 里写的是 <strong>–1.8</strong>（最终版），但 abstract/Finding 3 全部说 "–1.3pp"。推测数据修订后（Codex –5.6 → –8.1、Opus 4.5 –0.4 → –0.5）忘了更新 Mean 行或正文。</span>
+        <span lang-en><strong>Tex-source finding:</strong> Table 3 Mean row Δ<sub>G</sub> says <strong>–1.8</strong> (final), but abstract/Finding 3 say "–1.3pp". After the data revision (Codex –5.6 → –8.1, Opus 4.5 –0.4 → –0.5) the Mean row or prose wasn't updated.</span>
+      </div>
+
+      <div class="metrics-row">
+        <div class="metric-card green"><div class="metric-value">+16.2pp</div><div class="metric-label" lang-zh>Curated 均值</div><div class="metric-label" lang-en>Curated avg</div></div>
+        <div class="metric-card rose"><div class="metric-value">–1.3pp</div><div class="metric-label" lang-zh>Self-Gen 均值（正文）</div><div class="metric-label" lang-en>Self-Gen (prose)</div></div>
+        <div class="metric-card"><div class="metric-value">48.7%</div><div class="metric-label" lang-zh>最佳绝对</div><div class="metric-label" lang-en>Best abs</div></div>
+        <div class="metric-card amber"><div class="metric-value">+23.3pp</div><div class="metric-label" lang-zh>最佳相对</div><div class="metric-label" lang-en>Best rel</div></div>
+      </div>
+
+      <h4 lang-zh>Finding 1–3（关于主结果的三条）</h4>
+      <h4 lang-en>Findings 1–3 (the three main-result findings)</h4>
+      <details class="discussion-card" open><summary lang-zh>Finding 1：Skill 有显著但方差大的增益（+13.6 ~ +23.3pp）</summary><summary lang-en>Finding 1: Large gain, high variance (+13.6 to +23.3pp)</summary><div class="detail-body"><p lang-zh>平均 +16.2pp，依赖具体 agent-model 组合，不存在"统一增益"。</p><p lang-en>Mean +16.2pp; depends strongly on specific config, no uniform benefit.</p></div></details>
+      <details class="discussion-card" open><summary lang-zh>Finding 2：最高绝对 ≠ 最高相对增益</summary><summary lang-en>Finding 2: Highest abs ≠ highest gain</summary><div class="detail-body"><p lang-zh>Flash+Gemini CLI 拿 48.7%，Opus 4.5+Claude Code 拿 +23.3pp。</p><p lang-en>Flash+Gemini tops absolute; Opus 4.5+Claude Code tops relative.</p></div></details>
+      <details class="discussion-card" open><summary lang-zh>Finding 3：Self-Gen 几乎无效（–1.3pp）</summary><summary lang-en>Finding 3: Self-Gen ≈ useless (–1.3pp)</summary><div class="detail-body"><p lang-zh>只有 Opus 4.6 +2.0pp；GPT-5.2 甚至 <strong>–8.1pp</strong>。有效 Skill <strong>需要 human curation</strong>。</p><p lang-en>Only Opus 4.6 helps; GPT-5.2 hurts <strong>–8.1pp</strong>. Effective Skills <strong>require human curation</strong>.</p></div></details>
+    </div>
+
+
+    <div class="subsection">
+      <h3 lang-zh>4.2 领域异质性</h3>
+      <h3 lang-en>4.2 Domain Heterogeneity</h3>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>Finding 4：领域异质（Healthcare +51.9pp / SWE +4.5pp）</summary>
+        <summary lang-en>Finding 4: Domain heterogeneity (Healthcare +51.9pp / SWE +4.5pp)</summary>
+        <div class="detail-body">
+          <p lang-zh>论文原话："Skill benefit varies widely across domains"。11 个领域的 Δ 范围跨度 &gt;10×——pretraining 覆盖稀疏的领域（医疗 / 制造）Skill 增益最大；覆盖密集的领域（数学 / SWE）最小。</p>
+          <p lang-en>Paper: "Skill benefit varies widely across domains". The Δ range spans &gt;10× — Skills help most where pretraining is sparse (healthcare / manufacturing), least where dense (math / SWE).</p>
+        </div>
+      </details>
+
+      <div class="chart-container">
+        <div class="chart-title" lang-zh>Δ_abs by domain（pp）</div>
+        <div class="chart-title" lang-en>Δ_abs by domain (pp)</div>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">Healthcare</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,#0d9488,#14b8a6);"><span class="bar-value">+51.9pp (86.1%←34.2%)</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Manufacturing</div><div class="bar-track"><div class="bar-fill" style="width:81%;background:linear-gradient(90deg,#0d9488,#14b8a6);"><span class="bar-value">+41.9pp (42.9%←1.0%)</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Cybersecurity</div><div class="bar-track"><div class="bar-fill" style="width:45%;background:linear-gradient(90deg,#059669,#34d399);"><span class="bar-value">+23.2pp</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Natural Science</div><div class="bar-track"><div class="bar-fill" style="width:42%;background:linear-gradient(90deg,#059669,#34d399);"><span class="bar-value">+21.9pp</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Energy</div><div class="bar-track"><div class="bar-fill" style="width:35%;background:linear-gradient(90deg,#2563eb,#60a5fa);"><span class="bar-value">+17.9pp</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Office/WC</div><div class="bar-track"><div class="bar-fill" style="width:34%;background:linear-gradient(90deg,#2563eb,#60a5fa);"><span class="bar-value">+17.8pp</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Finance</div><div class="bar-track"><div class="bar-fill" style="width:29%;background:linear-gradient(90deg,#7c3aed,#a78bfa);"><span class="bar-value">+15.1pp</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Media</div><div class="bar-track"><div class="bar-fill" style="width:27%;background:linear-gradient(90deg,#7c3aed,#a78bfa);"><span class="bar-value">+13.9pp</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Robotics</div><div class="bar-track"><div class="bar-fill" style="width:14%;background:linear-gradient(90deg,#d97706,#fbbf24);"><span class="bar-value">+7.0pp</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Mathematics</div><div class="bar-track"><div class="bar-fill" style="width:12%;background:linear-gradient(90deg,#d97706,#fbbf24);"><span class="bar-value">+6.0pp</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">SW Engineering</div><div class="bar-track"><div class="bar-fill" style="width:9%;background:linear-gradient(90deg,#e11d48,#fb7185);"><span class="bar-value">+4.5pp</span></div></div></div>
+        </div>
+      </div>
+
+      <div class="box box-insight">
+        <span lang-zh><strong>核心直觉：</strong>pretraining 覆盖稀疏的领域（医疗/制造/网络安全）Skill 增益最大；覆盖密集的领域（数学/SWE）最小。<strong>Skill 撬动的是 procedural 而非 conceptual gap。</strong></span>
+        <span lang-en><strong>Core insight:</strong> Skills help most where pretraining is sparse (healthcare/manufacturing/cyber); least where dense (math/SWE). <strong>Skills close procedural gaps, not conceptual ones.</strong></span>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>4.3 Task-level & Pareto Cost</h3>
+      <h3 lang-en>4.3 Task-level & Pareto Cost</h3>
+
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5 lang-zh>Top Skill 受益 (+70pp+)</h5>
+          <h5 lang-en>Top Skill Beneficiaries</h5>
+          <ul>
+            <li lang-zh><code>sales-pivot-analysis</code>: 0→85.7% (<strong>+85.7</strong>)</li>
+            <li lang-en><code>sales-pivot-analysis</code>: 0→85.7% (<strong>+85.7</strong>)</li>
+            <li lang-zh><code>mario-coin-counting</code>: +85.7pp</li>
+            <li lang-en><code>mario-coin-counting</code>: +85.7pp</li>
+            <li lang-zh><code>flood-risk-analysis</code>: +77.1pp</li>
+            <li lang-en><code>flood-risk-analysis</code>: +77.1pp</li>
+            <li lang-zh><code>sec-financial-report</code>: +75.0pp</li>
+            <li lang-en><code>sec-financial-report</code>: +75.0pp</li>
+            <li lang-zh><code>protein-expression-analysis</code>: 17.1→91.4% (+74.3)</li>
+            <li lang-en><code>protein-expression-analysis</code>: 17.1→91.4% (+74.3)</li>
+          </ul>
+        </div>
+        <div class="compare-card" style="border-left:3px solid var(--rose);">
+          <h5 lang-zh>Skill 有害（Δ &lt; 0）</h5>
+          <h5 lang-en>Skill Hurts</h5>
+          <ul>
+            <li lang-zh><code>taxonomy-tree-merge</code>: <strong>–39.3pp</strong></li>
+            <li lang-en><code>taxonomy-tree-merge</code>: <strong>–39.3pp</strong></li>
+            <li lang-zh><code>energy-ac-optimal-power-flow</code>: –14.3pp</li>
+            <li lang-en><code>energy-ac-optimal-power-flow</code>: –14.3pp</li>
+            <li lang-zh><code>trend-anomaly-causal-inference</code>: –12.9pp</li>
+            <li lang-en><code>trend-anomaly-causal-inference</code>: –12.9pp</li>
+            <li lang-zh><strong>共 16 任务</strong> Skill 反向；另 16 任务全 0%</li>
+            <li lang-en><strong>16 tasks</strong> hurt; another 16 stuck at 0%</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card card-accent">
+        <h4 lang-zh>两组的共性与对立</h4>
+        <h4 lang-en>Commonalities &amp; Contrast Between the Two Groups</h4>
+
+        <p lang-zh><strong>单看 task name 确实不直观，但两组各有清晰的 pattern：</strong></p>
+        <p lang-en><strong>Task names alone aren't obvious, but each group has a clear pattern:</strong></p>
+
+        <div class="compare-grid">
+          <div class="compare-card" style="background:var(--teal-light);border-color:#99f6e4;">
+            <h5 lang-zh>✅ 受益组：特定 API / 监管规范 / 领域标准</h5>
+            <h5 lang-en>✅ Beneficiaries: specific APIs / regulations / standards</h5>
+            <ul>
+              <li lang-zh><code>sales-pivot-analysis</code> → openpyxl <strong>pivot table API</strong></li>
+              <li lang-en><code>sales-pivot-analysis</code> → openpyxl <strong>pivot table API</strong></li>
+              <li lang-zh><code>flood-risk-analysis</code> → USGS 标准 <strong>Log-Pearson III 分布</strong></li>
+              <li lang-en><code>flood-risk-analysis</code> → USGS-standard <strong>Log-Pearson III distribution</strong></li>
+              <li lang-zh><code>sec-financial-report</code> → <strong>SEC EDGAR API + 13F filing</strong> 结构</li>
+              <li lang-en><code>sec-financial-report</code> → <strong>SEC EDGAR API + 13F filing</strong> structure</li>
+              <li lang-zh><code>protein-expression-analysis</code> → 生物信息学<strong>差异表达标准流程</strong></li>
+              <li lang-en><code>protein-expression-analysis</code> → bioinformatics <strong>standard differential-expression pipeline</strong></li>
+              <li lang-zh><code>mario-coin-counting</code> → 视频帧识别<strong>标准 pipeline</strong></li>
+              <li lang-en><code>mario-coin-counting</code> → <strong>standard video-frame analysis pipeline</strong></li>
+            </ul>
+            <p lang-zh><strong>共同特征</strong>：模型<strong>懂概念</strong>但<strong>不知道具体该调哪个函数 / API / 参数</strong>。Skill 精确填补这个 "know-how" 缺口 → 大涨。</p>
+            <p lang-en><strong>Shared trait</strong>: the model <strong>knows the concept</strong> but <strong>not the specific function / API / parameters</strong>. Skills precisely fill the know-how gap → big gains.</p>
+          </div>
+
+          <div class="compare-card" style="background:var(--rose-light);border-color:#fecdd3;">
+            <h5 lang-zh>⚠️ 有害组：算法设计 / 多合理路径</h5>
+            <h5 lang-en>⚠️ Hurt group: algorithm design / multi-path reasoning</h5>
+            <ul>
+              <li lang-zh><code>taxonomy-tree-merge</code> → <strong>合并策略</strong>有多种选法</li>
+              <li lang-en><code>taxonomy-tree-merge</code> → multiple valid <strong>merge strategies</strong></li>
+              <li lang-zh><code>energy-ac-optimal-power-flow</code> → <strong>AC-OPF 数值解法</strong>路径多样</li>
+              <li lang-en><code>energy-ac-optimal-power-flow</code> → multiple <strong>AC-OPF numerical solvers</strong></li>
+              <li lang-zh><code>trend-anomaly-causal-inference</code> → <strong>因果识别</strong>方法众多</li>
+              <li lang-en><code>trend-anomaly-causal-inference</code> → multiple <strong>causal identification</strong> methods</li>
+              <li lang-zh><code>exoplanet-detection-period</code> → <strong>信号处理周期检测</strong>方法多样</li>
+              <li lang-en><code>exoplanet-detection-period</code> → multiple <strong>signal-processing period detection</strong> methods</li>
+            </ul>
+            <p lang-zh><strong>共同特征</strong>：这些领域 pretraining 覆盖<strong>已经很强</strong>，模型有<strong>合理先验</strong>。Skill 给的特定路径反而<strong>冲突 / 误导 / 加噪</strong>。</p>
+            <p lang-en><strong>Shared trait</strong>: pretraining coverage is <strong>already strong</strong> here; the model has <strong>reasonable priors</strong>. The Skill's specific path can <strong>conflict / mislead / add noise</strong>.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap" style="margin-top:16px;">
+          <table>
+            <thead><tr>
+              <th lang-zh>维度</th><th lang-en>Dimension</th>
+              <th lang-zh>✅ 受益组</th><th lang-en>✅ Benefits</th>
+              <th lang-zh>⚠️ 有害组</th><th lang-en>⚠️ Hurts</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td lang-zh><strong>Task 本质</strong></td><td lang-en><strong>Task nature</strong></td>
+                <td lang-zh>"工具用法"问题</td><td lang-en>"Tool usage" problems</td>
+                <td lang-zh>"算法设计"问题</td><td lang-en>"Algorithm design" problems</td>
+              </tr>
+              <tr>
+                <td lang-zh><strong>模型缺的是</strong></td><td lang-en><strong>Model lacks</strong></td>
+                <td lang-zh>Procedural know-how（具体 API / 规范）</td><td lang-en>Procedural know-how (specific API / spec)</td>
+                <td lang-zh>无明显缺陷</td><td lang-en>Nothing obvious</td>
+              </tr>
+              <tr>
+                <td lang-zh><strong>Skill 的作用</strong></td><td lang-en><strong>Skill's role</strong></td>
+                <td lang-zh>📍 <strong>精准地图</strong>——模型认路但不知道具体怎么走，Skill 补上那一段</td><td lang-en>📍 <strong>Exact map</strong> — model knows where, not how; Skill fills in the turn-by-turn</td>
+                <td lang-zh>🧭 <strong>多余 / 误导的 GPS</strong>——模型本来会走，Skill 反而把它导向一条特定（可能更差的）路</td><td lang-en>🧭 <strong>Unneeded / misleading GPS</strong> — model would've found its way; Skill steers it onto one specific (possibly worse) route</td>
+              </tr>
+              <tr>
+                <td lang-zh><strong>对应论文观察</strong></td><td lang-en><strong>Maps to paper's</strong></td>
+                <td lang-zh>§7 第 1 条："Skills close procedural gaps"</td><td lang-en>§7 claim 1: "Skills close procedural gaps"</td>
+                <td lang-zh>§7 第 4 条："Skill ≠ 一定变好"</td><td lang-en>§7 claim 4: "Skills don't always help"</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="img-placeholder" id="ph-fig4">
+        <div class="icon">💰</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 4: 成本-性能 Pareto 前沿（label: fig:pareto）</span>
+          <span lang-en>Figure 4: Cost-Performance Pareto frontier (label: fig:pareto)</span>
+        </div>
+        <div class="ph-caption" lang-zh>Skill 把 Pareto frontier 向上推。Flash 消耗 2.3× Pro 的 token 但单价 4× 便宜，综合每任务 $0.57 vs Pro $1.06（-47%）。tex 里还留了作者 TODO: "Regenerate Pareto figure with updated data"。</div>
+        <div class="ph-caption" lang-en>Skills shift Pareto up. Flash uses 2.3× Pro's tokens but 4× cheaper per-token → 47% cheaper/task ($0.57 vs $1.06). Tex source also has a TODO: "Regenerate Pareto figure with updated data".</div>
+        <div class="ph-filename">figures/fig04_pareto_cost.png</div>
+      </div>
+
+      <h4 lang-zh>84 任务 × 7 模型的三张热力图（tex 源渲染，2136×4733 像素原分辨率）</h4>
+      <h4 lang-en>Three heatmaps (tex-rendered, 2136×4733 px native resolution)</h4>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:20px 0;">
+        <div class="img-placeholder" id="ph-fig11">
+          <div class="icon">🟦</div>
+          <div class="ph-label">
+            <span lang-zh>Figure 11: With-Skill 通过率</span>
+            <span lang-en>Figure 11: With-Skill pass rate</span>
+          </div>
+          <div class="ph-caption" lang-zh>顶部易任务全蓝、底部难任务全红，对角随模型能力过渡。</div>
+          <div class="ph-caption" lang-en>Blue easy block on top, red hard block at bottom, diagonal transition.</div>
+          <div class="ph-filename">figures/fig11_heatmap_with_skills.png</div>
+        </div>
+
+        <div class="img-placeholder" id="ph-fig12">
+          <div class="icon">⬜</div>
+          <div class="ph-label">
+            <span lang-zh>Figure 12: No-Skill 基线</span>
+            <span lang-en>Figure 12: No-Skill baseline</span>
+          </div>
+          <div class="ph-caption" lang-zh>蓝色区明显收缩，证明 Skill 把任务从"不可解"推到"可解"。</div>
+          <div class="ph-caption" lang-en>Blue region shrinks — Skills shift tasks from unsolved to solved.</div>
+          <div class="ph-filename">figures/fig12_heatmap_no_skills.png</div>
+        </div>
+
+        <div class="img-placeholder" id="ph-fig13">
+          <div class="icon">📊</div>
+          <div class="ph-label">
+            <span lang-zh>Figure 13: Skill 提升值（With − No）</span>
+            <span lang-en>Figure 13: Skill uplift (With − No)</span>
+          </div>
+          <div class="ph-caption" lang-zh>蓝=有益，红=有害；多数蓝，少量 model-specific 红。</div>
+          <div class="ph-caption" lang-en>Blue = helps, red = hurts; mostly blue with a few model-specific reds.</div>
+          <div class="ph-filename">figures/fig13_heatmap_uplift.png</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 5. DESIGN ========== -->
+  <section id="design" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">5</span>
+      <h2 lang-zh>Skill 设计因素</h2>
+      <h2 lang-en>Skill Design Factors</h2>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>5.1 Skill 数量</h3>
+      <h3 lang-en>5.1 Skill Count</h3>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>Finding 5：一个 task 配几个 Skill？2–3 最优，4+ 陡降</summary>
+        <summary lang-en>Finding 5: How many Skills per task? 2–3 optimal, 4+ collapses</summary>
+        <div class="detail-body">
+          <p lang-zh>变量 = 每个 task 配给 agent 的 Skill 数量（不是 Skill 库总数）。增益呈<strong>非单调</strong>曲线：1 个 <strong>+17.8pp</strong> / 2–3 个 <strong>+18.6pp</strong>（峰值）/ 4+ 个 <strong>+5.9pp</strong>（陡降）。4+ 几乎失去一半增益。</p>
+          <p lang-en>Variable = Skills provided <em>per task</em> (not library size). Gains are <strong>non-monotonic</strong>: 1 skill <strong>+17.8pp</strong> / 2–3 skills <strong>+18.6pp</strong> (peak) / 4+ skills <strong>+5.9pp</strong> (collapses). 4+ loses almost half the benefit.</p>
+        </div>
+      </details>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th lang-zh>配几个 Skill</th><th lang-en>Skill count</th>
+            <th lang-zh class="num">With</th><th lang-en class="num">With</th>
+            <th lang-zh class="num">No</th><th lang-en class="num">No</th>
+            <th lang-zh class="num">Δ</th><th lang-en class="num">Δ</th>
+          </tr></thead>
+          <tbody>
+            <tr><td lang-zh>1 个</td><td lang-en>1 skill</td><td lang-zh class="num">42.2%</td><td lang-en class="num">42.2%</td><td lang-zh class="num">24.4%</td><td lang-en class="num">24.4%</td><td lang-zh class="num">+17.8pp</td><td lang-en class="num">+17.8pp</td></tr>
+            <tr style="background:#f0fdfa;"><td lang-zh><strong>2–3 个</strong></td><td lang-en><strong>2–3 skills</strong></td><td lang-zh class="num">42.0%</td><td lang-en class="num">42.0%</td><td lang-zh class="num">23.4%</td><td lang-en class="num">23.4%</td><td lang-zh class="num"><strong>+18.6pp ⭐</strong></td><td lang-en class="num"><strong>+18.6pp ⭐</strong></td></tr>
+            <tr style="background:#fff1f2;"><td lang-zh>4+ 个</td><td lang-en>4+ skills</td><td lang-zh class="num">32.7%</td><td lang-en class="num">32.7%</td><td lang-zh class="num">26.9%</td><td lang-en class="num">26.9%</td><td lang-zh class="num"><strong>+5.9pp ⚠️陡降</strong></td><td lang-en class="num"><strong>+5.9pp ⚠️collapses</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p lang-zh><strong>可能原因</strong>：(a) 8K context 被多个 Skill 文本挤占；(b) Skill 间冲突指引（A 说用 openpyxl，B 说用 pandas）；(c) 选择困难——agent 要先决定用哪个。<br><strong>类比</strong>：给新员工 1 本 Excel 手册 → 能用；给他 10 本不同风格的 → 没看完就弃。</p>
+      <p lang-en><strong>Likely causes</strong>: (a) 8K context gets crowded out; (b) Skills conflict with each other (one says openpyxl, another says pandas); (c) choice paralysis — agent must first pick. <strong>Analogy</strong>: give a new hire 1 Excel manual → they use it; give them 10 stylistically different ones → they quit reading first.</p>
+
+      <div class="box box-warn">
+        <strong lang-zh>⚠️ 方法学漏洞</strong>
+        <strong lang-en>⚠️ Methodology gap</strong>
+        <span lang-zh>论文 §3 Experimental Setup <strong>从未说明</strong> "1 / 2–3 / 4+" 这个分档是怎么来的——是每个 task 自带的 Skill 数分布？事后分组？还是实验干预？这让 Finding 5 更像 <strong>post-hoc observational analysis</strong> 而非 controlled experiment。<strong>因果性存疑</strong>：可能不是"4+ Skill 造成下降"，而是"需要 4+ Skill 的任务本身更难"。</span>
+        <span lang-en>§3 Experimental Setup <strong>never defines</strong> the "1 / 2–3 / 4+" bucketing — is it the per-task natural distribution? post-hoc grouping? experimental manipulation? This makes Finding 5 feel more like <strong>post-hoc observational analysis</strong> than a controlled experiment. <strong>Causal claim is shaky</strong>: it could be "tasks needing 4+ Skills are inherently harder", not "4+ Skills cause degradation".</span>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>5.2 Skill 复杂度</h3>
+      <h3 lang-en>5.2 Skill Complexity</h3>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>Finding 6：单个 Skill 写多长？Detailed/Compact &gt; Comprehensive（后者负增益）</summary>
+        <summary lang-en>Finding 6: How long per Skill? Detailed/Compact &gt; Comprehensive (latter is negative)</summary>
+        <div class="detail-body">
+          <p lang-zh>变量 = 单个 Skill 文档的复杂度（和 Skill 数量无关，是"单本手册的厚度"）。Detailed <strong>+18.8pp</strong>（最高）/ Compact +17.1 / Standard +10.1 / Comprehensive <strong>–2.9pp</strong>（<strong>唯一负增益</strong>）。反直觉——常识"越详细越好"，但 Comprehensive 反而因信号稀释 + context 挤占而掉分。</p>
+          <p lang-en>Variable = complexity of each Skill document (unrelated to count). Detailed <strong>+18.8pp</strong> (best) / Compact +17.1 / Standard +10.1 / Comprehensive <strong>–2.9pp</strong> (<strong>only negative bucket</strong>). Counter-intuitive — "more detail = better" is wrong; Comprehensive loses points to signal dilution and context crowd-out.</p>
+        </div>
+      </details>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th lang-zh>复杂度</th><th lang-en>Complexity</th>
+            <th lang-zh class="num">Pass</th><th lang-en class="num">Pass</th>
+            <th lang-zh class="num">Δ</th><th lang-en class="num">Δ</th>
+            <th lang-zh class="num">n</th><th lang-en class="num">n</th>
+          </tr></thead>
+          <tbody>
+            <tr style="background:#f0fdfa;"><td lang-zh><strong>Detailed</strong></td><td lang-en><strong>Detailed</strong></td><td lang-zh class="num">42.7%</td><td lang-en class="num">42.7%</td><td lang-zh class="num"><strong>+18.8 ⭐</strong></td><td lang-en class="num"><strong>+18.8 ⭐</strong></td><td lang-zh class="num">1,165</td><td lang-en class="num">1,165</td></tr>
+            <tr><td lang-zh>Compact</td><td lang-en>Compact</td><td lang-zh class="num">37.6%</td><td lang-en class="num">37.6%</td><td lang-zh class="num">+17.1</td><td lang-en class="num">+17.1</td><td lang-zh class="num">845</td><td lang-en class="num">845</td></tr>
+            <tr><td lang-zh>Standard</td><td lang-en>Standard</td><td lang-zh class="num">37.1%</td><td lang-en class="num">37.1%</td><td lang-zh class="num">+10.1</td><td lang-en class="num">+10.1</td><td lang-zh class="num">773</td><td lang-en class="num">773</td></tr>
+            <tr style="background:#fff1f2;"><td lang-zh><strong>Comprehensive</strong></td><td lang-en><strong>Comprehensive</strong></td><td lang-zh class="num">39.9%</td><td lang-en class="num">39.9%</td><td lang-zh class="num"><strong>–2.9 ⚠️唯一负增益</strong></td><td lang-en class="num"><strong>–2.9 ⚠️only negative</strong></td><td lang-zh class="num">140</td><td lang-en class="num">140</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p lang-zh><strong>四档的直观对应</strong>（论文没给精确定义，以下按语义推测）：</p>
+      <p lang-en><strong>Intuitive mapping of the four buckets</strong> (paper gives no precise definition; best-effort interpretation):</p>
+      <ul>
+        <li lang-zh><strong>Compact</strong>：一页纸 SOP + 1 个代码示例</li>
+        <li lang-en><strong>Compact</strong>: one-pager SOP + 1 code example</li>
+        <li lang-zh><strong>Standard</strong>：几段结构化说明</li>
+        <li lang-en><strong>Standard</strong>: a few sections of structured guidance</li>
+        <li lang-zh><strong>Detailed</strong>："<strong>详尽但有焦点</strong>"——多段 + 多示例 + 清晰步骤</li>
+        <li lang-en><strong>Detailed</strong>: "<strong>thorough but focused</strong>" — multi-section + multi-example + clear steps</li>
+        <li lang-zh><strong>Comprehensive</strong>："<strong>详尽但失焦</strong>"——面面俱到 + 覆盖所有边缘情况 + 可能把整份 reference doc 复制进来</li>
+        <li lang-en><strong>Comprehensive</strong>: "<strong>thorough and unfocused</strong>" — exhaustive + edge cases + possibly entire reference doc pasted in</li>
+      </ul>
+
+      <p lang-zh><strong>类比</strong>：SOP 写一页纸员工会读；写 50 页员工看完关键要点前就放弃。</p>
+      <p lang-en><strong>Analogy</strong>: a 1-page SOP gets read; a 50-page one gets abandoned before the critical step.</p>
+
+      <div class="box box-warn">
+        <strong lang-zh>⚠️ 方法学漏洞（比 Finding 5 更严重）</strong>
+        <strong lang-en>⚠️ Methodology gap (more severe than Finding 5)</strong>
+        <ul>
+          <li lang-zh>论文<strong>从未定义</strong>四档的判定标准——是按 token 数？章节数？主观分类？</li>
+          <li lang-en>The paper <strong>never defines</strong> the four-bucket criteria — by token count? section count? subjective rating?</li>
+          <li lang-zh>§3 Experimental Setup 从未提过这个分档，读者无法复现分类</li>
+          <li lang-en>§3 Experimental Setup never mentions this taxonomy; readers cannot reproduce the labeling</li>
+          <li lang-zh>样本量严重不均：Comprehensive <strong>n=140</strong>，是其他档的 1/6–1/8。加上分类标准模糊，<strong>–2.9pp 这个负号的可信度应该打折</strong></li>
+          <li lang-en>Sample sizes skew heavily: Comprehensive <strong>n=140</strong>, roughly 1/6–1/8 of other buckets. Combined with fuzzy labels, <strong>the –2.9pp negative should be discounted</strong></li>
+          <li lang-zh><strong>潜在 confounder</strong>：可能是 "Comprehensive Skill 通常对应更难/更少人写过的任务"，不是 "Comprehensive 造成负增益"</li>
+          <li lang-en><strong>Likely confounder</strong>: "Comprehensive Skills tend to go with harder / under-explored tasks", not "Comprehensive Skills cause degradation"</li>
+        </ul>
+      </div>
+
+      <div class="box box-insight">
+        <span lang-zh><strong>takeaway（Skill 作者）：</strong>"聚焦 + 可执行示例"的 Detailed/Compact &gt; 面面俱到的 Comprehensive。虽然因果证据有 caveat，但方向性结论可用。</span>
+        <span lang-en><strong>Takeaway (for Skill authors):</strong> "focused + runnable examples" (Detailed/Compact) &gt; exhaustive (Comprehensive). Causal evidence has caveats, but the directional advice holds.</span>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>5.3 模型规模 vs Skill</h3>
+      <h3 lang-en>5.3 Model Scale vs. Skill</h3>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>Finding 7：小模型 + Skill ≥ 大模型 naked</summary>
+        <summary lang-en>Finding 7: Small model + Skill ≥ Large model naked</summary>
+        <div class="detail-body">
+          <p lang-zh>变量 = 同家族内（Claude）不同规模 × 有/无 Skill。Haiku 4.5 + Skill <strong>27.7%</strong> 高于 Opus 4.5 naked <strong>22.0%</strong>——对 procedural 任务，<strong>Skill 可部分替代 model scale</strong>。对部署经济学意味着"小模型 + 高质 Skill"可能是更优组合（Haiku input $1/MTok vs Opus $5，便宜 5×）。</p>
+          <p lang-en>Variable = within the Claude family, scale × Skill condition. Haiku 4.5 + Skill <strong>27.7%</strong> beats Opus 4.5 naked <strong>22.0%</strong> — for procedural tasks, <strong>Skills partially substitute for model scale</strong>. Deployment economics: "small model + quality Skill" may beat "large model alone" (Haiku $1/MTok input vs. Opus $5 — 5× cheaper).</p>
+        </div>
+      </details>
+
+      <div class="flow">
+        <div class="flow-row">
+          <div class="flow-box amber"><strong>Opus 4.5 naked</strong><br>22.0%</div>
+          <div class="flow-arrow">&lt;</div>
+          <div class="flow-box highlight"><strong>Haiku 4.5 + Skill</strong><br>27.7%</div>
+        </div>
+        <div class="flow-label" lang-zh>最大 Claude 裸跑 &lt; 最小 Claude + 高质 Skill</div>
+        <div class="flow-label" lang-en>Largest Claude naked &lt; smallest Claude + quality Skill</div>
+      </div>
+
+      <div class="box box-warn">
+        <strong lang-zh>⚠️ 泛化性 caveat</strong>
+        <strong lang-en>⚠️ Generalization caveat</strong>
+        <span lang-zh>这条结论只基于 <strong>Claude 家族</strong>（Opus 4.5 / Sonnet 4.5 / Haiku 4.5 三档）。而且 Claude 模型在训练时就被告知了 Agent Skills spec，这可能让它们对 Skill 格式有 <strong>偏向性优势</strong>。在 GPT / Gemini 家族是否也成立，论文没跨 family 做消融实验。</span>
+        <span lang-en>This claim rests solely on the <strong>Claude family</strong> (Opus 4.5 / Sonnet 4.5 / Haiku 4.5). Claude models were trained aware of the Agent Skills spec, which may confer a <strong>structural advantage</strong> on Skill-format consumption. Whether this holds for GPT / Gemini families is not ablated cross-family.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 6. FAILURE ========== -->
+  <section id="failure" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">6</span>
+      <h2 lang-zh>失败模式分析</h2>
+      <h2 lang-en>Failure Analysis</h2>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>6.1 5,171 次失败的 5 大类</h3>
+      <h3 lang-en>6.1 Five categories of 5,171 failures</h3>
+
+      <div class="card card-accent">
+        <h4 lang-zh>失败类型是什么意思？8 类的定义 + 论文例子</h4>
+        <h4 lang-en>What Do the Failure Types Mean? Definitions + Paper Examples</h4>
+        <p lang-zh>论文 Appendix I 给每类失败定义了判定标准，并在 §I.7 给了具体 task 案例。先对齐词汇，再看下面的分布更直观：</p>
+        <p lang-en>Appendix I defines the criteria for each failure type; §I.7 provides concrete task examples. Align the vocabulary first, then the distribution chart below makes more sense:</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th lang-zh>大类</th><th lang-en>Category</th>
+                <th lang-zh>类型</th><th lang-en>Type</th>
+                <th lang-zh>直白定义</th><th lang-en>Plain definition</th>
+                <th lang-zh>论文举的例子（§I.7）</th><th lang-en>Paper's example (§I.7)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td lang-zh>Verification</td><td lang-en>Verification</td>
+                <td lang-zh><strong>Quality Below Threshold</strong><br>（质量不达标）</td><td lang-en><strong>Quality Below Threshold</strong></td>
+                <td lang-zh>文件存在、结构对，但算出的<strong>数值超出容差</strong>——"形式对、数字错"</td><td lang-en>Output exists and is structurally correct, but <strong>numeric values exceed tolerance</strong> — "right shape, wrong numbers"</td>
+                <td lang-zh><code>earthquake-plate-calc</code>: Haversine 公式对、但用了错的板块坐标 → 算出 3,562 km，应是 3,878 km（超 ±0.01 km 容差）</td><td lang-en><code>earthquake-plate-calc</code>: Haversine formula correct but wrong plate coords → 3,562 km vs. 3,878 km expected (exceeds ±0.01 km tolerance)</td>
+              </tr>
+              <tr>
+                <td lang-zh>Timeout</td><td lang-en>Timeout</td>
+                <td lang-zh><strong>Agent Timeout</strong><br>（Agent 超时）</td><td lang-en><strong>Agent Timeout</strong></td>
+                <td lang-zh>执行时间耗尽，连输出都还没写出来（AgentTimeoutError）</td><td lang-en>Ran out of time before producing any output (AgentTimeoutError)</td>
+                <td lang-zh><code>gravitational-wave-detection</code>: LIGO 信号处理管线（bandpass + matched filtering + SNR）太重，超时前文件都没创建</td><td lang-en><code>gravitational-wave-detection</code>: LIGO signal-processing pipeline (bandpass + matched filtering + SNR) too heavy — file never created before timeout</td>
+              </tr>
+              <tr>
+                <td lang-zh>Coherence</td><td lang-en>Coherence</td>
+                <td lang-zh><strong>Incomplete Solution</strong><br>（未完成）</td><td lang-en><strong>Incomplete Solution</strong></td>
+                <td lang-zh>部分做对（如 6/9 tests 通过），但<strong>关键 deliverable 没完成就停下</strong>——"做了一半"</td><td lang-en>Partially correct (e.g. 6/9 tests pass), but <strong>key deliverables left unfinished</strong> — "quit halfway"</td>
+                <td lang-zh><code>shock-analysis-supply</code>: Excel 骨架、sheet 结构对了 6/9，但没填充 PWT 劳动数据、没跑 HP filter 优化、没算折旧率</td><td lang-en><code>shock-analysis-supply</code>: Excel skeleton & sheet structure pass 6/9, but no PWT labor data, no HP filter optimization, no depreciation rate computed</td>
+              </tr>
+              <tr>
+                <td lang-zh>Execution</td><td lang-en>Execution</td>
+                <td lang-zh><strong>No Output Produced</strong><br>（无输出）</td><td lang-en><strong>No Output Produced</strong></td>
+                <td lang-zh>连输出文件都没有——早期 crash / 环境装不好 / agent 没走到生成阶段</td><td lang-en>Output file doesn't exist at all — early crash / env setup failure / agent never reached output stage</td>
+                <td lang-zh><code>gh-repo-analytics</code>: <code>/app/report.json</code> 从没被创建，8 个测试全部在 fixture 阶段 error</td><td lang-en><code>gh-repo-analytics</code>: <code>/app/report.json</code> never created; all 8 tests error at fixture stage</td>
+              </tr>
+              <tr>
+                <td lang-zh>Execution</td><td lang-en>Execution</td>
+                <td lang-zh><strong>Domain Knowledge Gap</strong><br>（领域知识缺口）</td><td lang-en><strong>Domain Knowledge Gap</strong></td>
+                <td lang-zh>把领域概念搞错了——单位换算 / 科学公式 / 算法误用</td><td lang-en>Misunderstood domain concepts — unit conversion / scientific formulas / misapplied algorithms</td>
+                <td lang-zh><code>exceltable-in-ppt</code>: PPT 嵌入 Excel 的主汇率单元格更新正确（6/8 pass），但没重算反向汇率 → NaN 级联传播</td><td lang-en><code>exceltable-in-ppt</code>: primary FX cell in PPT-embedded Excel updates correctly (6/8 pass), but dependent inverse cells never recomputed → NaN cascade</td>
+              </tr>
+              <tr>
+                <td lang-zh>Execution</td><td lang-en>Execution</td>
+                <td lang-zh><strong>Specification Violation</strong><br>（规范违反）</td><td lang-en><strong>Specification Violation</strong></td>
+                <td lang-zh>违反明确的任务指令——格式错、输出多余内容、硬编码值替代公式等</td><td lang-en>Violates explicit task directive — wrong format, extraneous content, hardcoded values instead of formulas</td>
+                <td lang-zh><code>latex-formula-extraction</code>: 规范要 5 个 LaTeX 公式（每行一个 <code>$$...$$</code>），agent 把 markdown headers 也当公式 → 产出 6 个</td><td lang-en><code>latex-formula-extraction</code>: spec requires 5 LaTeX formulas (one per line in <code>$$...$$</code>), agent includes markdown headers too → outputs 6</td>
+              </tr>
+              <tr>
+                <td lang-zh>Execution</td><td lang-en>Execution</td>
+                <td lang-zh><strong>Incorrect Implementation</strong><br>（实现 bug）</td><td lang-en><strong>Incorrect Implementation</strong></td>
+                <td lang-zh>方法选对、但代码有 bug——off-by-one / 数据转换错 / 算法逻辑错</td><td lang-en>Correct approach but buggy code — off-by-one / wrong data transform / algorithm bug</td>
+                <td lang-zh>（论文未列出具体例子）</td><td lang-en>(no specific example in paper)</td>
+              </tr>
+              <tr>
+                <td lang-zh>Execution</td><td lang-en>Execution</td>
+                <td lang-zh><strong>Tool/Env Failure</strong><br>（工具/环境问题）</td><td lang-en><strong>Tool/Env Failure</strong></td>
+                <td lang-zh>装不上依赖、权限问题、环境配置失败（不是任务逻辑错）</td><td lang-en>Can't install deps / permission issue / env config fails — not a task-logic error</td>
+                <td lang-zh>（论文未列出具体例子）</td><td lang-en>(no specific example in paper)</td>
+              </tr>
+              <tr>
+                <td lang-zh>Unknown</td><td lang-en>Unknown</td>
+                <td lang-zh><strong>Unclassified</strong><br>（未分类）</td><td lang-en><strong>Unclassified</strong></td>
+                <td lang-zh>verifier 输出缺失或启发式规则无法归类</td><td lang-en>Verifier output missing or heuristics can't classify</td>
+                <td lang-zh>—</td><td lang-en>—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <div class="chart-title" lang-zh>失败类型分布</div>
+        <div class="chart-title" lang-en>Failure distribution</div>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">Quality Below Threshold</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,#e11d48,#fb7185);"><span class="bar-value">2,577 (49.8%) · Verification</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Agent Timeout</div><div class="bar-track"><div class="bar-fill" style="width:36%;background:linear-gradient(90deg,#d97706,#fbbf24);"><span class="bar-value">922 (17.8%)</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Incomplete Solution</div><div class="bar-track"><div class="bar-fill" style="width:20%;background:linear-gradient(90deg,#7c3aed,#a78bfa);"><span class="bar-value">527 (10.2%)</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">No Output</div><div class="bar-track"><div class="bar-fill" style="width:16%;background:linear-gradient(90deg,#0d9488,#14b8a6);"><span class="bar-value">411 (7.9%)</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Domain Knowledge Gap</div><div class="bar-track"><div class="bar-fill" style="width:10%;background:linear-gradient(90deg,#0d9488,#14b8a6);"><span class="bar-value">251 (4.9%)</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Spec Violation</div><div class="bar-track"><div class="bar-fill" style="width:6.7%;background:linear-gradient(90deg,#0d9488,#14b8a6);"><span class="bar-value">171 (3.3%)</span></div></div></div>
+          <div class="bar-row"><div class="bar-label">Unknown</div><div class="bar-track"><div class="bar-fill" style="width:8.8%;background:linear-gradient(90deg,#64748b,#94a3b8);"><span class="bar-value">228 (4.4%)</span></div></div></div>
+        </div>
+      </div>
+
+      <div class="box box-key">
+        <span lang-zh><strong>49.8% 失败是"结构对但数值挂了"</strong> — agent 理解任务但域特定精度层面易错，这正是 Skill 能撬动的最大缺口。</span>
+        <span lang-en><strong>49.8% of failures are "structure right, values wrong"</strong> — agents grasp structure but fail on domain-specific precision. Exactly where Skills help most.</span>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>6.2 Skill 如何改变失败分布</h3>
+      <h3 lang-en>6.2 How Skills Reshape Failures</h3>
+
+      <div class="box box-note">
+        <strong lang-zh>⚠️ 读表注意：Fail Rate 和后四列<strong>不是母子集</strong>——用了两种不同的分母</strong>
+        <strong lang-en>⚠️ Reading note: Fail Rate and the four category columns are <strong>not a whole/parts split</strong> — they use two different denominators</strong>
+        <ul>
+          <li lang-zh><strong>Fail Rate</strong>（分母 = <strong>所有 trials</strong>）= "这个条件下有多大比例的 run 失败了"</li>
+          <li lang-en><strong>Fail Rate</strong> (denominator = <strong>all trials</strong>) = "what fraction of runs failed under this condition"</li>
+          <li lang-zh><strong>Timeout / Execution / Coherence / Verification</strong>（分母 = <strong>仅失败的 trials</strong>）= "失败里面各类占多少"（构成比例，加起来 ≈ 100%，不足的 ~4% 是 Unknown）</li>
+          <li lang-en><strong>Timeout / Execution / Coherence / Verification</strong> (denominator = <strong>failed trials only</strong>) = "what fraction of failures are of this type" (shares; sum ≈ 100% minus the ~4% Unknown)</li>
+          <li lang-zh><strong>要算"总 trials 中某类失败的绝对比例"，需要相乘</strong>：如 No-Skill 下被 Quality Below 卡的总比例 = 78.4% × 52.1% ≈ <strong>40.8%</strong>；With-Skill 下 = 61.1% × 46.6% ≈ <strong>28.5%</strong>（绝对值下降了 12.3pp）</li>
+          <li lang-en><strong>To get "absolute share of all trials"</strong>, multiply: e.g. No-Skill fraction of trials stuck at Quality Below = 78.4% × 52.1% ≈ <strong>40.8%</strong>; With-Skill = 61.1% × 46.6% ≈ <strong>28.5%</strong> (a 12.3pp drop in absolute terms)</li>
+        </ul>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th lang-zh>Condition</th><th lang-en>Condition</th>
+            <th lang-zh class="num">Fail Rate</th><th lang-en class="num">Fail Rate</th>
+            <th lang-zh class="num">Timeout</th><th lang-en class="num">Timeout</th>
+            <th lang-zh class="num">Execution</th><th lang-en class="num">Execution</th>
+            <th lang-zh class="num">Coherence</th><th lang-en class="num">Coherence</th>
+            <th lang-zh class="num">Verification</th><th lang-en class="num">Verification</th>
+          </tr></thead>
+          <tbody>
+            <tr><td lang-zh>No Skills</td><td lang-en>No Skills</td><td lang-zh class="num">78.4%</td><td lang-en class="num">78.4%</td><td lang-zh class="num">16.1%</td><td lang-en class="num">16.1%</td><td lang-zh class="num">17.1%</td><td lang-en class="num">17.1%</td><td lang-zh class="num">10.7%</td><td lang-en class="num">10.7%</td><td lang-zh class="num">52.1%</td><td lang-en class="num">52.1%</td></tr>
+            <tr style="background:#f0fdfa;"><td lang-zh><strong>With Skills</strong></td><td lang-en><strong>With Skills</strong></td><td lang-zh class="num"><strong>61.1%</strong></td><td lang-en class="num"><strong>61.1%</strong></td><td lang-zh class="num">18.6%</td><td lang-en class="num">18.6%</td><td lang-zh class="num">21.1%</td><td lang-en class="num">21.1%</td><td lang-zh class="num">8.9%</td><td lang-en class="num">8.9%</td><td lang-zh class="num"><strong>46.6%</strong></td><td lang-en class="num"><strong>46.6%</strong></td></tr>
+            <tr style="background:#fff1f2;"><td lang-zh>Self-Gen</td><td lang-en>Self-Gen</td><td lang-zh class="num"><strong>80.9%</strong></td><td lang-en class="num"><strong>80.9%</strong></td><td lang-zh class="num">19.9%</td><td lang-en class="num">19.9%</td><td lang-zh class="num">13.9%</td><td lang-en class="num">13.9%</td><td lang-zh class="num">11.2%</td><td lang-en class="num">11.2%</td><td lang-zh class="num">50.4%</td><td lang-en class="num">50.4%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>6.3 Case study：Skill 把 0% → 85% 的四种机制</h3>
+      <h3 lang-en>6.3 Case Study: Four Mechanisms by Which Skills Go 0% → 85%</h3>
+
+      <p lang-zh>论文 §I.5 把受益最大的 task 按 "<strong>Skill 起作用的机制</strong>" 归成 4 类。每个 case 都有"失败长什么样 → Skill 加进来补上什么"的具体叙事：</p>
+      <p lang-en>Appendix §I.5 groups the top beneficiaries by <strong>the mechanism through which Skills help</strong> into 4 kinds. Each case has a concrete "what failure looked like → what the Skill added" narrative:</p>
+
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5 lang-zh>① API 桥接——知道"做什么"，不知道"怎么调"</h5>
+          <h5 lang-en>① API bridging — know "what", not "how to call"</h5>
+          <p lang-zh><code>sales-pivot-analysis</code> · <strong>0% → 85.7%（+85.7pp）</strong></p>
+          <p lang-en><code>sales-pivot-analysis</code> · <strong>0% → 85.7% (+85.7pp)</strong></p>
+          <p lang-zh><strong>Before (7 模型全 0%)</strong>：数据加载正确，但卡在 Excel pivot 表构造。Codex 试图手动 DataFrame reshape 而不是用 <code>openpyxl</code> pivot table API → 10/23 tests 报 "list index out of range on missing pivot objects"。</p>
+          <p lang-en><strong>Before (all 7 models at 0%)</strong>: data loaded correctly, but stuck at pivot-table construction. Codex tried manual DataFrame reshape instead of <code>openpyxl</code>'s pivot API → 10/23 tests failed with "list index out of range on missing pivot objects".</p>
+          <p lang-zh><strong>After</strong>：Skill 给出 <code>openpyxl</code> pivot workflow 的 step-by-step 用法 → 6/7 模型达 ≥80%。</p>
+          <p lang-en><strong>After</strong>: Skill provides step-by-step <code>openpyxl</code> pivot workflow → 6/7 models reach ≥80%.</p>
+        </div>
+
+        <div class="compare-card">
+          <h5 lang-zh>② 数据处理流水线——填补"正确方法论"</h5>
+          <h5 lang-en>② Data-processing pipeline — filling in the "right methodology"</h5>
+          <p lang-zh><code>flood-risk-analysis</code> · <strong>2.9% → 80.0%（+77.1pp）</strong></p>
+          <p lang-en><code>flood-risk-analysis</code> · <strong>2.9% → 80.0% (+77.1pp)</strong></p>
+          <p lang-zh><strong>Before</strong>：Agent 试各种 ad-hoc 统计方法（简单阈值检测、错误分布拟合），只有 2.9% pass。</p>
+          <p lang-en><strong>Before</strong>: agents tried ad-hoc statistics (simple thresholding, wrong distribution fitting) — only 2.9% pass.</p>
+          <p lang-zh><strong>After</strong>：Skill 指定 USGS 洪水频率分析的**标准方法 Log-Pearson Type III 分布** + 精确的 <code>scipy</code> 函数调用和参数含义 → 所有模型都正确应用该方法论。</p>
+          <p lang-en><strong>After</strong>: Skill specifies the <strong>USGS-standard Log-Pearson Type III distribution</strong> for flood frequency analysis + exact <code>scipy</code> calls and parameter semantics → all models correctly apply the methodology.</p>
+        </div>
+
+        <div class="compare-card">
+          <h5 lang-zh>③ 监管/合规知识——行业规范无法靠推理得出</h5>
+          <h5 lang-en>③ Regulatory knowledge — industry specs can't be inferred</h5>
+          <p lang-zh><code>sec-financial-report</code> · <strong>0% → 75.0%（+75.0pp）</strong></p>
+          <p lang-en><code>sec-financial-report</code> · <strong>0% → 75.0% (+75.0pp)</strong></p>
+          <p lang-zh><strong>Before</strong>：7 模型全 0%。要么找不到正确的 SEC filing，要么误解 13F 表格的列结构。</p>
+          <p lang-en><strong>Before</strong>: all 7 models at 0%. Either couldn't locate correct SEC filings, or misread 13F table column structure.</p>
+          <p lang-zh><strong>After</strong>：Skill 文档化 <strong>SEC EDGAR API 端点 + 13F-HR filing 结构 + 跨季度对比方法论</strong>（这些是法律规定的格式，不能"推断"）。</p>
+          <p lang-en><strong>After</strong>: Skill documents the <strong>SEC EDGAR API endpoints + 13F-HR filing structure + cross-quarter comparison methodology</strong> (these are legally specified formats — no amount of reasoning can invent them).</p>
+        </div>
+
+        <div class="compare-card">
+          <h5 lang-zh>④ 实现陷阱规避——避免 naive 做法</h5>
+          <h5 lang-en>④ Avoiding implementation pitfalls — preventing naive solutions</h5>
+          <p lang-zh><code>mfg-fjsp-optimization</code> (Flexible Job-Shop Scheduling) · <strong>0% → 68.6%（+68.6pp）</strong></p>
+          <p lang-en><code>mfg-fjsp-optimization</code> (Flexible Job-Shop Scheduling) · <strong>0% → 68.6% (+68.6pp)</strong></p>
+          <p lang-zh><strong>Before</strong>：Agent 产出 naive 调度，<strong>忽略机器停机维护约束</strong>——看起来合理但违反实际可行性。</p>
+          <p lang-en><strong>Before</strong>: agents produced naive schedules <strong>ignoring machine downtime constraints</strong> — looked reasonable but violated actual feasibility.</p>
+          <p lang-zh><strong>After</strong>：Skill 给出<strong>约束传播思路 + 目标函数构建 + OR-Tools solver 配置</strong>，把 agent 从 naive 陷阱里拉出来。</p>
+          <p lang-en><strong>After</strong>: Skill provides the <strong>constraint-propagation approach + objective formulation + OR-Tools solver configuration</strong>, pulling agents out of the naive-solution trap.</p>
+        </div>
+      </div>
+
+      <div class="box box-insight">
+        <strong lang-zh>四种机制的共同规律：</strong>
+        <strong lang-en>Common pattern across the four mechanisms:</strong>
+        <span lang-zh>Skill 起作用的地方都是 "<strong>模型靠通用推理无法凭空想到 / 想不对</strong>" 的具体知识——API 的实际用法、行业标准方法论、监管规范、实现陷阱。这正是 §7 Discussion 说的 "<strong>Skill 填 procedural 而非 conceptual gap</strong>" 的 4 种具体形态。</span>
+        <span lang-en>All four mechanisms share one trait: Skills help where the model <strong>cannot invent the right answer by general reasoning</strong> — the actual API usage, industry-standard methodologies, regulatory formats, implementation pitfalls. These are the 4 concrete forms of §7 Discussion's "<strong>Skills close procedural, not conceptual gaps</strong>".</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 7. ECOSYSTEM ========== -->
+  <section id="ecosystem" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">7</span>
+      <h2 lang-zh>Skill 生态分析</h2>
+      <h2 lang-en>Skill Ecosystem Analysis</h2>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>7.1 时间动态 & 体积分布</h3>
+      <h3 lang-en>7.1 Temporal & Size</h3>
+
+      <div class="img-placeholder" id="ph-fig5">
+        <div class="icon">📈</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 5: Skill 创建 136 天动态（label: fig:timeline）</span>
+          <span lang-en>Figure 5: Skill creation dynamics over 136 days (label: fig:timeline)</span>
+        </div>
+        <div class="ph-caption" lang-zh>2025-09 温和增长，2026-01 爆发（峰值 18,904），累计 84,192。</div>
+        <div class="ph-caption" lang-en>Modest growth from Sep 2025, Jan 2026 surge (peak 18,904), cumulative 84,192.</div>
+        <div class="ph-filename">figures/fig05_timeline.png</div>
+      </div>
+
+      <div class="two-col">
+        <div class="img-placeholder" id="ph-fig6">
+          <div class="icon">📏</div>
+          <div class="ph-label">
+            <span lang-zh>Figure 6: SKILL.md token 分布（label: fig:skill_md_length）</span>
+            <span lang-en>Figure 6: SKILL.md token distribution (label: fig:skill_md_length)</span>
+          </div>
+          <div class="ph-caption" lang-zh>log-normal，median 1,569 tokens。</div>
+          <div class="ph-caption" lang-en>Log-normal, median 1,569 tokens.</div>
+          <div class="ph-filename">figures/fig06_skillmd_distribution.png</div>
+        </div>
+        <div class="img-placeholder" id="ph-fig7">
+          <div class="icon">📦</div>
+          <div class="ph-label">
+            <span lang-zh>Figure 7: 总 Skill 体积分布（label: fig:total_length）</span>
+            <span lang-en>Figure 7: Total Skill size distribution (label: fig:total_length)</span>
+          </div>
+          <div class="ph-caption" lang-zh>median 2,296 token (~9 KB)；max 20M。</div>
+          <div class="ph-caption" lang-en>Median 2,296 tokens (~9 KB); max 20M.</div>
+          <div class="ph-filename">figures/fig07_total_size.png</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>7.2 类别与文件结构</h3>
+      <h3 lang-en>7.2 Categories & Structure</h3>
+
+      <div class="img-placeholder" id="ph-fig8">
+        <div class="icon">🏷️</div>
+        <div class="ph-label">
+          <span lang-zh>Figure 8: Skill 类别分布（label: fig:category）</span>
+          <span lang-en>Figure 8: Skill category distribution (label: fig:category)</span>
+        </div>
+        <div class="ph-caption" lang-zh>Top 10 占 79.6%：Docs (11.9%) / Git (11.8%) / Code Quality (9.0%) / CLI (8.0%)...</div>
+        <div class="ph-caption" lang-en>Top 10 = 79.6%: Docs (11.9%) / Git (11.8%) / Code Quality (9.0%) / CLI (8.0%)...</div>
+        <div class="ph-filename">figures/fig08_categories.png</div>
+      </div>
+
+      <div class="two-col">
+        <div class="img-placeholder" id="ph-fig9">
+          <div class="icon">📂</div>
+          <div class="ph-label">
+            <span lang-zh>Figure 9: 文件数分布（label: fig:file_count）</span>
+            <span lang-en>Figure 9: File count distribution (label: fig:file_count)</span>
+          </div>
+          <div class="ph-caption" lang-zh>median 1 文件，绝大多数 ≤5。</div>
+          <div class="ph-caption" lang-en>Median 1, majority ≤5.</div>
+          <div class="ph-filename">figures/fig09_file_count.png</div>
+        </div>
+        <div class="img-placeholder" id="ph-fig10">
+          <div class="icon">🔤</div>
+          <div class="ph-label">
+            <span lang-zh>Figure 10: 文件扩展名分布（label: fig:file_extension）</span>
+            <span lang-en>Figure 10: File extension distribution (label: fig:file_extension)</span>
+          </div>
+          <div class="ph-caption" lang-zh><code>.md</code> 绝对主导（92,760 文件）。</div>
+          <div class="ph-caption" lang-en><code>.md</code> dominates (92,760 files).</div>
+          <div class="ph-filename">figures/fig10_extensions.png</div>
+        </div>
+      </div>
+
+      <div class="box box-warn">
+        <span lang-zh><strong>Benchmark vs Ecosystem gap：</strong>基准 Skill 质量 10.1/12，生态均值 6.2/12。作者承认是 <strong>乐观场景</strong>——真实部署下增益 &lt; +16.2pp。</span>
+        <span lang-en><strong>Benchmark vs ecosystem gap:</strong> benchmark 10.1/12, ecosystem 6.2/12. Authors admit this is an <strong>optimistic scenario</strong> — real-world gains will be lower.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 8. DISCUSSION ========== -->
+  <section id="discussion" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">8</span>
+      <h2 lang-zh>讨论与思考</h2>
+      <h2 lang-en>Discussion</h2>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>8.1 作者四条论点</h3>
+      <h3 lang-en>8.1 Four Authors' Claims</h3>
+      <details class="discussion-card" open><summary lang-zh>① Skill 填 procedural 而非 conceptual 鸿沟</summary><summary lang-en>① Skills close procedural, not conceptual gaps</summary><div class="detail-body"><p lang-zh>模型懂 flood risk 是什么（概念），但不知道 scipy 哪个函数怎么调（过程）。</p><p lang-en>Models know what flood risk is (concept) but not which scipy call (procedure).</p></div></details>
+      <details class="discussion-card" open><summary lang-zh>② Harness 对 Skill 效用有中介作用</summary><summary lang-en>② Harnesses mediate Skill efficacy</summary><div class="detail-body"><p lang-zh>Claude Code 可靠调用；Codex "acknowledge 但 ignore"；Gemini 需 explicit tool。</p><p lang-en>Claude Code reliably invokes; Codex "acknowledges but ignores"; Gemini requires explicit tool.</p></div></details>
+      <details class="discussion-card" open><summary lang-zh>③ Skill 写作建议：简洁 + 可运行 + 模块化</summary><summary lang-en>③ Authoring: concise + runnable + modular</summary><div class="detail-body"><ul><li lang-zh>Concise stepwise + ≥1 runnable example &gt; exhaustive docs</li><li lang-en>Concise stepwise + ≥1 runnable example &gt; exhaustive docs</li><li lang-zh>Modular Skill 多步组合更好</li><li lang-en>Modular Skills compose better on multi-step tasks</li><li lang-zh>显式 match harness 约束</li><li lang-en>Explicitly match harness constraints</li></ul></div></details>
+      <details class="discussion-card" open><summary lang-zh>④ "加 context 就一定好"是伪命题</summary><summary lang-en>④ "More context = better" is naïve</summary><div class="detail-body"><p lang-zh>16/84 任务 Skill 有害，挑战了"给 agent 更多信息一定更好"。</p><p lang-en>16/84 tasks hurt by Skills, challenging the "more info = better" assumption.</p></div></details>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>8.2 强 / 弱点评估</h3>
+      <h3 lang-en>8.2 Strengths / Weaknesses</h3>
+      <div class="compare-grid">
+        <div class="compare-card">
+          <h5 lang-zh>✅ 强点</h5><h5 lang-en>✅ Strengths</h5>
+          <ul>
+            <li lang-zh>规模大（7,308 traj），paired 比较，双 metric，确定性 verifier</li>
+            <li lang-en>Scale (7,308), paired design, dual metrics, deterministic verifier</li>
+            <li lang-zh>Failure mode 程序化分类（非 LLM-as-judge）</li>
+            <li lang-en>Programmatic failure taxonomy (no LLM-as-judge)</li>
+            <li lang-zh>47,150 Skill ecosystem 分析罕见</li>
+            <li lang-en>47,150-Skill ecosystem analysis — rare</li>
+            <li lang-zh>11 domain 异质性数据 → 资源配置指导</li>
+            <li lang-en>11-domain heterogeneity informs resource allocation</li>
+          </ul>
+        </div>
+        <div class="compare-card" style="border-left:3px solid var(--amber);">
+          <h5 lang-zh>⚠️ 可讨论 / 局限</h5><h5 lang-en>⚠️ Debatable</h5>
+          <ul>
+            <li lang-zh><strong>缺 length-matched baseline</strong>：增益可能部分来自"长 context"</li>
+            <li lang-en><strong>No length-matched baseline</strong>: gains might partly be "more context"</li>
+            <li lang-zh>质量 rubric 粗（0–12）；复杂度分类主观</li>
+            <li lang-en>Rubric is coarse (0–12); complexity buckets subjective</li>
+            <li lang-zh>Retry 策略不一致（self-gen 有 retry）</li>
+            <li lang-en>Inconsistent retry (self-gen has retries)</li>
+            <li lang-zh>"Skill replace scale" 基于 Claude 家族（被训过 Skills spec）</li>
+            <li lang-en>"Skill substitutes for scale" based on Claude family (trained on Skills spec)</li>
+            <li lang-zh>16 负向任务只有定性解释，无对照</li>
+            <li lang-en>16 negative tasks have only qualitative explanation</li>
+            <li lang-zh><strong>论文内部数字不一致</strong>（见 §10）</li>
+            <li lang-en><strong>Internal numeric inconsistencies</strong> (see §10)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>8.3 6 个延展方向</h3>
+      <h3 lang-en>8.3 Six Open Directions</h3>
+      <details class="discussion-card" open><summary lang-zh>Q1: trajectory → Skill 蒸馏</summary><summary lang-en>Q1: trajectory → Skill distillation</summary><div class="detail-body"><p lang-zh>Self-gen 失败因 model 无过程记忆，但 trajectory 里有。</p><p lang-en>Self-gen fails for lack of procedural memory — but trajectories have it.</p></div></details>
+      <details class="discussion-card" open><summary lang-zh>Q2: Skill composition — 1+1&lt;2 现象</summary><summary lang-en>Q2: Skill composition — 1+1&lt;2</summary><div class="detail-body"><p lang-zh>4+ 下降，是"procedural interference"，值得形式化。</p><p lang-en>4+ degrades = "procedural interference", worth formalizing.</p></div></details>
+      <details class="discussion-card" open><summary lang-zh>Q3: Skill drift — API 演进</summary><summary lang-en>Q3: Skill drift over time</summary><div class="detail-body"><p lang-zh>openpyxl/pandas API 会变，需要时间维度 benchmark。</p><p lang-en>APIs evolve — benchmark needs temporal dimension.</p></div></details>
+      <details class="discussion-card" open>
+        <summary lang-zh>Q4: Skill 与 RL options 的关系——Sutton 1999 的再现</summary>
+        <summary lang-en>Q4: Skills vs RL options — Sutton 1999 re-emerging</summary>
+        <div class="detail-body">
+          <p lang-zh><strong>Option 是什么</strong>：来自 Sutton, Precup, Singh 1999 经典论文的概念——<strong>一段被"打包好的多步子策略"，agent 可以像调用函数一样调用它完成一段行为序列</strong>。例如机器人走迷宫，原子动作是 "上/下/左/右"，option 则是 "走到门口" / "打开门" / "穿过走廊"。每个 option 包含：(1) 什么时候可调用（initiation set）；(2) 内部子策略（policy）；(3) 什么时候终止（termination condition）。本质是 RL 里的"子程序 / function call"。</p>
+          <p lang-en><strong>What's an option</strong>: a concept from Sutton, Precup, Singh 1999's classic paper — <strong>a "packaged multi-step sub-policy" that an agent can invoke like a function call to execute a sequence of actions</strong>. E.g. for a maze-navigating robot, primitive actions are "up/down/left/right"; an option might be "walk to door" / "open door" / "cross hallway". Each option has: (1) initiation set (when it can be called); (2) internal policy (what it does); (3) termination condition (when it stops). Essentially RL's "subroutine / function call".</p>
+
+          <p lang-zh><strong>Skill 和 option 的对应</strong>：两者都是 <strong>temporal abstraction</strong>——把多步行为打包成一个可调用的单元。本质抽象一样，实现不同：</p>
+          <p lang-en><strong>The correspondence</strong>: both are <strong>temporal abstractions</strong> — packaging multi-step behavior into an invokable unit. Same abstraction, different realization:</p>
+
+          <div class="table-wrap" style="margin:10px 0;">
+            <table>
+              <thead><tr>
+                <th lang-zh>维度</th><th lang-en>Dimension</th>
+                <th lang-zh>RL Option</th><th lang-en>RL Option</th>
+                <th lang-zh>LLM Skill</th><th lang-en>LLM Skill</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td lang-zh>打包内容</td><td lang-en>Packages</td>
+                  <td lang-zh>多步子策略</td><td lang-en>Multi-step sub-policy</td>
+                  <td lang-zh>多步 procedural 流程</td><td lang-en>Multi-step procedural workflow</td>
+                </tr>
+                <tr>
+                  <td lang-zh>内部实现</td><td lang-en>Internal form</td>
+                  <td lang-zh><strong>implicit</strong>（RL 训练出的权重，黑盒）</td><td lang-en><strong>implicit</strong> (RL-trained weights, opaque)</td>
+                  <td lang-zh><strong>explicit</strong>（自然语言 + 代码，白盒，可读可改）</td><td lang-en><strong>explicit</strong> (natural language + code, transparent, editable)</td>
+                </tr>
+                <tr>
+                  <td lang-zh>获取方式</td><td lang-en>Source</td>
+                  <td lang-zh>手工设计 / 自动发现算法</td><td lang-en>Hand-designed / discovered by algorithms</td>
+                  <td lang-zh>人类编写（self-gen 证明失败）</td><td lang-en>Human-written (self-gen shown to fail)</td>
+                </tr>
+                <tr>
+                  <td lang-zh>框架年份</td><td lang-en>Framework era</td>
+                  <td lang-zh>1999 (Sutton et al.)</td><td lang-en>1999 (Sutton et al.)</td>
+                  <td lang-zh>2025 (Anthropic)</td><td lang-en>2025 (Anthropic)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p lang-zh><strong>为什么说"Sutton 在 LLM 时代重现"</strong>：两者都回答同一个问题——"<em>面对复杂任务，不要每步都从原子动作（RL）或 token（LLM）开始推理，而是预先打包好一些<strong>多步能力</strong>让 agent 直接调用</em>"。同一个抽象思想，RL 编码在<strong>权重</strong>里（黑盒），LLM 编码在<strong>自然语言文件</strong>里（白盒）。</p>
+          <p lang-en><strong>Why "Sutton re-emerging"</strong>: both answer the same question — "<em>for complex tasks, don't reason from primitive actions (RL) or tokens (LLM) every step; pre-package <strong>multi-step capabilities</strong> the agent can invoke directly</em>". Same abstraction idea — RL stored it in <strong>weights</strong> (opaque), LLM stores it in <strong>natural-language files</strong> (transparent).</p>
+
+          <p lang-zh><strong>有趣的衍生问题</strong>：</p>
+          <p lang-en><strong>Interesting follow-ups</strong>:</p>
+          <ul>
+            <li lang-zh>能不能把 LLM 成功 trajectory 自动<strong>蒸馏成 Skill</strong>？（类比 RL 里的 option discovery）</li>
+            <li lang-en>Can we automatically <strong>distill successful LLM trajectories into Skills</strong>? (analogous to option discovery in RL)</li>
+            <li lang-zh>能不能把一个成熟 Skill 的 policy<strong>反向转成 fine-tuning</strong>？（explicit → implicit）</li>
+            <li lang-en>Can a mature Skill's procedure be <strong>converted back into fine-tuning data</strong>? (explicit → implicit)</li>
+            <li lang-zh>Skill 组合是否对应 Sutton 证明的 <strong>options composition 定理</strong>？Finding 5 的"4+ Skill 下降"是否就是 options 文献早已知道的 <strong>composition interference</strong>？</li>
+            <li lang-en>Does Skill composition map to Sutton's <strong>options-composition theorems</strong>? Is Finding 5's "4+ Skill degradation" the well-known <strong>composition interference</strong> from the options literature?</li>
+          </ul>
+        </div>
+      </details>
+      <details class="discussion-card" open><summary lang-zh>Q5: Adversarial Skill — 安全 gap</summary><summary lang-en>Q5: Adversarial Skills — security gap</summary><div class="detail-body"><p lang-zh>Agent default trust，malicious Skill 可以植入 backdoor。</p><p lang-en>Default trust; malicious Skills can embed backdoors.</p></div></details>
+      <details class="discussion-card" open><summary lang-zh>Q6: Skill skepticism meta-policy</summary><summary lang-en>Q6: Skill-skepticism meta-policy</summary><div class="detail-body"><p lang-zh>Agent 应学会"何时忽略 Skill"——这本身也是 procedural meta-knowledge。</p><p lang-en>Agents should learn "when to ignore a Skill" — a meta-skill.</p></div></details>
+    </div>
+  </section>
+
+  <!-- ========== 9. QUICK REF ========== -->
+  <section id="quickref" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">9</span>
+      <h2 lang-zh>技术速查</h2>
+      <h2 lang-en>Quick Reference</h2>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>9.1 模型版本 & API 价格</h3>
+      <h3 lang-en>9.1 Models & API Pricing</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th lang-zh>Model</th><th lang-en>Model</th>
+            <th lang-zh>API ID</th><th lang-en>API ID</th>
+            <th lang-zh class="num">In $/MTok</th><th lang-en class="num">In $/MTok</th>
+            <th lang-zh class="num">Out $/MTok</th><th lang-en class="num">Out $/MTok</th>
+          </tr></thead>
+          <tbody>
+            <tr><td lang-zh>Opus 4.5</td><td lang-en>Opus 4.5</td><td lang-zh><code>claude-opus-4-5@20251101</code></td><td lang-en><code>claude-opus-4-5@20251101</code></td><td lang-zh class="num">5.00</td><td lang-en class="num">5.00</td><td lang-zh class="num">25.00</td><td lang-en class="num">25.00</td></tr>
+            <tr><td lang-zh>Opus 4.6</td><td lang-en>Opus 4.6</td><td lang-zh><code>claude-opus-4-6</code></td><td lang-en><code>claude-opus-4-6</code></td><td lang-zh class="num">5.00</td><td lang-en class="num">5.00</td><td lang-zh class="num">25.00</td><td lang-en class="num">25.00</td></tr>
+            <tr><td lang-zh>Sonnet 4.5</td><td lang-en>Sonnet 4.5</td><td lang-zh><code>claude-sonnet-4-5@20250929</code></td><td lang-en><code>claude-sonnet-4-5@20250929</code></td><td lang-zh class="num">3.00</td><td lang-en class="num">3.00</td><td lang-zh class="num">15.00</td><td lang-en class="num">15.00</td></tr>
+            <tr><td lang-zh>Haiku 4.5</td><td lang-en>Haiku 4.5</td><td lang-zh><code>claude-haiku-4-5@20251001</code></td><td lang-en><code>claude-haiku-4-5@20251001</code></td><td lang-zh class="num">1.00</td><td lang-en class="num">1.00</td><td lang-zh class="num">5.00</td><td lang-en class="num">5.00</td></tr>
+            <tr><td lang-zh>GPT-5.2</td><td lang-en>GPT-5.2</td><td lang-zh><code>openai/gpt-5.2-codex</code></td><td lang-en><code>openai/gpt-5.2-codex</code></td><td lang-zh class="num">1.75</td><td lang-en class="num">1.75</td><td lang-zh class="num">14.00</td><td lang-en class="num">14.00</td></tr>
+            <tr><td lang-zh>Gemini 3 Pro</td><td lang-en>Gemini 3 Pro</td><td lang-zh><code>gemini-3-pro-preview</code></td><td lang-en><code>gemini-3-pro-preview</code></td><td lang-zh class="num">2.00</td><td lang-en class="num">2.00</td><td lang-zh class="num">12.00</td><td lang-en class="num">12.00</td></tr>
+            <tr><td lang-zh>Gemini 3 Flash</td><td lang-en>Gemini 3 Flash</td><td lang-zh><code>gemini-3-flash-preview</code></td><td lang-en><code>gemini-3-flash-preview</code></td><td lang-zh class="num">0.50</td><td lang-en class="num">0.50</td><td lang-zh class="num">3.00</td><td lang-en class="num">3.00</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>9.2 关键数字一页卡片</h3>
+      <h3 lang-en>9.2 One-Page Key Numbers</h3>
+      <div class="card card-accent">
+        <ul>
+          <li lang-zh><strong>86 tasks / 84 evaluated, 11 domains, 7 configs, 7,308 trajectories</strong></li>
+          <li lang-en><strong>86 tasks / 84 evaluated, 11 domains, 7 configs, 7,308 trajectories</strong></li>
+          <li lang-zh><strong>Curated Skill +16.2pp</strong>（+13.6 到 +23.3pp）</li>
+          <li lang-en><strong>Curated Skill +16.2pp</strong> (+13.6 to +23.3pp)</li>
+          <li lang-zh><strong>Self-Gen: 正文 –1.3pp / Table Mean –1.8pp</strong> ⚠️ 内部不一致</li>
+          <li lang-en><strong>Self-Gen: prose –1.3pp / Table Mean –1.8pp</strong> ⚠️ internal inconsistency</li>
+          <li lang-zh>Healthcare <strong>+51.9pp</strong> / SWE <strong>+4.5pp</strong></li>
+          <li lang-en>Healthcare <strong>+51.9pp</strong> / SWE <strong>+4.5pp</strong></li>
+          <li lang-zh>16/84 任务 Skill 有害；16/84 任务全 0%</li>
+          <li lang-en>16/84 tasks hurt by Skills; 16/84 stuck at 0%</li>
+          <li lang-zh>最佳绝对 Flash+Gemini CLI 48.7%；最佳相对 Opus 4.5+Claude Code +23.3pp</li>
+          <li lang-en>Best abs Flash 48.7%; best rel Opus 4.5 +23.3pp</li>
+          <li lang-zh>最优 Skill 数：2–3；最优复杂度：Detailed &gt; Compact &gt;&gt; Comprehensive</li>
+          <li lang-en>Optimal count: 2–3; optimal complexity: Detailed &gt; Compact &gt;&gt; Comprehensive</li>
+          <li lang-zh>Haiku+Skill 27.7% &gt; Opus 4.5 naked 22.0%</li>
+          <li lang-en>Haiku+Skill 27.7% &gt; Opus 4.5 naked 22.0%</li>
+          <li lang-zh>49.8% 失败类型 = "Quality Below Threshold"——结构对、数值差</li>
+          <li lang-en>49.8% failures = "Quality Below Threshold" — structure right, values wrong</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 10. TEX-ONLY FINDINGS ========== -->
+  <section id="tex-findings" class="fade-in">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2 lang-zh>⭐ tex 源专属发现（PDF 看不到）</h2>
+      <h2 lang-en>⭐ Tex-only Findings (Invisible to PDF)</h2>
+    </div>
+
+    <div class="box box-tex" style="margin-bottom:24px;">
+      <span lang-zh><strong>这一节是 tex-based 流程独有的价值。</strong>tex 源里保留了大量 `%` 注释掉的草稿、开发者 TODO、未最终采纳的表/图/案例，提供了：(a) 评审修改痕迹 (b) 作者被删减的细节 (c) 论文内部数字不一致证据。</span>
+      <span lang-en><strong>This section is unique to tex-based processing.</strong> The source retains many commented-out drafts, developer TODOs, and deleted tables/figures/cases, yielding: (a) revision history (b) deleted details (c) internal inconsistency evidence.</span>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>10.1 数字修订痕迹</h3>
+      <h3 lang-en>10.1 Numeric Revision Trail</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th lang-zh>位置</th><th lang-en>Location</th>
+            <th lang-zh>草稿值</th><th lang-en>Draft</th>
+            <th lang-zh>最终值</th><th lang-en>Final</th>
+            <th lang-zh>备注</th><th lang-en>Note</th>
+          </tr></thead>
+          <tbody>
+            <tr><td lang-zh>任务总数</td><td lang-en>Total tasks</td><td lang-zh>85</td><td lang-en>85</td><td lang-zh>86（84 evaluated）</td><td lang-en>86 (84 evaluated)</td><td lang-zh>Abstract 改过</td><td lang-en>Abstract revised</td></tr>
+            <tr><td lang-zh>Difficulty 分布</td><td lang-en>Difficulty split</td><td lang-zh>6 / 52 / 27</td><td lang-en>6 / 52 / 27</td><td lang-zh>17 / 43 / 26</td><td lang-en>17 / 43 / 26</td><td lang-zh>整体重校准</td><td lang-en>Full recalibration</td></tr>
+            <tr style="background:#fff1f2;"><td lang-zh><strong>Self-Gen Mean Δ<sub>G</sub></strong></td><td lang-en><strong>Self-Gen Mean Δ<sub>G</sub></strong></td><td lang-zh>–1.3</td><td lang-en>–1.3</td><td lang-zh><strong>–1.8</strong>（Table）</td><td lang-en><strong>–1.8</strong> (Table)</td><td lang-zh>⚠️ 正文仍用 –1.3，未对齐</td><td lang-en>⚠️ Prose still says –1.3</td></tr>
+            <tr style="background:#fff1f2;"><td lang-zh><strong>Codex Self-Gen</strong></td><td lang-en><strong>Codex Self-Gen</strong></td><td lang-zh>–5.6（草稿+正文）</td><td lang-en>–5.6 (draft+prose)</td><td lang-zh><strong>–8.1</strong>（Table）</td><td lang-en><strong>–8.1</strong> (Table)</td><td lang-zh>⚠️ 不一致</td><td lang-en>⚠️ Inconsistent</td></tr>
+            <tr><td lang-zh>Opus 4.5 Self-Gen</td><td lang-en>Opus 4.5 Self-Gen</td><td lang-zh>–0.4</td><td lang-en>–0.4</td><td lang-zh>–0.5</td><td lang-en>–0.5</td><td lang-zh>小修</td><td lang-en>Minor</td></tr>
+            <tr><td lang-zh>10-Run Validation</td><td lang-en>10-Run Validation</td><td lang-zh>"10 vs 3 runs"</td><td lang-en>"10 vs 3 runs"</td><td lang-zh>"10 vs 5 runs"</td><td lang-en>"10 vs 5 runs"</td><td lang-zh>main 原是 3 runs</td><td lang-en>main was 3 runs</td></tr>
+            <tr style="background:#fff1f2;"><td lang-zh><strong>Pipeline caption 增益</strong></td><td lang-en><strong>Pipeline caption gain</strong></td><td lang-zh>+12.66pp</td><td lang-en>+12.66pp</td><td lang-zh>正文 +16.2pp</td><td lang-en>Prose +16.2pp</td><td lang-zh>⚠️ Fig 2 caption 未更新</td><td lang-en>⚠️ Fig 2 caption stale</td></tr>
+            <tr><td lang-zh>Skills pairing count</td><td lang-en>Skills pairing count</td><td lang-zh>221（2.6/task）</td><td lang-en>221 (2.6/task)</td><td lang-zh>正文未出现</td><td lang-en>Absent in final</td><td lang-zh>Pairing 章节被删</td><td lang-en>Pairing section removed</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>10.2 被删除的内容（草稿有，终稿无）</h3>
+      <h3 lang-en>10.2 Deleted Content (in drafts, not final)</h3>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>① Table: SkillsBench vs 8 个现有 benchmark 的 feature matrix</summary>
+        <summary lang-en>① Table: SkillsBench vs 8 existing benchmarks</summary>
+        <div class="detail-body">
+          <p lang-zh>Container / Verifier / Multi-Dom / Paired / Skills / Leakage / Ablation 7 个维度对比 SWE-Bench、Terminal-Bench、AgentBench、WebArena、OSWorld、τ-Bench、MLE-bench、BigCodeBench。</p>
+          <p lang-en>7-dimensional comparison vs SWE-Bench, Terminal-Bench, AgentBench, WebArena, OSWorld, τ-Bench, MLE-bench, BigCodeBench.</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>② Table: Leakage audit 三项指标具体数值</summary>
+        <summary lang-en>② Table: Leakage audit metrics</summary>
+        <div class="detail-body">
+          <p lang-zh>N-gram Jaccard (mean 0.08, max 0.24) / Semantic cosine (0.15, 0.29) / Command overlap (0.12, 0.31)；Skill 相似度 &gt;0.30 的被修改/排除。终稿只剩定性描述。</p>
+          <p lang-en>N-gram Jaccard (mean 0.08, max 0.24) / Semantic cosine (0.15, 0.29) / Command overlap (0.12, 0.31); Skills with similarity &gt;0.30 revised/excluded. Final only has qualitative description.</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>③ Context Usage Table L0-L3-BYOS 五档</summary>
+        <summary lang-en>③ Context Usage Table (L0-L3-BYOS)</summary>
+        <div class="detail-body">
+          <p lang-zh>作者<strong>原本设计过 5 档 Skill 分级</strong>（L0 baseline / L1 ~6% / L2 ~10% / L3 full / BYOS = Bring Your Own Skill），终稿简化为 3 档（No/With/Self-Gen）。L0-L3 token 数与 truncation rate 细节被删。</p>
+          <p lang-en>Authors originally designed <strong>5-tier Skill levels</strong> (L0 baseline / L1 ~6% / L2 ~10% / L3 full / BYOS). Final simplified to 3 (No/With/Self-Gen). Per-tier tokens and truncation rates were removed.</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>④ 3 个 Qualitative Case Studies</summary>
+        <summary lang-en>④ 3 Qualitative Case Studies</summary>
+        <div class="detail-body">
+          <ul>
+            <li lang-zh><strong>Case 1 (CI debugging 成功)</strong>：GPT-5.2 vanilla 直接改 yaml 进入 retry loop 47 分钟超时；加 <code>ci-debugging</code> Skill 后系统性"先本地复现再修复" 12 分钟完成。</li>
+            <li lang-en><strong>Case 1 (CI debugging success)</strong>: GPT-5.2 vanilla edits yaml blindly, retry-loops, 47 min timeout; with <code>ci-debugging</code> Skill, "reproduce locally first" → 12 min completion.</li>
+            <li lang-zh><strong>Case 2 (OAuth Skill 被忽略)</strong>：Haiku 4.5 首轮 "I'll follow oauth-integration guidelines..." 但后续忽略 security checklist，实现 vulnerable token storage → fail。**说明小模型 capacity 不足以长轨迹维持 Skill 指引**。</li>
+            <li lang-en><strong>Case 2 (OAuth Skill ignored)</strong>: Haiku 4.5 acknowledges "I'll follow oauth-integration guidelines" but subsequently ignores security checklist, implements vulnerable storage → fail. <strong>Small models lack capacity to maintain Skill guidance across long trajectories.</strong></li>
+            <li lang-zh><strong>Case 3 (Skill 质量冲击)</strong>：Sonnet 4.5 + Skill A (11/12) → 87.5%；+ Skill B (5/12) → 54.2% <strong>比 vanilla 58.3% 还差</strong>。低质量 Skill 会主动拖累。</li>
+            <li lang-en><strong>Case 3 (Skill quality)</strong>: Sonnet 4.5 + Skill A (11/12) → 87.5%; + Skill B (5/12) → 54.2% <strong>below vanilla 58.3%</strong>. Low-quality Skills actively hurt.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>⑤ Intrinsic difficulty indicators</summary>
+        <summary lang-en>⑤ Intrinsic difficulty indicators</summary>
+        <div class="detail-body">
+          <p lang-zh>dependency depth (Easy 2.1, Med 4.8, Hard 8.3) / tool invocations (5.2, 14.7, 28.4) / state complexity (2.8, 7.1, 15.2) 三项客观指标，与人类耗时相关系数 $r = 0.73$。被删但可借鉴。</p>
+          <p lang-en>3 objective metrics: dependency depth / tool invocations / state complexity, with $r=0.73$ correlation to human time. Deleted but reusable.</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>⑥ Per-Skill efficacy 分布</summary>
+        <summary lang-en>⑥ Per-Skill efficacy distribution</summary>
+        <div class="detail-body">
+          <p lang-zh>草稿说：221 Skills paired，单个 Skill efficacy range <strong>+8.2pp 到 +31.4pp</strong>（median +17.1pp），3 个 Skill（6%）显示负向。比终稿 "16/84 task 负向"更细粒度的信号。</p>
+          <p lang-en>Draft: 221 paired Skills, per-Skill efficacy <strong>+8.2pp to +31.4pp</strong> (median +17.1pp), 3 Skills (6%) showed negative. Finer-grained than the final "16/84 tasks negative".</p>
+        </div>
+      </details>
+
+      <details class="discussion-card" open>
+        <summary lang-zh>⑦ Reproducibility Checklist（6 项）</summary>
+        <summary lang-en>⑦ Reproducibility Checklist (6 items)</summary>
+        <div class="detail-body">
+          <p lang-zh>Code release / Dockerfile / Skills 文档 / Model API versions / Random seeds / 完整结果表——被删，对 reviewers 是缺失信号。</p>
+          <p lang-en>Code release / Dockerfiles / Skills doc / Model API versions / Seeds / Full results — removed, a missing signal for reviewers.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>10.3 作者 TODO / 开发痕迹</h3>
+      <h3 lang-en>10.3 Author TODOs / Development Traces</h3>
+      <ul>
+        <li lang-zh><code>% TODO: Regenerate Pareto figure with updated data</code>（Figure 4 tex 源码旁）—— <strong>Pareto 图数据可能不是最新</strong>，把细节当 ground truth 要谨慎</li>
+        <li lang-en><code>% TODO: Regenerate Pareto figure with updated data</code> (beside Figure 4 source) — <strong>Pareto data may not be up-to-date</strong>, treat details cautiously</li>
+        <li lang-zh><code>\newcommand{\sh}[1]{\textcolor{orange}{[shenghan: #1]}}</code> —— 作者 Shenghan 的 inline 注释宏定义（虽然正文没使用，说明曾有 back-and-forth）</li>
+        <li lang-en><code>\newcommand{\sh}[1]{\textcolor{orange}{[shenghan: #1]}}</code> — inline annotation macro by author Shenghan (unused but defined, evidence of back-and-forth)</li>
+      </ul>
+    </div>
+
+    <div class="subsection">
+      <h3 lang-zh>10.4 这些发现对读者的价值</h3>
+      <h3 lang-en>10.4 Why These Findings Matter</h3>
+      <div class="compare-grid">
+        <div class="compare-card"><h5 lang-zh>对 Reviewers</h5><h5 lang-en>For Reviewers</h5><p lang-zh>指出数字不一致，要求 camera-ready 对齐。–1.3 vs –1.8、Codex –5.6 vs –8.1、pipeline.pdf 12.66 这三处。</p><p lang-en>Flag inconsistencies and require alignment in camera-ready. Three specific sites.</p></div>
+        <div class="compare-card"><h5 lang-zh>对后续工作</h5><h5 lang-en>For Follow-up</h5><p lang-zh>L0-L3/BYOS 5 档分级、3 case studies 给出<strong>作者原始设计意图</strong>——可以 revive 做更细粒度消融。</p><p lang-en>L0-L3/BYOS 5-tier and 3 case studies reveal <strong>original design intent</strong> — revivable for finer ablations.</p></div>
+        <div class="compare-card"><h5 lang-zh>对 Benchmark 用户</h5><h5 lang-en>For Benchmark Users</h5><p lang-zh>Pipeline caption 数字是草稿、Pareto 图可能旧——<strong>不要把具体细节当 ground truth</strong>。</p><p lang-en>Pipeline caption is draft, Pareto may be stale — <strong>don't treat details as ground truth</strong>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="text-align:center;padding:40px 0 20px;color:var(--text-secondary);font-size:13px;border-top:1px solid var(--border);margin-top:40px;">
+    <span lang-zh>SkillsBench 论文学习笔记（tex 版本）· 2026-04-16 · paper-read skill L1 tex-based 流程首次实测</span>
+    <span lang-en>SkillsBench Paper Notes (tex-based) · 2026-04-16 · First end-to-end test of paper-read skill L1 tex pipeline</span>
+  </footer>
+
+</div>
+
+<script>
+const imageMap = {
+  'ph-fig1':  'figures/fig01_architecture.png',
+  'ph-fig2':  'figures/fig02_pipeline.png',
+  'ph-fig3':  'figures/fig03_category_distribution.png',
+  'ph-fig4':  'figures/fig04_pareto_cost.png',
+  'ph-fig5':  'figures/fig05_timeline.png',
+  'ph-fig6':  'figures/fig06_skillmd_distribution.png',
+  'ph-fig7':  'figures/fig07_total_size.png',
+  'ph-fig8':  'figures/fig08_categories.png',
+  'ph-fig9':  'figures/fig09_file_count.png',
+  'ph-fig10': 'figures/fig10_extensions.png',
+  'ph-fig11': 'figures/fig11_heatmap_with_skills.png',
+  'ph-fig12': 'figures/fig12_heatmap_no_skills.png',
+  'ph-fig13': 'figures/fig13_heatmap_uplift.png',
+};
+</script>
+
+<script>
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('paper-theme', isDark ? 'dark' : 'light');
+}
+const savedTheme = localStorage.getItem('paper-theme');
+if (savedTheme === 'dark') document.body.classList.add('dark');
+
+function setLang(lang) {
+  document.body.classList.toggle('en', lang === 'en');
+  document.getElementById('btn-zh').classList.toggle('active', lang === 'zh');
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  localStorage.setItem('paper-lang', lang);
+}
+const savedLang = localStorage.getItem('paper-lang');
+if (savedLang === 'en') setLang('en');
+
+function toggleTOC() { document.getElementById('toc').classList.toggle('open'); }
+document.querySelectorAll('.toc-sidebar a').forEach(a => {
+  a.addEventListener('click', () => { document.getElementById('toc').classList.remove('open'); });
+});
+
+const sections = document.querySelectorAll('section[id], .subsection[id]');
+const tocLinks = document.querySelectorAll('.toc-sidebar a');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      tocLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+sections.forEach(s => observer.observe(s));
+
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+
+if (typeof imageMap !== 'undefined') {
+  Object.entries(imageMap).forEach(([id, src]) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const img = new Image();
+      img.onload = () => {
+        const labelEl = el.querySelector('.ph-label');
+        const labelZhSpan = el.querySelector('.ph-label [lang-zh]');
+        const labelEnSpan = el.querySelector('.ph-label [lang-en]');
+        const fallbackLabel = labelEl ? labelEl.textContent.trim() : '';
+        const labelZh = labelZhSpan ? labelZhSpan.textContent.trim() : fallbackLabel;
+        const labelEn = labelEnSpan ? labelEnSpan.textContent.trim() : fallbackLabel;
+        const captionZh = el.querySelector('.ph-caption[lang-zh]');
+        const captionEn = el.querySelector('.ph-caption[lang-en]');
+        const zhText = captionZh ? captionZh.textContent : '';
+        const enText = captionEn ? captionEn.textContent : '';
+        el.outerHTML = `<figure style="margin:0;">
+          <img class="fig-img" src="${src}" alt="${labelEn || labelZh}" loading="lazy"
+               style="width:100%;border-radius:var(--radius);border:1px solid var(--border);">
+          <figcaption style="font-size:12.5px;color:var(--text-secondary);margin-top:8px;line-height:1.5;">
+            <strong><span lang-zh>${labelZh}</span><span lang-en>${labelEn}</span></strong><br>
+            <span lang-zh>${zhText}</span>
+            <span lang-en>${enText}</span>
+          </figcaption>
+        </figure>`;
+      };
+      img.src = src;
+    }
+  });
+}
+</script>
+
+</body>
+</html>
